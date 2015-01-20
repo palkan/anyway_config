@@ -13,7 +13,7 @@ Configure your gemspec
 ```ruby
 Gem::Specification.new do |s|
   ...
-  s.add_dependancy 'anyway_config'
+  s.add_dependancy 'anyway_config', "~>0.1"
   ...
 end
 ```

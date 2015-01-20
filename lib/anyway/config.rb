@@ -37,29 +37,28 @@ module Anyway
       self
     end
 
-    private
-      def load
-        # first, copy defaults
-        config = self.class.defaults.deep_dup
-        config_name = self.class.config_name
+    def load
+      # first, copy defaults
+      config = self.class.defaults.deep_dup
+      config_name = self.class.config_name
 
-        # then load from YAML if any
-        config_path = Rails.root.join("config","#{config_name}.yml")
-        if File.file? config_path
-          config.deep_merge! (YAML.load_file(config_path)[Rails.env] || {})
-        end
-
-        # then load from Rails secrets
-        unless Rails.application.try(:secrets).nil?
-          config.deep_merge! (Rails.application.secrets.send(config_name)||{})
-        end
-
-        # and then load from env
-        config.deep_merge! (Anyway.env.send(config_name) || {})
-
-        config.each do |key, val| 
-          self.send("#{key}=",val)
-        end
+      # then load from YAML if any
+      config_path = Rails.root.join("config","#{config_name}.yml")
+      if File.file? config_path
+        config.deep_merge! (YAML.load_file(config_path)[Rails.env] || {})
       end
+
+      # then load from Rails secrets
+      unless Rails.application.try(:secrets).nil?
+        config.deep_merge! (Rails.application.secrets.send(config_name)||{})
+      end
+
+      # and then load from env
+      config.deep_merge! (Anyway.env.send(config_name) || {})
+
+      config.each do |key, val| 
+        self.send("#{key}=",val)
+      end
+    end
   end
 end
