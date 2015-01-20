@@ -3,8 +3,10 @@
 # Anyway Config
 
 Rails plugin configuration using any source: YAML, _secrets_, environment.
-
 Requires Rails 4.
+
+Apps using Anyway Config: 
+- [influxer](https://github.com/palkan/influxer).
 
 ## Installation
 
