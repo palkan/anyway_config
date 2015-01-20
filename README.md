@@ -33,6 +33,7 @@ Or install it yourself as:
 Create configuration class:
 
 ```ruby
+require 'anyway'
 module MyCoolGem
   class Config < Anyway::Config
     attr_config user: 'root', password: 'root', host: 'localhost'
