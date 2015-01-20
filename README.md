@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/palkan/anyway_config.svg?branch=master)](https://travis-ci.org/palkan/anyway_config)
+
 # Anyway Config
 
 Rails plugin configuration using any source: YAML, _secrets_, environment.
