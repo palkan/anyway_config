@@ -3,6 +3,9 @@ cache: bundler
 rvm:
   - 2.2
 
+notifications:
+  email: false
+
 matrix:
   allow_failures:
     - rvm: :jruby
