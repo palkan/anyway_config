@@ -3,7 +3,7 @@ module Anyway
     class << self
       attr_reader :defaults, :config_attributes
 
-      def attr_config(*args,**hargs)
+      def attr_config(*args,hargs)
         @defaults = hargs.dup.with_indifferent_access
         @config_attributes = args+hargs.keys
         attr_accessor *@config_attributes
