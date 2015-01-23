@@ -3,7 +3,7 @@
 # Anyway Config
 
 Rails plugin/application configuration using any source: YAML, _secrets_, environment.
-Requires Rails 4.
+
 
 Apps using Anyway Config: 
 - [influxer](https://github.com/palkan/influxer).
@@ -83,7 +83,7 @@ config = Anyway::Config.for(:my_app) # load data from config/my_app.yml, secrets
 
 ```
 
-## Differences between `Rails.application.config_for` and `Anyway::Config.for`
+## `Rails.application.config_for` vs `Anyway::Config.for`
 
 Rails 4.2 introduces new feature: `Rails.application.config_for`. It looks very similar to 
 `Anyway::Config.for`, but there are some differences:
