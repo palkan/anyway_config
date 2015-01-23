@@ -98,7 +98,7 @@ Rails 4.2 introduces new feature: `Rails.application.config_for`. It looks very 
 | raise errors if file doesn't exist | yes | no |
 
 But the main advantage of Anyway::Config is that it's supported in Rails >= 3.2, Ruby >= 1.9.3.
-And it can be even used [without Rails](#using-wihout-rails)!
+And it can be even used [without Rails](#using-without-rails)!
 
 ## How to set env vars
 
