@@ -1,14 +1,22 @@
 language: ruby
 cache: bundler
 rvm:
+  - 1.9.3
   - 2.0.0
   - 2.1
-
-gemfile:
-  - Gemfile
+  - 2.2
 
 matrix:
+  allow_failures:
+    - rvm: :jruby
+
   include:
+    - rvm: jruby
+      gemfile: gemfiles/rails41.gemfile
+
+    - rvm: 1.9.3
+      gemfile: gemfiles/rails32.gemfile
+
     - rvm: 2.0.0
       gemfile: gemfiles/rails40.gemfile
 
@@ -19,4 +27,7 @@ matrix:
       gemfile: gemfiles/rails41.gemfile
 
     - rvm: 2.1
+      gemfile: gemfiles/rails42.gemfile
+
+    - rvm: 2.2
       gemfile: gemfiles/rails42.gemfile

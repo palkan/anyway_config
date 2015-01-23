@@ -106,7 +106,9 @@ describe Anyway::Config do
       data = Anyway::Config.for(:my_app)
       expect(data[:test]).to eq '1'
       expect(data[:name]).to eq 'my_app'
-      expect(data[:secret]).to eq 'my_secret'
+      unless Rails.application.try(:secrets).nil?
+        expect(data[:secret]).to eq 'my_secret' 
+      end
     end
   end
 end
