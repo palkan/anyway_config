@@ -97,6 +97,8 @@ Rails 4.2 introduces new feature: `Rails.application.config_for`. It looks very 
 | support ERB within `config/app.yml` | yes | no |
 | raise errors if file doesn't exist | yes | no |
 
+But the main advantage of Anyway::Config is that it's supported in Rails >= 3.2, Ruby >= 1.9.3.
+
 ## How to set env vars
 
 Environmental variables for your config should start with your module name (or config name if any), uppercased and underscore-free.

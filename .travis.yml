@@ -23,9 +23,6 @@ matrix:
     - rvm: jruby
       gemfile: gemfiles/rails41.gemfile
 
-    - rvm: rbx-2
-      gemfile: gemfiles/rails41.gemfile
-
     - rvm: 2.1
       gemfile: gemfiles/rails41.gemfile
 

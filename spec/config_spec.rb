@@ -29,7 +29,7 @@ describe Anyway::Config do
         expect(conf.host).to eq "test.host"
       end
 
-      unless Rails.application.try(:secrets).nil?
+      unless Rails.application.respond_to?(:secrets)
         it "should load config from secrets" do
           expect(conf.user[:name]).to eq "test"
           expect(conf.user[:password]).to eq "test"   
@@ -106,7 +106,7 @@ describe Anyway::Config do
       data = Anyway::Config.for(:my_app)
       expect(data[:test]).to eq '1'
       expect(data[:name]).to eq 'my_app'
-      unless Rails.application.try(:secrets).nil?
+      unless Rails.application.respond_to?(:secrets)
         expect(data[:secret]).to eq 'my_secret' 
       end
     end
