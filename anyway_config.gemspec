@@ -9,8 +9,8 @@ Gem::Specification.new do |s|
   s.authors     = ["Vlad Dem"]
   s.email       = ["dementiev.vm@gmail.com"]
   s.homepage    = "http://github.com/palkan/anyway_config"
-  s.summary     = "Configuration for Rails plugins"
-  s.description = "Configuration for Rails plugins"
+  s.summary     = "Configuration for Rails plugins and applications"
+  s.description = "Configuration for Rails plugins and applications"
   s.license     = "MIT"
 
   s.files         = `git ls-files`.split($/)

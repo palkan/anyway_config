@@ -96,4 +96,17 @@ describe Anyway::Config do
       expect(test_conf.test).to eq "test"
     end
   end
+
+  describe "config for name" do
+    after(:each) { Anyway.env.clear }
+    it "should load data by config name" do
+      ENV['MYAPP_TEST'] = '1'
+      ENV['MYAPP_NAME'] = 'my_app'
+      Anyway.env.reload
+      data = Anyway::Config.for(:my_app)
+      expect(data[:test]).to eq '1'
+      expect(data[:name]).to eq 'my_app'
+      expect(data[:secret]).to eq 'my_secret'
+    end
+  end
 end

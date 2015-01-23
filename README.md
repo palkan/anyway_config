@@ -2,13 +2,13 @@
 
 # Anyway Config
 
-Rails plugin configuration using any source: YAML, _secrets_, environment.
+Rails plugin/application configuration using any source: YAML, _secrets_, environment.
 Requires Rails 4.
 
 Apps using Anyway Config: 
 - [influxer](https://github.com/palkan/influxer).
 
-## Installation
+## Using with Gem
 
 Configure your gemspec
 
@@ -28,9 +28,7 @@ Or install it yourself as:
 
     $ gem install anyway_config
 
-## Usage
-
-### Basic
+### Usage
 
 Create configuration class:
 
@@ -64,7 +62,42 @@ module MyCoolGem
 end
 ```
 
-### How to set env vars
+### Config clear and reload
+
+You can use `clear` and `reload` functions on your config (which do exactly what they state).
+
+
+## Using with Rails app
+
+In your Gemfile
+
+```ruby
+require 'anyway_config', "~>0.2"
+```
+
+In your code
+
+```ruby
+
+config = Anyway::Config.for(:my_app) # load data from config/my_app.yml, secrets.my_app, ENV["MYAPP_*"]
+
+```
+
+## Differences between `Rails.application.config_for` and `Anyway::Config.for`
+
+Rails 4.2 introduces new feature: `Rails.application.config_for`. It lookw very similar to 
+`Anyway::Config.for`, but there are some differences:
+
+| Feature       | Rails         | Anyway  |
+| ------------- |:-------------:| -----:|
+| load data from `config/app.yml`     | yes | yes |
+| load data from `secrets`      | no      |   yes |
+| load data from environment | no   |   yes |
+| return Hash with indifferent access | no | yes | 
+| support ERB within `config/app.yml` | yes | no |
+| raise errors if file doesn't exist | yes | no |
+
+## How to set env vars
 
 Environmental variables for your config should start with your module name (or config name if any), uppercased and underscore-free.
 
@@ -73,10 +106,6 @@ For example, if your module is called "MyCoolGem" then your env var "MYCOOLGEM_P
 *Anyway Config* supports nested (_hashed_) environmental variables. Just separate keys with double-underscore.
 For example, "MYCOOLGEM_OPTIONS__VERBOSE" is transformed to `config.options.verbose`.
 
-
-### Config clear and reload
-
-You can use `clear` and `reload` functions on your config (which do exactly what they state).
 
 ## Contributing
 
