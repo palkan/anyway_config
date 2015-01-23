@@ -17,6 +17,8 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   s.required_ruby_version = '>= 1.9.3'
 
+  s.add_development_dependency 'pry'
+  s.add_development_dependency 'pry-byebug'
   s.add_development_dependency "simplecov", ">= 0.3.8"
   s.add_development_dependency "rspec", "~> 3.0.0"
   s.add_development_dependency "rspec-rails", "~> 3.0.0"
