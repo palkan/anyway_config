@@ -56,19 +56,20 @@ module Anyway
     end
 
     def load_from_sources(config={}.with_indifferent_access)        
-      # then load from YAML if any
-      config_path = Rails.root.join("config","#{@config_name}.yml")
-      if File.file? config_path
+      load_from_file(config)
+      load_from_env(config)
+    end
+
+    def load_from_file(config)
+      config_path = (Anyway.env.send(@config_name)||{}).delete(:conf)
+      if config_path and File.file?(config_path)
         require 'yaml'
-        config.deep_merge! (YAML.load_file(config_path)[Rails.env] || {})
+        config.deep_merge! (YAML.load_file(config_path) || {})
       end
-
-      # then load from Rails secrets
-      if Rails.application.respond_to?(:secrets)
-        config.deep_merge! (Rails.application.secrets.send(@config_name)||{})
-      end
-
-      # and then load from env
+      config
+    end
+    
+    def load_from_env(config)
       config.deep_merge! (Anyway.env.send(@config_name) || {})
       config
     end

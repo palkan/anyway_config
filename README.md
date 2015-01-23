@@ -2,7 +2,7 @@
 
 # Anyway Config
 
-Rails plugin/application configuration using any source: YAML, _secrets_, environment.
+Rails/Ruby plugin/application configuration using any source: YAML, _secrets_, environment.
 
 
 Apps using Anyway Config: 
@@ -98,6 +98,7 @@ Rails 4.2 introduces new feature: `Rails.application.config_for`. It looks very 
 | raise errors if file doesn't exist | yes | no |
 
 But the main advantage of Anyway::Config is that it's supported in Rails >= 3.2, Ruby >= 1.9.3.
+And it can be even used [without Rails](#using-wihout-rails)!
 
 ## How to set env vars
 
@@ -108,6 +109,10 @@ For example, if your module is called "MyCoolGem" then your env var "MYCOOLGEM_P
 *Anyway Config* supports nested (_hashed_) environmental variables. Just separate keys with double-underscore.
 For example, "MYCOOLGEM_OPTIONS__VERBOSE" is transformed to `config.options.verbose`.
 
+## Using without Rails
+
+AnywayConfig can be used without Rails too. 
+Environmental variables remain the same. To load config from YAML add special environment variable 'MYGEM_CONF' containing path to config. But you cannot use one file for different environments (unless you do it yourself).
 
 ## Contributing
 

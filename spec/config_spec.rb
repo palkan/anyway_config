@@ -79,24 +79,6 @@ describe Anyway::Config do
     end
   end
 
-  describe "config with default name" do
-    after(:each) { Anyway.env.clear }
-    specify { expect(Anyway::TestConfig.config_name).to eq "anyway" }
-
-    specify do
-      expect(test_conf).to respond_to(:test)
-      expect(test_conf).to respond_to(:api)
-    end
-
-    it "should work" do
-      ENV['ANYWAY_API__KEY'] = 'test1'
-      ENV['ANYWAY_TEST'] = 'test'
-      Anyway.env.reload
-      expect(test_conf.api[:key]).to eq "test1"
-      expect(test_conf.test).to eq "test"
-    end
-  end
-
   describe "config for name" do
     after(:each) { Anyway.env.clear }
     it "should load data by config name" do
