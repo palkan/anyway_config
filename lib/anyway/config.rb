@@ -64,7 +64,7 @@ module Anyway
       end
 
       # then load from Rails secrets
-      unless Rails.application.try(:secrets).nil?
+      if Rails.application.respond_to?(:secrets)
         config.deep_merge! (Rails.application.secrets.send(@config_name)||{})
       end
 
