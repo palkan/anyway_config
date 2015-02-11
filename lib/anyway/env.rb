@@ -1,5 +1,12 @@
 module Anyway
   class Env
+
+    # Regexp to detect array values
+    # Array value is a values that contains at least one comma
+    # and doesn't start/end with quote 
+
+    ARRAY_RXP = /\A[^'"].*\s*,\s*.*[^'"]\z/
+
     def initialize
       @data = {}
       load
@@ -28,7 +35,7 @@ module Anyway
         ENV.each_pair do |key, val|
           if config_key?(key)
             mod, path = extract_module_path(key)
-            set_by_path(get_hash(@data, mod), path, val)
+            set_by_path(get_hash(@data, mod), path, serialize_val(val))
           end
         end
       end
@@ -54,6 +61,27 @@ module Anyway
 
       def get_hash(from, name)
         (from[name] ||= {}.with_indifferent_access)
+      end
+
+      def serialize_val(value)
+        case value
+        when ARRAY_RXP
+          value.split(/\s*,\s*/).map(&method(:serialize_val))
+        when /\A(true|t|yes|y)\z/i
+          true
+        when /\A(false|f|no|n)\z/i
+          false
+        when /\A(nil|null)\z/i
+          nil
+        when /\A\d+\z/
+          value.to_i
+        when /\A\d*\.\d+\z/
+          value.to_f
+        when /\A['"].*['"]\z/
+          value.gsub(/(\A['"]|['"]\z)/,'')
+        else
+          value
+        end
       end
   end
 end

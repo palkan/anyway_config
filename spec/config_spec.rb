@@ -48,7 +48,7 @@ describe Anyway::Config do
         ENV['COOL_PORT'] = '80'
         ENV['COOL_USER__NAME'] = 'john'
         Anyway.env.reload
-        expect(conf.port).to eq '80'
+        expect(conf.port).to eq 80
         expect(conf.user[:name]).to eq 'john'
       end
     end
@@ -73,7 +73,7 @@ describe Anyway::Config do
         ENV['COOL_USER__NAME'] = 'john'
         Anyway.env.reload
         conf.reload
-        expect(conf.port).to eq '80'
+        expect(conf.port).to eq 80
         expect(conf.user[:name]).to eq 'john'
       end
     end
@@ -86,7 +86,7 @@ describe Anyway::Config do
       ENV['MYAPP_NAME'] = 'my_app'
       Anyway.env.reload
       data = Anyway::Config.for(:my_app)
-      expect(data[:test]).to eq '1'
+      expect(data[:test]).to eq 1
       expect(data[:name]).to eq 'my_app'
       if Rails.application.respond_to?(:secrets)
         expect(data[:secret]).to eq 'my_secret' 

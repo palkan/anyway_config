@@ -26,7 +26,7 @@ module Anyway
 
       private
         def extract_name
-          self.name[/^(\w+)/].underscore
+          name[/^(\w+)/].underscore
         end
     end
 
@@ -43,7 +43,7 @@ module Anyway
 
     def clear
       self.class.config_attributes.each do |attr|
-        self.send("#{attr}=", nil)
+        send("#{attr}=", nil)
       end
       self
     end
@@ -51,7 +51,7 @@ module Anyway
     def load
       config = load_from_sources self.class.defaults.deep_dup
       config.each do |key, val| 
-        self.send("#{key}=",val)
+        set_value(key, val)
       end
     end
 
@@ -73,5 +73,13 @@ module Anyway
       config.deep_merge! (Anyway.env.send(@config_name) || {})
       config
     end
+
+    private
+
+    # safe way to assing config value
+    # checks that key exists in config
+    def set_value(key, val)
+      send("#{key}=", val) if self.class.config_attributes.include?(key.to_sym)
+    end    
   end
 end

@@ -15,7 +15,7 @@ Configure your gemspec
 ```ruby
 Gem::Specification.new do |s|
   ...
-  s.add_dependancy 'anyway_config', "~>0.1"
+  s.add_dependancy 'anyway_config', "~>0.4"
   ...
 end
 ```
@@ -72,7 +72,7 @@ You can use `clear` and `reload` functions on your config (which do exactly what
 In your Gemfile
 
 ```ruby
-require 'anyway_config', "~>0.2"
+require 'anyway_config', "~>0.4"
 ```
 
 In your code
@@ -106,8 +106,28 @@ Environmental variables for your config should start with your module name (or c
 
 For example, if your module is called "MyCoolGem" then your env var "MYCOOLGEM_PASSWORD" is used as `config.password`.
 
+Environment variables are type-casted (case-insensitive). 
+Examples:
+- "True", "T" and "yes" to `true`;
+- "False", "f" and "no" to `false`;
+- "nil" and "null" to `nil` (do you really need it?);
+- "123" to 123 and "3.14" to 3.14.
+
 *Anyway Config* supports nested (_hashed_) environmental variables. Just separate keys with double-underscore.
 For example, "MYCOOLGEM_OPTIONS__VERBOSE" is transformed to `config.options.verbose`.
+
+Array values are also supported:
+
+```ruby
+# Suppose ENV["MYCOOLGEM_IDS"] = '1,2,3'
+config.ids #=> [1,2,3]
+```
+
+If you want to provide text-like env variable which contain commas then wrap it into quotes:
+
+```ruby
+MYCOOLGEM="Nif-Nif, Naf-Naf and Nouf-Nouf"
+```
 
 ## Using without Rails
 
