@@ -1,3 +1,3 @@
-module Anyway
-  VERSION = "0.4.0"
+module Anyway # :nodoc:
+  VERSION = "0.4.1"
 end

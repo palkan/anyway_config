@@ -24,8 +24,8 @@ describe Anyway::Env do
     ENV['TESTO_DATA__META__NAMES'] = 'meta, kotleta'
     ENV['TESTO_DATA__META__SIZE'] = '2'
     ENV['TESTO_DATA__TEXT'] = '"C\'mon, everybody"'
-    expect(env.testo[:data][:ids]).to include(1,2,3)
-    expect(env.testo[:data][:meta][:names]).to include('meta','kotleta')
+    expect(env.testo[:data][:ids]).to include(1, 2, 3)
+    expect(env.testo[:data][:meta][:names]).to include('meta', 'kotleta')
     expect(env.testo[:data][:meta][:size]).to eq 2
     expect(env.testo[:data][:text]).to eq "C'mon, everybody"
   end

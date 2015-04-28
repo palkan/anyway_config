@@ -1,7 +1,6 @@
 require 'spec_norails_helper'
 
 describe Anyway::Config do
-  
   let(:conf) { Anyway::TestConfig.new }
 
   describe "config without Rails" do
@@ -14,7 +13,7 @@ describe Anyway::Config do
     end
 
     it "should work" do
-      ENV['ANYWAY_CONF'] = File.join(File.dirname(__FILE__),"anyway.yml")
+      ENV['ANYWAY_CONF'] = File.join(File.dirname(__FILE__), "anyway.yml")
       ENV['ANYWAY_API__KEY'] = 'test1'
       ENV['ANYWAY_TEST'] = 'test'
 
@@ -29,7 +28,7 @@ describe Anyway::Config do
       expect(conf.api[:endpoint]).to be_nil
       expect(conf.test).to be_nil
 
-      ENV['ANYWAY_CONF'] = File.join(File.dirname(__FILE__),"anyway.yml")
+      ENV['ANYWAY_CONF'] = File.join(File.dirname(__FILE__), "anyway.yml")
       ENV['ANYWAY_API__KEY'] = 'test1'
       ENV['ANYWAY_TEST'] = 'test'
       Anyway.env.reload

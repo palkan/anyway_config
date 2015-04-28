@@ -1,4 +1,8 @@
-class CoolConfig < Anyway::Config
+class CoolConfig < Anyway::Config # :nodoc:
   config_name :cool
-  attr_config :meta, :data, port: 8080, host: 'localhost', user: {name: 'admin', password: 'admin'}
+  attr_config :meta,
+              :data,
+              port: 8080,
+              host: 'localhost',
+              user: { name: 'admin', password: 'admin' }
 end

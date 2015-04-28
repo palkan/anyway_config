@@ -3,7 +3,7 @@ require 'active_support/core_ext/string'
 require 'active_support/core_ext/object'
 
 require "anyway/version"
-module Anyway
+module Anyway # :nodoc:
   require "anyway/config"
   require "anyway/rails/config" if defined?(Rails)
   require "anyway/env"

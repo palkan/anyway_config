@@ -1,0 +1,12 @@
+ruby:
+  enabled: true
+  config_file: .rubocop.yml
+
+javascript:
+  enabled: false
+
+coffeescript:
+  enabled: false
+
+sass:
+  enabled: false

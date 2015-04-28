@@ -6,7 +6,7 @@ describe Anyway::Config do
 
   describe "config with name" do
     specify { expect(CoolConfig.config_name).to eq "cool" }
-    
+
     describe "defaults" do
       specify { expect(CoolConfig.defaults[:port]).to eq 8080 }
       specify { expect(CoolConfig.defaults[:host]).to eq 'localhost' }
@@ -21,7 +21,7 @@ describe Anyway::Config do
     end
 
     describe "load from files" do
-      it "should set defauls" do 
+      it "should set defauls" do
         expect(conf.port).to eq 8080
       end
 
@@ -32,12 +32,12 @@ describe Anyway::Config do
       if Rails.application.respond_to?(:secrets)
         it "should load config from secrets" do
           expect(conf.user[:name]).to eq "test"
-          expect(conf.user[:password]).to eq "test"   
+          expect(conf.user[:password]).to eq "test"
         end
       else
         it "should load config from file if no secrets" do
           expect(conf.user[:name]).to eq "root"
-          expect(conf.user[:password]).to eq "root"   
+          expect(conf.user[:password]).to eq "root"
         end
       end
     end
@@ -89,7 +89,7 @@ describe Anyway::Config do
       expect(data[:test]).to eq 1
       expect(data[:name]).to eq 'my_app'
       if Rails.application.respond_to?(:secrets)
-        expect(data[:secret]).to eq 'my_secret' 
+        expect(data[:secret]).to eq 'my_secret'
       end
     end
   end
