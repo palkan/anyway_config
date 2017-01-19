@@ -1,6 +1,14 @@
 module Anyway
   class Config # :nodoc:
-    def load_from_sources(config = {}.with_indifferent_access)
+    class << self
+      def defaults
+        return unless @defaults
+        @defaults_wia ||= @defaults.with_indifferent_access
+      end
+    end
+
+    def load_from_sources(config = {})
+      config = config.with_indifferent_access
       load_from_file(config)
       load_from_secrets(config)
       load_from_env(config)

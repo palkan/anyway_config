@@ -9,18 +9,14 @@ Gem::Specification.new do |s|
   s.authors     = ["Vlad Dem"]
   s.email       = ["dementiev.vm@gmail.com"]
   s.homepage    = "http://github.com/palkan/anyway_config"
-  s.summary     = "Configuration for Rails plugins and applications"
-  s.description = "Configuration for Rails plugins and applications"
+  s.summary     = "Configuration for Ruby plugins and applications"
+  s.description = "Configuration for Ruby plugins and applications"
   s.license     = "MIT"
 
   s.files         = `git ls-files`.split($/)
   s.require_paths = ["lib"]
-  s.required_ruby_version = '>= 1.9.3'
+  s.required_ruby_version = '>= 2'
 
-  s.add_dependency "activesupport", ">= 3.2"
-
-  s.add_development_dependency 'pry'
   s.add_development_dependency "simplecov", ">= 0.3.8"
-  s.add_development_dependency "rspec", "~> 3.0.0"
-  s.add_development_dependency "rspec-rails", "~> 3.0.0"
+  s.add_development_dependency "rspec", "~> 3.5.0"
 end

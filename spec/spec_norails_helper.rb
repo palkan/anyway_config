@@ -1,8 +1,10 @@
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 
-require 'rspec'
-require 'pry'
+begin
+  require "pry-byebug"
+rescue LoadError
+end
 
 require 'anyway'
 

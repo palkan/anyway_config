@@ -1,16 +1,17 @@
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 
-ENV["RAILS_ENV"] ||= 'test'
+begin
+  require "pry-byebug"
+rescue LoadError
+end
 
-require 'rspec'
-require 'pry'
+ENV["RAILS_ENV"] = 'test'
 
-require 'rails/all'
-require 'rspec/rails'
-
+require File.expand_path("../dummy/config/environment", __FILE__)
 require 'anyway'
-require "dummy/config/environment"
+
+Rails.application.eager_load!
 
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
 
