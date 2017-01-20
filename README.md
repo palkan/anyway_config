@@ -6,16 +6,17 @@ Rails/Ruby plugin/application configuration using any source: YAML, _secrets_, e
 
 
 Apps using Anyway Config: 
-- [influxer](https://github.com/palkan/influxer).
+- [Influxer](https://github.com/palkan/influxer)
+- [AnyCable](https://github.com/anycable/anycable).
 
 ## Using with Gem
 
-Configure your gemspec
+Configure your gemspec:
 
 ```ruby
 Gem::Specification.new do |s|
   ...
-  s.add_dependancy 'anyway_config', "~>0.4"
+  s.add_dependancy 'anyway_config', "~>0.5"
   ...
 end
 ```
@@ -34,6 +35,7 @@ Create configuration class:
 
 ```ruby
 require 'anyway'
+
 module MyCoolGem
   class Config < Anyway::Config
     attr_config user: 'root', password: 'root', host: 'localhost'
@@ -72,7 +74,7 @@ You can use `clear` and `reload` functions on your config (which do exactly what
 In your Gemfile
 
 ```ruby
-require 'anyway_config', "~>0.4"
+require 'anyway_config', "~>0.5", require: 'anyway'
 ```
 
 In your code
@@ -97,8 +99,7 @@ Rails 4.2 introduces new feature: `Rails.application.config_for`. It looks very 
 | support ERB within `config/app.yml` | yes | no |
 | raise errors if file doesn't exist | yes | no |
 
-But the main advantage of Anyway::Config is that it's supported in Rails >= 3.2, Ruby >= 1.9.3.
-And it can be even used [without Rails](#using-without-rails)!
+But the main advantage of Anyway::Config is that it can be used [without Rails](#using-without-rails)!
 
 ## How to set env vars
 

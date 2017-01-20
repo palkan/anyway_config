@@ -12,7 +12,7 @@ describe Anyway::Config do
       specify { expect(CoolConfig.defaults[:host]).to eq 'localhost' }
     end
 
-    specify do
+    it "generates accessors", :aggregate_failures do
       expect(conf).to respond_to(:meta)
       expect(conf).to respond_to(:data)
       expect(conf).to respond_to(:port)
@@ -56,7 +56,7 @@ describe Anyway::Config do
     describe "clear" do
       let(:conf_cleared) { conf.clear }
 
-      specify do
+      it "nullifies values", :aggregate_failures do
         expect(conf_cleared.meta).to be_nil
         expect(conf_cleared.data).to be_nil
         expect(conf_cleared.host).to be_nil
@@ -81,7 +81,7 @@ describe Anyway::Config do
 
   describe "config for name" do
     after(:each) { Anyway.env.clear }
-    it "should load data by config name" do
+    it "should load data by config name", :aggregate_failures do
       ENV['MYAPP_TEST'] = '1'
       ENV['MYAPP_NAME'] = 'my_app'
       Anyway.env.reload

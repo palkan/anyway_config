@@ -5,7 +5,6 @@ module Anyway
     # Regexp to detect array values
     # Array value is a values that contains at least one comma
     # and doesn't start/end with quote
-
     ARRAY_RXP = /\A[^'"].*\s*,\s*.*[^'"]\z/
 
     def initialize
@@ -59,7 +58,7 @@ module Anyway
     end
 
     def get_hash(from, name)
-      (from[name] ||= {}.with_indifferent_access)
+      (from[name] ||= {})
     end
 
     def serialize_val(value)
