@@ -1,10 +1,10 @@
 require 'anyway/ext/class'
-require 'anyway/ext/object'
+require 'anyway/ext/deep_dup'
 require 'anyway/ext/hash'
 
 module Anyway
   using Anyway::Ext::Class
-  using Anyway::Ext::Object
+  using Anyway::Ext::DeepDup
   using Anyway::Ext::Hash
 
   # Base config class
