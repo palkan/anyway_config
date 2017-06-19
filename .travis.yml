@@ -1,6 +1,9 @@
 language: ruby
 cache: bundler
 
+dist: trusty
+sudo: false
+
 notifications:
   email: false
 
@@ -10,8 +13,12 @@ before_install:
 
 matrix:
   include:
+    - rvm: ruby-head
+      gemfile: gemfiles/railsmaster.gemfile
+    - rvm: 2.4.1
+      gemfile: gemfiles/rails5.gemfile
     - rvm: 2.3.1
       gemfile: gemfiles/rails42.gemfile
-
-    - rvm: 2.4.0
-      gemfile: gemfiles/rails5.gemfile
+  allow_failures:
+    - rvm: ruby-head
+      gemfile: gemfiles/railsmaster.gemfile

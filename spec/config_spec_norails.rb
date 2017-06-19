@@ -4,9 +4,9 @@ describe Anyway::Config do
   let(:conf) { Anyway::TestConfig.new }
 
   describe "config without Rails" do
-    after(:each) do
-      Anyway.env.clear
+    before(:each) do
       ENV.delete_if { |var| var =~ /^anyway_/i }
+      Anyway.env.reload
     end
 
     specify { expect(Anyway::TestConfig.config_name).to eq "anyway" }
@@ -34,12 +34,13 @@ describe Anyway::Config do
     end
 
     it "reloads config", :aggregate_failures do
+      ENV['ANYWAY_CONF'] = File.join(File.dirname(__FILE__), "anyway.yml")
+
       expect(conf.api['key']).to eq ""
       expect(conf.api['endpoint']).to be_nil
       expect(conf.test).to be_nil
       expect(conf.log['format']['color']).to eq false
-
-      ENV['ANYWAY_CONF'] = File.join(File.dirname(__FILE__), "anyway.yml")
+      
       ENV['ANYWAY_API__KEY'] = 'test1'
       ENV['ANYWAY_API__SSL'] = 'yes'
       ENV['ANYWAY_TEST'] = 'test'
