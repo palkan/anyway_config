@@ -104,4 +104,13 @@ describe Anyway::Config do
       end
     end
   end
+
+  describe "config without defaults" do
+    let(:conf) { SmallConfig.new }
+
+    it "works" do
+      expect(conf.meta).to be_nil
+      expect(conf.data).to be_nil
+    end
+  end
 end

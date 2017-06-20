@@ -4,7 +4,9 @@
 
 Rails/Ruby plugin/application configuration tool which allows you to load parameters from different sources: YAML, Rails secrets, environment.
 
-Apps using AnywayConfig:
+Allows you to easily follow the [twelve-factor application](https://12factor.net/config) principles and adds zero complexity to your development process.
+
+Libraries using Anyway Config:
 
 - [Influxer](https://github.com/palkan/influxer)
 
@@ -74,7 +76,7 @@ MyCoolGem.config.user #=> 'root'
 
 #### Customize name
 
-By default, AnywayConfig uses the namespace (the outer module name) as the config name, but you can set it manually:
+By default, Anyway Config uses the namespace (the outer module name) as the config name, but you can set it manually:
 
 ```ruby
 module MyCoolGem
@@ -106,7 +108,7 @@ Your config will be filled up with values from the following sources (ordered by
 
 ### Using with Ruby
 
-By default AnywayConfig is looking for a config YAML at `./config/<config-name>.yml`. You can override this setting
+By default, Anyway Config is looking for a config YAML at `./config/<config-name>.yml`. You can override this setting
 through special environment variable – 'MYGEM_CONF' – containing the path to the YAML file.
 
 Environmental variables work the same way as with Rails. 
@@ -122,7 +124,7 @@ There are `#clear` and `#reload` functions on your config (which do exactly what
 Rails 4.2 introduced new feature: `Rails.application.config_for`. It looks very similar to 
 `Anyway::Config.for`, but there are some differences:
 
-| Feature       | Rails         | Anyway  |
+| Feature       | Rails         | Anyway Config |
 | ------------- |:-------------:| -----:|
 | load data from `config/app.yml`     | yes | yes |
 | load data from `secrets`      | no      |   yes |

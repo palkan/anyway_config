@@ -2,9 +2,9 @@
 
 ## 1.0.0 (2017-06-20)
 
-- Lazy load and parse ENV configurtaion (https://github.com/palkan/anyway_config/commit/5fe407c75fefec8994ca201ea7b4691b5ddd96e5). ([@palkan][])
+- Lazy load and parse ENV configurtaion. ([@palkan][])
 
-- Add support for ERB in YML configuration (https://github.com/palkan/anyway_config/commit/8d8a47dbda6858a43ff509aaa4cddf4f938dd660). ([@palkan][])
+- Add support for ERB in YML configuration. ([@palkan][])
 
 ## 0.5.0 (2017-01-20)
 

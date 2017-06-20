@@ -15,14 +15,14 @@ Gem::Specification.new do |s|
   s.description = %{
     Configuration DSL for Ruby libraries and applications.
 
-    Allows you to easily follow the twevle factor application principles (https://12factor.net/config).
+    Allows you to easily follow the twelve-factor application principles (https://12factor.net/config).
   }
 
   s.license = "MIT"
 
   s.files         = `git ls-files`.split($INPUT_RECORD_SEPARATOR)
   s.require_paths = ["lib"]
-  s.required_ruby_version = '>= 2'
+  s.required_ruby_version = '>= 2.2'
 
   s.add_development_dependency "simplecov", ">= 0.3.8"
   s.add_development_dependency "rspec", "~> 3.5.0"
