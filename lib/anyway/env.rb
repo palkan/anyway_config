@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Anyway
   # Parses environment variables and provides
   # method-like access
@@ -61,6 +63,8 @@ module Anyway
       (from[name] ||= {})
     end
 
+    # rubocop:disable Metrics/MethodLength
+    # rubocop:disable Metrics/CyclomaticComplexity
     def serialize_val(value)
       case value
       when ARRAY_RXP
@@ -81,5 +85,7 @@ module Anyway
         value
       end
     end
+    # rubocop:enable Metrics/MethodLength
+    # rubocop:enable Metrics/CyclomaticComplexity
   end
 end

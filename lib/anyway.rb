@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Anyway # :nodoc:
   require "anyway/version"
   require "anyway/config"

@@ -1,4 +1,4 @@
-Copyright (c) 2015 palkan
+Copyright (c) 2017 palkan
 
 MIT License
 

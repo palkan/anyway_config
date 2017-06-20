@@ -1,15 +1,16 @@
 AllCops:
-  # Include gemspec and Rakefile
   Include:
     - 'lib/**/*.rb'
     - 'lib/**/*.rake'
     - 'spec/**/*.rb'
+    - 'Gemfile'
+    - 'Rakefile'
   Exclude:
     - 'bin/**/*'
     - 'spec/dummy/**/*'
-  RunRailsCops: true
   DisplayCopNames: true
   StyleGuideCopsOnly: false
+  TargetRubyVersion: 2.3
 
 Style/Documentation:
   Exclude:
@@ -18,7 +19,7 @@ Style/Documentation:
 Style/StringLiterals: 
   Enabled: false
 
-Style/BlockDelimiters:
+Layout/BlockDelimiters:
   Exclude:
     - 'spec/**/*.rb'
 
@@ -26,11 +27,9 @@ Metrics/MethodLength:
   Exclude:
     - 'spec/**/*.rb'
 
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*.rb'
+
 Metrics/LineLength:
   Max: 100
-
-Rails/Date:
-  Enabled: false
-
-Rails/TimeZone:
-  Enabled: false

@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 module Anyway
   class TestConfig < Anyway::Config # :nodoc:
-    attr_config :test, 
+    attr_config :test,
                 api: { key: '' },
                 log: {
                   format: {
@@ -9,6 +11,6 @@ module Anyway
                   },
                   level: :info
                 },
-                log_levels: [:info, :fatal]
+                log_levels: %i[info fatal]
   end
 end

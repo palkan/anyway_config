@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Anyway
   module Ext
     # Extend Hash through refinements
@@ -20,7 +22,7 @@ module Anyway
         end
 
         def stringify_keys!
-          self.keys.each do |key|
+          keys.each do |key|
             value = delete(key)
             value.stringify_keys! if value.is_a?(::Hash)
             self[key.to_s] = value

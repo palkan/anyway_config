@@ -1,15 +1,17 @@
+# frozen_string_literal: true
+
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 
 begin
   require "pry-byebug"
-rescue LoadError
+rescue LoadError # rubocop:disable all
 end
 
 ENV["RAILS_ENV"] = 'test'
 
 require File.expand_path("../dummy/config/environment", __FILE__)
-require 'anyway'
+require 'anyway_config'
 
 Rails.application.eager_load!
 

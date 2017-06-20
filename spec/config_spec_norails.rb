@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_norails_helper'
 
 describe Anyway::Config do
@@ -30,7 +32,7 @@ describe Anyway::Config do
       expect(conf.api['endpoint']).to eq "localhost"
       expect(conf.test).to eq "test"
       expect(conf.log['format']['color']).to eq true
-      expect(conf.log_levels).to eq(%w(debug warning info))
+      expect(conf.log_levels).to eq(%w[debug warning info])
     end
 
     it "reloads config", :aggregate_failures do

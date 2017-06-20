@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Anyway
   module Ext
     # Extend String through refinements
@@ -6,7 +8,7 @@ module Anyway
         def underscore_name
           return unless name
           word = name[/^(\w+)/]
-          word.gsub!(/([A-Z\d]+)([A-Z][a-z])/,'\1_\2')
+          word.gsub!(/([A-Z\d]+)([A-Z][a-z])/, '\1_\2')
           word.downcase!
           word
         end

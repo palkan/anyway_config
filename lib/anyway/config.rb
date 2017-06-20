@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 require 'anyway/ext/class'
 require 'anyway/ext/deep_dup'
 require 'anyway/ext/hash'
 
-module Anyway
+module Anyway # :nodoc:
   using Anyway::Ext::Class
   using Anyway::Ext::DeepDup
   using Anyway::Ext::Hash

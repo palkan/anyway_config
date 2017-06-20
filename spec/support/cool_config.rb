@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CoolConfig < Anyway::Config # :nodoc:
   config_name :cool
   attr_config :meta,

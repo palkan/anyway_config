@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Anyway
   class Config # :nodoc:
     class << self
