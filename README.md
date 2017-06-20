@@ -10,7 +10,7 @@ Apps using AnywayConfig:
 
 - [AnyCable](https://github.com/anycable/anycable)
 
-- [and others]().
+- [and others](https://github.com/palkan/anyway_config/network/dependents).
 
 ## Installation
 
