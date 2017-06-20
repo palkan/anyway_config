@@ -8,6 +8,9 @@ AllCops:
   Exclude:
     - 'bin/**/*'
     - 'spec/dummy/**/*'
+    - 'tmp/**/*'
+    - 'gemfiles/vendor/**/*'
+    - 'vendor/**/*'
   DisplayCopNames: true
   StyleGuideCopsOnly: false
   TargetRubyVersion: 2.3
@@ -19,7 +22,7 @@ Style/Documentation:
 Style/StringLiterals: 
   Enabled: false
 
-Layout/BlockDelimiters:
+Style/BlockDelimiters:
   Exclude:
     - 'spec/**/*.rb'
 
