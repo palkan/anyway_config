@@ -2,3 +2,4 @@ host: "test.host"
 user:
   name: "root"
   password: "root"
+port: <%= ENV['ANYWAY_COOL_PORT'] || 9292 %>

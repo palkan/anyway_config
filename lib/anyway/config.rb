@@ -78,8 +78,7 @@ module Anyway # :nodoc:
       config_path = Anyway.env.fetch(config_name).delete('conf') ||
                     "./config/#{config_name}.yml"
       if config_path && File.file?(config_path)
-        require 'yaml'
-        config.deep_merge!(YAML.load_file(config_path) || {})
+        config.deep_merge!(parse_yml(config_path) || {})
       end
       config
     end
@@ -93,6 +92,15 @@ module Anyway # :nodoc:
 
     def set_value(key, val)
       send("#{key}=", val) if respond_to?(key)
+    end
+
+    def parse_yml(path)
+      require 'yaml'
+      if defined?(ERB)
+        YAML.safe_load(ERB.new(File.read(path)).result)
+      else
+        YAML.load_file(path)
+      end
     end
   end
 end

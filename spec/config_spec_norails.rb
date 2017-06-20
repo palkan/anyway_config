@@ -74,6 +74,12 @@ describe Anyway::Config do
       it "loads from ./config", :aggregate_failures do
         expect(conf.user).to eq("name" => "root", "password" => "root")
         expect(conf.host).to eq "test.host"
+        expect(conf.port).to eq 9292
+      end
+
+      it "handle ENV in YML thru ERB" do
+        ENV["ANYWAY_COOL_PORT"] = "1957"
+        expect(conf.port).to eq 1957
       end
     end
   end

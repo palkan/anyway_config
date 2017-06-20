@@ -9,6 +9,7 @@ rescue LoadError # rubocop:disable all
 end
 
 require 'anyway_config'
+require 'erb'
 
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
 

@@ -8,7 +8,7 @@ describe Anyway::Config do
 
   describe "config with name" do
     before(:each) do
-      ENV.delete_if { |var| var =~ /^cool_/i }
+      ENV.delete_if { |var| var =~ /^(cool|anyway)_/i }
     end
 
     specify { expect(CoolConfig.config_name).to eq "cool" }
@@ -38,7 +38,6 @@ describe Anyway::Config do
       if Rails.application.respond_to?(:secrets)
         it "load config from secrets" do
           expect(conf.user[:name]).to eq "test"
-          expect(conf.user[:password]).to eq "test"
         end
       else
         it "load config from file if no secrets" do
@@ -55,6 +54,11 @@ describe Anyway::Config do
         Anyway.env.clear
         expect(conf.port).to eq 80
         expect(conf.user[:name]).to eq 'john'
+      end
+
+      it "handle ENV in YML thru ERB" do
+        ENV['ANYWAY_SECRET_PASSWORD'] = 'my_pass'
+        expect(conf.user[:password]).to eq 'my_pass'
       end
     end
 
