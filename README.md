@@ -128,10 +128,12 @@ Rails 4.2 introduced new feature: `Rails.application.config_for`. It looks very 
 | load data from `secrets`      | no      |   yes |
 | load data from environment | no   |   yes |
 | return Hash with indifferent access | no | yes | 
-| support ERB within `config/app.yml` | yes | yes |
+| support ERB within `config/app.yml` | yes | yes* |
 | raise errors if file doesn't exist | yes | no |
 
-But the main advantage of Anyway::Config is that it can be used [without Rails](#using-without-ruby)!
+<sub><sup>*</sup>make sure that ERB is loaded</sub>
+
+But the main advantage of Anyway::Config is that it can be used [without Rails](#using-with-ruby)!)
 
 ## How to set env vars
 
