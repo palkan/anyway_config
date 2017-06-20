@@ -75,7 +75,8 @@ module Anyway # :nodoc:
     end
 
     def load_from_file(config)
-      config_path = (Anyway.env.send(config_name) || {}).delete('conf')
+      config_path = Anyway.env.fetch(config_name).delete('conf') ||
+                    "./config/#{config_name}.yml"
       if config_path && File.file?(config_path)
         require 'yaml'
         config.deep_merge!(YAML.load_file(config_path) || {})
@@ -84,7 +85,7 @@ module Anyway # :nodoc:
     end
 
     def load_from_env(config)
-      config.deep_merge!(Anyway.env.send(config_name) || {})
+      config.deep_merge!(Anyway.env.fetch(config_name))
       config
     end
 

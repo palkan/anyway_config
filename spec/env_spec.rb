@@ -1,32 +1,36 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Anyway::Env do
-  let(:env) { Anyway.env.reload }
+  let(:env) { Anyway.env }
 
-  it "should load simple key/values by module", :aggregate_failures do
+  it "loads simple key/values by module", :aggregate_failures do
     ENV['TESTO_KEY'] = 'a'
     ENV['MYTEST_KEY'] = 'b'
-    expect(env.testo['key']).to eq 'a'
-    expect(env.my_test['key']).to eq 'b'
+    expect(env.fetch('testo')['key']).to eq 'a'
+    expect(env.fetch('my_test')['key']).to eq 'b'
   end
 
-  it "should load hash values", :aggregate_failures do
+  it "loads hash values", :aggregate_failures do
     ENV['TESTO_DATA__ID'] = '1'
     ENV['TESTO_DATA__META__NAME'] = 'meta'
     ENV['TESTO_DATA__META__VAL'] = 'true'
-    expect(env.testo['data']['id']).to eq 1
-    expect(env.testo['data']['meta']['name']).to eq 'meta'
-    expect(env.testo['data']['meta']['val']).to be_truthy
+    testo_config = env.fetch('testo')
+    expect(testo_config['data']['id']).to eq 1
+    expect(testo_config['data']['meta']['name']).to eq 'meta'
+    expect(testo_config['data']['meta']['val']).to be_truthy
   end
 
-  it "should load array values", :aggregate_failures do
+  it "loads array values", :aggregate_failures do
     ENV['TESTO_DATA__IDS'] = '1,2, 3'
     ENV['TESTO_DATA__META__NAMES'] = 'meta, kotleta'
     ENV['TESTO_DATA__META__SIZE'] = '2'
     ENV['TESTO_DATA__TEXT'] = '"C\'mon, everybody"'
-    expect(env.testo['data']['ids']).to include(1, 2, 3)
-    expect(env.testo['data']['meta']['names']).to include('meta', 'kotleta')
-    expect(env.testo['data']['meta']['size']).to eq 2
-    expect(env.testo['data']['text']).to eq "C'mon, everybody"
+    testo_config = env.fetch('testo')
+    expect(testo_config['data']['ids']).to include(1, 2, 3)
+    expect(testo_config['data']['meta']['names']).to include('meta', 'kotleta')
+    expect(testo_config['data']['meta']['size']).to eq 2
+    expect(testo_config['data']['text']).to eq "C'mon, everybody"
   end
 end

@@ -20,4 +20,6 @@ RSpec.configure do |config|
 
   config.order = :random
   Kernel.srand config.seed
+
+  config.before(:each) { Anyway.env.clear }
 end

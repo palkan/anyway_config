@@ -11,34 +11,29 @@ module Anyway
 
     def initialize
       @data = {}
-      load
-    end
-
-    def reload
-      clear
-      load
-      self
     end
 
     def clear
       @data.clear
-      self
     end
 
-    def method_missing(method_name, *args, &_block)
-      method_name = method_name.to_s.gsub(/\_/, '')
-      return @data[method_name] if args.empty? && @data.key?(method_name)
+    def fetch(config_name)
+      @data[config_name] ||= parse_env(config_name)
     end
 
     private
 
-    def load
+    def parse_env(config_name)
+      config_env_name = config_name.to_s.delete("_")
+      config_env_name.upcase!
+      data = {}
       ENV.each_pair do |key, val|
-        if config_key?(key)
-          mod, path = extract_module_path(key)
-          set_by_path(get_hash(@data, mod), path, serialize_val(val))
+        if key.start_with?(config_env_name)
+          _mod, path = extract_module_path(key)
+          set_by_path(data, path, serialize_val(val))
         end
       end
+      data
     end
 
     def config_key?(key)

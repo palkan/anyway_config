@@ -1,0 +1,4 @@
+host: "test.host"
+user:
+  name: "root"
+  password: "root"

@@ -8,7 +8,6 @@ describe Anyway::Config do
   describe "config without Rails" do
     before(:each) do
       ENV.delete_if { |var| var =~ /^anyway_/i }
-      Anyway.env.reload
     end
 
     specify { expect(Anyway::TestConfig.config_name).to eq "anyway" }
@@ -27,7 +26,7 @@ describe Anyway::Config do
       ENV['ANYWAY_LOG__FORMAT__COLOR'] = 't'
       ENV['ANYWAY_LOG_LEVELS'] = 'debug,warning,info'
 
-      Anyway.env.reload
+      Anyway.env.clear
       expect(conf.api['key']).to eq "test1"
       expect(conf.api['endpoint']).to eq "localhost"
       expect(conf.test).to eq "test"
@@ -39,15 +38,15 @@ describe Anyway::Config do
       ENV['ANYWAY_CONF'] = File.join(File.dirname(__FILE__), "anyway.yml")
 
       expect(conf.api['key']).to eq ""
-      expect(conf.api['endpoint']).to be_nil
+      expect(conf.api['endpoint']).to eq 'localhost'
       expect(conf.test).to be_nil
       expect(conf.log['format']['color']).to eq false
-      
+
       ENV['ANYWAY_API__KEY'] = 'test1'
       ENV['ANYWAY_API__SSL'] = 'yes'
       ENV['ANYWAY_TEST'] = 'test'
       ENV['ANYWAY_LOG__FORMAT__COLOR'] = 't'
-      Anyway.env.reload
+      Anyway.env.clear
 
       conf.reload
       expect(conf.api['key']).to eq "test1"
@@ -63,6 +62,19 @@ describe Anyway::Config do
       let(:conf) { empty_config_class.new }
 
       specify { expect(conf.config_name).to be_nil }
+    end
+
+    context "loading from default path" do
+      let(:conf) { CoolConfig.new }
+
+      before(:each) do
+        ENV.delete_if { |var| var =~ /^cool_/i }
+      end
+
+      it "loads from ./config", :aggregate_failures do
+        expect(conf.user).to eq("name" => "root", "password" => "root")
+        expect(conf.host).to eq "test.host"
+      end
     end
   end
 end
