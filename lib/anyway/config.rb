@@ -2,11 +2,13 @@
 
 require 'anyway/ext/class'
 require 'anyway/ext/deep_dup'
+require 'anyway/ext/deep_freeze'
 require 'anyway/ext/hash'
 
 module Anyway # :nodoc:
   using Anyway::Ext::Class
   using Anyway::Ext::DeepDup
+  using Anyway::Ext::DeepFreeze
   using Anyway::Ext::Hash
 
   # Base config class
@@ -93,6 +95,12 @@ module Anyway # :nodoc:
     def load_from_env(config)
       config.deep_merge!(Anyway.env.fetch(config_name))
       config
+    end
+
+    def to_h
+      self.class.config_attributes.each_with_object({}) do |key, obj|
+        obj[key.to_sym] = send(key)
+      end.deep_dup.deep_freeze
     end
 
     private
