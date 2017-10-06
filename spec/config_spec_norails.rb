@@ -61,7 +61,7 @@ describe Anyway::Config do
 
       let(:conf) { empty_config_class.new }
 
-      specify { expect(conf.config_name).to be_nil }
+      specify { expect { conf.config_name }.to raise_error(ArgumentError) }
     end
 
     context "loading from default path" do

@@ -4,6 +4,7 @@ source 'https://rubygems.org'
 
 # Specify your gem's dependencies in anyway_config.gemspec
 gem 'sqlite3'
+gem 'pry-byebug'
 gemspec
 
 local_gemfile = "#{File.dirname(__FILE__)}/Gemfile.local"

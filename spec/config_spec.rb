@@ -6,7 +6,7 @@ describe Anyway::Config do
   let(:conf) { CoolConfig.new }
   let(:test_conf) { Anyway::TestConfig.new }
 
-  describe "config with name" do
+  context "config with name" do
     before(:each) do
       ENV.delete_if { |var| var =~ /^(cool|anyway)_/i }
     end
@@ -87,7 +87,7 @@ describe Anyway::Config do
     end
   end
 
-  describe "config for name" do
+  context "config for name" do
     before(:each) do
       ENV.delete_if { |var| var =~ /^myapp_/i }
     end
@@ -105,12 +105,45 @@ describe Anyway::Config do
     end
   end
 
-  describe "config without defaults" do
+  context "config without defaults" do
     let(:conf) { SmallConfig.new }
 
     it "works" do
       expect(conf.meta).to be_nil
       expect(conf.data).to be_nil
+    end
+  end
+
+  context "when name is missing" do
+    let(:config) do
+      Class.new(described_class)
+    end
+
+    it "raises ArgumentError" do
+      expect { config.new }.to raise_error(ArgumentError)
+    end
+  end
+
+  context "extending config" do
+    let(:config) do
+      Class.new(described_class) do
+        config_name 'testo'
+        attr_config :test, debug: false
+      end
+    end
+
+    it "adds new params" do
+      old_config = config.new
+
+      expect(old_config.debug).to eq false
+      expect(old_config.test).to be_nil
+
+      config.attr_config new_param: 'a'
+
+      new_config = config.new
+      expect(new_config.debug).to eq false
+      expect(new_config.test).to be_nil
+      expect(new_config.new_param).to eq 'a'
     end
   end
 end
