@@ -13,7 +13,7 @@ AllCops:
     - 'vendor/**/*'
   DisplayCopNames: true
   StyleGuideCopsOnly: false
-  TargetRubyVersion: 2.3
+  TargetRubyVersion: 2.2
 
 Style/Documentation:
   Exclude:
@@ -36,3 +36,9 @@ Metrics/BlockLength:
 
 Metrics/LineLength:
   Max: 100
+
+Bundler/OrderedGems:
+  Enabled: false
+
+Style/MutableConstant:
+  Enabled: false

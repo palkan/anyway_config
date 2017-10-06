@@ -17,10 +17,16 @@ module Anyway # :nodoc:
       attr_reader :defaults, :config_attributes
 
       def attr_config(*args, **hargs)
-        @defaults = hargs.deep_dup
-        defaults.stringify_keys!
-        @config_attributes = args + defaults.keys
-        attr_accessor(*@config_attributes)
+        @defaults ||= {}
+        @config_attributes ||= []
+
+        new_defaults = hargs.deep_dup
+        new_defaults.stringify_keys!
+        defaults.merge! new_defaults
+
+        new_keys = (args + new_defaults.keys) - config_attributes
+        @config_attributes += new_keys
+        attr_accessor(*new_keys)
       end
 
       def config_name(val = nil)
@@ -44,6 +50,7 @@ module Anyway # :nodoc:
 
     def initialize(config_name = nil, do_load = true)
       @config_name = config_name || self.class.config_name
+      raise ArgumentError, "Config name is missing" unless @config_name
       load if do_load
     end
 

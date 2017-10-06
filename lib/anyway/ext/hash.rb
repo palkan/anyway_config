@@ -22,7 +22,7 @@ module Anyway
         end
 
         def stringify_keys!
-          keys.each do |key|
+          keys.each do |key| # rubocop: disable Performance/HashEachMethods
             value = delete(key)
             value.stringify_keys! if value.is_a?(::Hash)
             self[key.to_s] = value
