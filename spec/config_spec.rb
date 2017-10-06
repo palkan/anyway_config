@@ -26,6 +26,25 @@ describe Anyway::Config do
       expect(conf).to respond_to(:user)
     end
 
+    describe "#to_h" do
+      subject(:config) { CoolConfig.new }
+
+      it "returns deeply frozen hash" do
+        hashed = config.to_h
+
+        expect(hashed).to be_a(Hash)
+        expect(hashed).to be_frozen
+        expect(hashed[:user]).to be_frozen
+      end
+
+      it "returns new hash every time" do
+        hashed = config.to_h
+        hashed2 = config.to_h
+
+        expect(hashed).to be_eql(hashed2)
+      end
+    end
+
     describe "load from files" do
       it "set defaults" do
         expect(conf.port).to eq 8080
