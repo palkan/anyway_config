@@ -1,5 +1,13 @@
 # Change log
 
+## 1.1.0 (2017-10-06)
+
+- Add `#to_h` method. ([@palkan][])
+
+See [#4](https://github.com/palkan/anyway_config/issues/4).
+
+- Make it possible to extend configuration parameters. ([@palkan][])
+
 ## 1.0.0 (2017-06-20)
 
 - Lazy load and parse ENV configurtaion. ([@palkan][])
