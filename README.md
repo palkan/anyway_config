@@ -22,7 +22,7 @@ Libraries using Anyway Config:
 # my-cool-gem.gemspec
 Gem::Specification.new do |spec|
   ...
-  spec.add_dependancy "anyway_config", "~> 1.0"
+  spec.add_dependency "anyway_config", "~> 1.0"
   ...
 end
 ```
