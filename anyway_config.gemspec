@@ -24,6 +24,6 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '>= 2.2'
 
   s.add_development_dependency "simplecov", ">= 0.3.8"
-  s.add_development_dependency "rspec", "~> 3.5.0"
+  s.add_development_dependency "rspec", "~> 3.5"
   s.add_development_dependency "rubocop", "~> 0.49"
 end
