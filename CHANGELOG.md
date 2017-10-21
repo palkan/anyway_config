@@ -1,5 +1,9 @@
 # Change log
 
+## 1.1.1 (2017-10-21)
+
+- Return deep duplicate of a Hash in `Env#fetch`. ([@palkan][])
+
 ## 1.1.0 (2017-10-06)
 
 - Add `#to_h` method. ([@palkan][])

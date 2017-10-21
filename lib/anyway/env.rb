@@ -1,9 +1,13 @@
 # frozen_string_literal: true
 
+require 'anyway/ext/deep_dup'
+
 module Anyway
   # Parses environment variables and provides
   # method-like access
   class Env
+    using Anyway::Ext::DeepDup
+
     # Regexp to detect array values
     # Array value is a values that contains at least one comma
     # and doesn't start/end with quote
@@ -19,6 +23,7 @@ module Anyway
 
     def fetch(config_name)
       @data[config_name] ||= parse_env(config_name)
+      @data[config_name].deep_dup
     end
 
     private
