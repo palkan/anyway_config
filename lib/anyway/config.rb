@@ -112,7 +112,7 @@ module Anyway # :nodoc:
     def parse_yml(path)
       require 'yaml'
       if defined?(ERB)
-        YAML.safe_load(ERB.new(File.read(path)).result)
+        YAML.safe_load(ERB.new(File.read(path)).result, [], [], true)
       else
         YAML.load_file(path)
       end
