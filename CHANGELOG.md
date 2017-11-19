@@ -1,5 +1,9 @@
 # Change log
 
+## 1.1.2 (2017-11-19)
+
+- Enable aliases for YAML. ([@onemanstartup][])
+
 ## 1.1.1 (2017-10-21)
 
 - Return deep duplicate of a Hash in `Env#fetch`. ([@palkan][])
@@ -31,3 +35,4 @@ No we're dependency-free!
 Initial version.
 
 [@palkan]: https://github.com/palkan
+[@onemanstartup]: https://github.com/onemanstartup
