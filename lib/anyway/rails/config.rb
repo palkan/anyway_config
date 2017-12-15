@@ -18,9 +18,7 @@ module Anyway
 
     def load_from_file(config)
       config_path = Rails.root.join("config", "#{@config_name}.yml")
-      if File.file? config_path
-        config.deep_merge!(parse_yml(config_path)[Rails.env] || {})
-      end
+      config.deep_merge!(parse_yml(config_path)[Rails.env] || {}) if File.file? config_path
       config
     end
 

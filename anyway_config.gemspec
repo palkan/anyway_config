@@ -13,7 +13,6 @@ Gem::Specification.new do |s|
   s.summary     = "Configuration DSL for Ruby libraries and applications"
   s.description = %{
     Configuration DSL for Ruby libraries and applications.
-
     Allows you to easily follow the twelve-factor application principles (https://12factor.net/config).
   }
 
@@ -24,6 +23,6 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '>= 2.2'
 
   s.add_development_dependency "rspec", "~> 3.5"
-  s.add_development_dependency "rubocop", "~> 0.49"
+  s.add_development_dependency "rubocop", "~> 0.52"
   s.add_development_dependency "simplecov", ">= 0.3.8"
 end

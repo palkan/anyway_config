@@ -54,6 +54,11 @@ describe Anyway::Config do
         expect(conf.host).to eq "test.host"
       end
 
+      it "sets overrides after loading YAML" do
+        config = CoolConfig.new(overrides: { host: 'overrided.host' })
+        expect(config.host).to eq "overrided.host"
+      end
+
       if Rails.application.respond_to?(:secrets)
         it "load config from secrets" do
           expect(conf.user[:name]).to eq "test"
@@ -78,6 +83,17 @@ describe Anyway::Config do
       it "handle ENV in YML thru ERB" do
         ENV['ANYWAY_SECRET_PASSWORD'] = 'my_pass'
         expect(conf.user[:password]).to eq 'my_pass'
+      end
+
+      it "overrides loaded value by explicit" do
+        ENV['ANYWAY_SECRET_PASSWORD'] = 'my_pass'
+
+        config = CoolConfig.new(
+          overrides: {
+            user: { password: 'explicit_password' }
+          }
+        )
+        expect(config.user[:password]).to eq "explicit_password"
       end
     end
 
@@ -118,9 +134,7 @@ describe Anyway::Config do
       data = Anyway::Config.for(:my_app)
       expect(data[:test]).to eq 1
       expect(data[:name]).to eq 'my_app'
-      if Rails.application.respond_to?(:secrets)
-        expect(data[:secret]).to eq 'my_secret'
-      end
+      expect(data[:secret]).to eq 'my_secret' if Rails.application.respond_to?(:secrets)
     end
   end
 
@@ -130,6 +144,14 @@ describe Anyway::Config do
     it "works" do
       expect(conf.meta).to be_nil
       expect(conf.data).to be_nil
+    end
+  end
+
+  context "config with initial hash values" do
+    let(:conf) { SmallConfig.new(overrides: { 'meta': 'dummy' }) }
+
+    it "works" do
+      expect(conf.meta).to eq 'dummy'
     end
   end
 
