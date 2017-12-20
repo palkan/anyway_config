@@ -1,5 +1,22 @@
 # Change log
 
+## 1.1.3 (2017-12-20)
+
+- Allow to pass raw hash with explicit values to `Config.new`. ([@dsalahutdinov][])
+
+  Example:
+
+  ```ruby
+  Sniffer::Config.new(
+    overrides: {
+      enabled: true,
+      storage: {capacity: 500}
+    }
+  )
+  ```
+
+  See more https://github.com/palkan/anyway_config/pull/10
+
 ## 1.1.2 (2017-11-19)
 
 - Enable aliases for YAML. ([@onemanstartup][])
@@ -36,3 +53,4 @@ Initial version.
 
 [@palkan]: https://github.com/palkan
 [@onemanstartup]: https://github.com/onemanstartup
+[@dsalahutdinov]: https://github.com/dsalahutdinov

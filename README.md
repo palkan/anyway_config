@@ -12,6 +12,8 @@ Libraries using Anyway Config:
 
 - [AnyCable](https://github.com/anycable/anycable)
 
+- [Sniffer](https://github.com/aderyabin/sniffer)
+
 - [and others](https://github.com/palkan/anyway_config/network/dependents).
 
 ## Installation
@@ -87,6 +89,23 @@ module MyCoolGem
 end
 ```
 
+#### Provide explicit values
+
+Sometimes it's useful to set some parameters explicitly during config initialization.
+You can do that using `overrides` option:
+
+```ruby
+config = MyCoolGem::Config.new(
+  overrides: {
+    user: 'john',
+    password: 'rubyisnotdead'
+  }
+)
+
+# The value would not be overriden from other sources (such as YML file, env)
+config.user == 'john'
+```
+
 ### Dynamic configuration
 
 You can also create configuration objects without pre-defined schema (just like `Rails.application.config_for` but more [powerful](#railsapplicationconfig_for-vs-anywayconfigfor)):
@@ -118,6 +137,7 @@ Environmental variables work the same way as with Rails.
 
 There are `#clear` and `#reload` functions on your config (which do exactly what they state).
 
+Note: `#reload` also accepts `overrides` key to provide explicit values (see above).
 
 ## `Rails.application.config_for` vs `Anyway::Config.for`
 
