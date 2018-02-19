@@ -1,5 +1,11 @@
 # Change log
 
+## master
+
+## 1.2.0 (2018-02-19)
+
+Now works on JRuby 9.1+.
+
 ## 1.1.3 (2017-12-20)
 
 - Allow to pass raw hash with explicit values to `Config.new`. ([@dsalahutdinov][])
