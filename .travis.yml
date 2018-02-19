@@ -15,7 +15,7 @@ matrix:
   include:
     - rvm: ruby-head
       gemfile: gemfiles/railsmaster.gemfile
-    - rvm: jruby-9.1.8.0
+    - rvm: jruby-9.1.15.0
       gemfile: gemfiles/jruby.gemfile
     - rvm: 2.5.0
       gemfile: gemfiles/rails5.gemfile
@@ -26,5 +26,5 @@ matrix:
   allow_failures:
     - rvm: ruby-head
       gemfile: gemfiles/railsmaster.gemfile
-    - rvm: jruby-9.1.8.0
+    - rvm: jruby-9.1.15.0
       gemfile: gemfiles/jruby.gemfile

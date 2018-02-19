@@ -21,6 +21,19 @@ module Anyway
           end
         end
       end
+
+      if defined?(::ActiveSupport::HashWithIndifferentAccess)
+        refine ::ActiveSupport::HashWithIndifferentAccess do
+          def deep_freeze
+            freeze
+            each_value do |value|
+              value.deep_freeze if value.is_a?(::Hash) || value.is_a?(::Array)
+            end
+          end
+        end
+      end
+
+      using self
     end
   end
 end

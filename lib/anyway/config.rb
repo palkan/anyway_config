@@ -1,12 +1,10 @@
 # frozen_string_literal: true
 
-require 'anyway/ext/class'
 require 'anyway/ext/deep_dup'
 require 'anyway/ext/deep_freeze'
 require 'anyway/ext/hash'
 
 module Anyway # :nodoc:
-  using Anyway::Ext::Class
   using Anyway::Ext::DeepDup
   using Anyway::Ext::DeepFreeze
   using Anyway::Ext::Hash
@@ -45,6 +43,16 @@ module Anyway # :nodoc:
       #   # will load data from config/my_app.yml, secrets.my_app, ENV["MY_APP_*"]
       def for(name)
         new(name: name, load: false).load_from_sources
+      end
+
+      private
+
+      def underscore_name
+        return unless name
+        word = name[/^(\w+)/]
+        word.gsub!(/([A-Z\d]+)([A-Z][a-z])/, '\1_\2')
+        word.downcase!
+        word
       end
     end
 

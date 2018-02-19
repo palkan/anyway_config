@@ -29,6 +29,8 @@ module Anyway
           end
         end
       end
+
+      using self
     end
   end
 end
