@@ -176,7 +176,7 @@ Examples:
 - `"123"` to 123 and `"3.14"` to 3.14.
 
 *Anyway Config* supports nested (_hashed_) env variables. Just separate keys with double-underscore.
-For example, "MYCOOLGEM_OPTIONS__VERBOSE" is parsed as `config.options.verbose`.
+For example, "MYCOOLGEM_OPTIONS__VERBOSE" is parsed as `config.options["verbose"]`.
 
 Array values are also supported:
 
