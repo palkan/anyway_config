@@ -2,6 +2,10 @@
 
 ## master
 
+## 1.3.0 (2018-06-15)
+
+- Ruby 2.2 is no longer supported.
+
 - `Anyway::Config.env_prefix` method is introduced. ([@charlie-wasp][])
 
 ## 1.2.0 (2018-02-19)

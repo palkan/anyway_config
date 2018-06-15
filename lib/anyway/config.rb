@@ -69,27 +69,26 @@ module Anyway # :nodoc:
     #
     #   my_config = Anyway::Config.new(name: :my_app, load: true, overrides: { some: :value })
     #
-    # rubocop:disable Metrics/MethodLength,Metrics/AbcSize,Metrics/LineLength,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
-    def initialize(config_name = nil, do_load = nil, name: nil, load: true, overrides: {})
-      unless config_name.nil? && do_load.nil?
-        warn "[Deprecated] Positional arguments for Anyway::Config#initialize will be removed in 1.2.0. Use keyword arguments instead: initialize(name:, load:, overrides:)"
-      end
-      name = config_name unless config_name.nil?
-      load = do_load unless do_load.nil?
-
+    # rubocop:disable Metrics/MethodLength,Metrics/AbcSize,Metrics/LineLength,Metrics/CyclomaticComplexity
+    def initialize(name: nil, load: true, overrides: {})
       @config_name = name || self.class.config_name
 
       raise ArgumentError, "Config name is missing" unless @config_name
 
       if @config_name.to_s.include?('_') && @env_prefix.nil?
-        warn "[Deprecated] As your config_name is #{@config_name}, the prefix `#{@config_name.to_s.delete('_').upcase}` will be used to parse env variables. This behavior is about to change in 1.4.0 (no more deleting underscores). Env prefix can be set explicitly with `env_prefix` method now already (check out the docs), and it will be used as is."
+        warn "[Deprecated] As your config_name is #{@config_name}, " \
+             "the prefix `#{@config_name.to_s.delete('_').upcase}` " \
+             "will be used to parse env variables. " \
+             "This behavior is about to change in 1.4.0 (no more deleting underscores). " \
+             "Env prefix can be set explicitly with `env_prefix` method now already " \
+             "(check out the docs), and it will be used as is."
       end
 
       @env_prefix = self.class.env_prefix || @config_name.to_s&.delete('_')
 
       self.load(overrides) if load
     end
-    # rubocop:enable Metrics/MethodLength,Metrics/AbcSize,Metrics/LineLength,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
+    # rubocop:enable Metrics/MethodLength,Metrics/AbcSize,Metrics/LineLength,Metrics/CyclomaticComplexity
 
     def reload(overrides = {})
       clear
