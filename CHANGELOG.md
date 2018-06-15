@@ -2,6 +2,8 @@
 
 ## master
 
+- `Anyway::Config.env_prefix` method is introduced. ([@charlie-wasp][])
+
 ## 1.2.0 (2018-02-19)
 
 Now works on JRuby 9.1+.
@@ -60,3 +62,4 @@ Initial version.
 [@palkan]: https://github.com/palkan
 [@onemanstartup]: https://github.com/onemanstartup
 [@dsalahutdinov]: https://github.com/dsalahutdinov
+[@charlie-wasp]: https://github.com/charlie-wasp

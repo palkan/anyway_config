@@ -7,7 +7,7 @@ describe Anyway::Env do
 
   it "loads simple key/values by module", :aggregate_failures do
     ENV['TESTO_KEY'] = 'a'
-    ENV['MYTEST_KEY'] = 'b'
+    ENV['MY_TEST_KEY'] = 'b'
     expect(env.fetch('testo')['key']).to eq 'a'
     expect(env.fetch('my_test')['key']).to eq 'b'
   end
