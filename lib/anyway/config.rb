@@ -69,7 +69,7 @@ module Anyway # :nodoc:
     #
     #   my_config = Anyway::Config.new(name: :my_app, load: true, overrides: { some: :value })
     #
-    # rubocop:disable Metrics/LineLength,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
+    # rubocop:disable Metrics/MethodLength,Metrics/AbcSize,Metrics/LineLength,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
     def initialize(config_name = nil, do_load = nil, name: nil, load: true, overrides: {})
       unless config_name.nil? && do_load.nil?
         warn "[Deprecated] Positional arguments for Anyway::Config#initialize will be removed in 1.2.0. Use keyword arguments instead: initialize(name:, load:, overrides:)"
@@ -89,7 +89,7 @@ module Anyway # :nodoc:
 
       self.load(overrides) if load
     end
-    # rubocop:enable Metrics/LineLength,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
+    # rubocop:enable Metrics/MethodLength,Metrics/AbcSize,Metrics/LineLength,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
 
     def reload(overrides = {})
       clear

@@ -20,4 +20,4 @@ RSpec::Core::RakeTask.new("spec:norails") do |task|
 end
 
 desc "Run the all specs and linters"
-task default: %w[spec:norails spec rubocop]
+task default: %w[rubocop spec:norails spec]
