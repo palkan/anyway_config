@@ -35,6 +35,11 @@ module Anyway # :nodoc:
         @config_name
       end
 
+      def env_prefix(val = nil)
+        return (@env_prefix = val.to_s) unless val.nil?
+        @env_prefix
+      end
+
       # Load config as Hash by any name
       #
       # Example:
@@ -56,7 +61,7 @@ module Anyway # :nodoc:
       end
     end
 
-    attr_reader :config_name
+    attr_reader :config_name, :env_prefix
 
     # Instantiate config with specified name, loads the data and applies overrides
     #
@@ -73,7 +78,15 @@ module Anyway # :nodoc:
       load = do_load unless do_load.nil?
 
       @config_name = name || self.class.config_name
+
       raise ArgumentError, "Config name is missing" unless @config_name
+
+      if @config_name.to_s.include?('_') && @env_prefix.nil?
+        warn "[Deprecated] As your config_name is #{@config_name}, the prefix `#{@config_name.to_s.delete('_').upcase}` will be used to parse env variables. This behavior is about to change in 1.4.0 (no more deleting underscores). Env prefix can be set explicitly with `env_prefix` method now already (check out the docs), and it will be used as is."
+      end
+
+      @env_prefix = self.class.env_prefix || @config_name.to_s&.delete('_')
+
       self.load(overrides) if load
     end
     # rubocop:enable Metrics/LineLength,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
@@ -108,14 +121,14 @@ module Anyway # :nodoc:
     end
 
     def load_from_file(config)
-      config_path = Anyway.env.fetch(config_name).delete('conf') ||
+      config_path = Anyway.env.fetch(env_prefix).delete('conf') ||
                     "./config/#{config_name}.yml"
       config.deep_merge!(parse_yml(config_path) || {}) if config_path && File.file?(config_path)
       config
     end
 
     def load_from_env(config)
-      config.deep_merge!(Anyway.env.fetch(config_name))
+      config.deep_merge!(Anyway.env.fetch(env_prefix))
       config
     end
 

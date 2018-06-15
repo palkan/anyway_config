@@ -89,6 +89,26 @@ module MyCoolGem
 end
 ```
 
+#### Customize env variable names prefix
+
+By default, Anyway Config will use config name with stripped underscores as a prefix for env variable names (e.g.
+`config_name :my_app` will result to parsing `MYAPP_HOST` variable, not `MY_APP_HOST`). You can set env prefix
+explicitly, and it will be used as is:
+
+```ruby
+module MyCoolGem
+  class Config < Anyway::Config
+    config_name :cool_gem
+    env_prefix :really_cool # now variables, starting wih `REALLY_COOL_`, will be parsed
+    attr_config user: 'root', password: 'root', host: 'localhost', options: {}
+  end
+end
+```
+
+**DEPRECATION WARNING** In the 1.4 version no stripping will be applied on config_names by default, so if you use explicit config names with
+underscores and use env variables, your app will be broken. In this case it is recommended to start using `env_prefix`
+now.
+
 #### Provide explicit values
 
 Sometimes it's useful to set some parameters explicitly during config initialization.

@@ -21,34 +21,20 @@ module Anyway
       @data.clear
     end
 
-    def fetch(config_name)
-      @data[config_name] ||= parse_env(config_name)
-      @data[config_name].deep_dup
+    def fetch(prefix)
+      @data[prefix] ||= parse_env(prefix.to_s.upcase)
+      @data[prefix].deep_dup
     end
 
     private
 
-    def parse_env(config_name)
-      config_env_name = config_name.to_s.delete("_")
-      config_env_name.upcase!
-      data = {}
-      ENV.each_pair do |key, val|
-        if key.start_with?(config_env_name)
-          _mod, path = extract_module_path(key)
-          set_by_path(data, path, serialize_val(val))
-        end
+    def parse_env(prefix)
+      ENV.each_pair.with_object({}) do |(key, val), data|
+        next unless key.start_with?(prefix)
+
+        path = key.sub(/^#{prefix}_/, '').downcase
+        set_by_path(data, path, serialize_val(val))
       end
-      data
-    end
-
-    def config_key?(key)
-      key =~ /^[A-Z\d]+\_[A-Z\d\_]+/
-    end
-
-    def extract_module_path(key)
-      _, mod, path = key.split(/^([^\_]+)/)
-      path.sub!(/^[\_]+/, '')
-      [mod.downcase, path.downcase]
     end
 
     def set_by_path(to, path, val)

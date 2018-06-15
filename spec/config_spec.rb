@@ -72,12 +72,32 @@ describe Anyway::Config do
     end
 
     describe "load from env" do
-      it "work" do
-        ENV['COOL_PORT'] = '80'
-        ENV['COOL_USER__NAME'] = 'john'
-        Anyway.env.clear
-        expect(conf.port).to eq 80
-        expect(conf.user[:name]).to eq 'john'
+      context "when env_prefix is not specified" do
+        it "uses config_name as a prefix to load variables" do
+          ENV['COOL_PORT'] = '80'
+          ENV['COOL_USER__NAME'] = 'john'
+          Anyway.env.clear
+          expect(conf.port).to eq 80
+          expect(conf.user[:name]).to eq 'john'
+        end
+      end
+
+      context "when env_prefix is specified" do
+        let(:conf) do
+          klass = CoolConfig.dup
+          klass.class_eval { env_prefix(:cool_env) }
+          klass.new
+        end
+
+        it "uses env_prefix value as a prefix to load variables" do
+          ENV['COOL_PORT'] = '80'
+          ENV['COOL_ENV_PORT'] = '8888'
+          ENV['COOL_USER__NAME'] = 'john'
+          ENV['COOL_ENV_USER__NAME'] = 'bill'
+          Anyway.env.clear
+          expect(conf.port).to eq 8888
+          expect(conf.user[:name]).to eq 'bill'
+        end
       end
 
       it "handle ENV in YML thru ERB" do
