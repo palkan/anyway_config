@@ -31,12 +31,14 @@ module Anyway # :nodoc:
 
       def config_name(val = nil)
         return (@config_name = val.to_s) unless val.nil?
+
         @config_name = underscore_name unless defined?(@config_name)
         @config_name
       end
 
       def env_prefix(val = nil)
         return (@env_prefix = val.to_s) unless val.nil?
+
         @env_prefix
       end
 
@@ -54,6 +56,7 @@ module Anyway # :nodoc:
 
       def underscore_name
         return unless name
+
         word = name[/^(\w+)/]
         word.gsub!(/([A-Z\d]+)([A-Z][a-z])/, '\1_\2')
         word.downcase!
@@ -115,6 +118,7 @@ module Anyway # :nodoc:
     def load_from_sources(config = {})
       # Handle anonymous configs
       return config unless config_name
+
       load_from_file(config)
       load_from_env(config)
     end

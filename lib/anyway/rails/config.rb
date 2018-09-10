@@ -5,6 +5,7 @@ module Anyway
     class << self
       def defaults
         return unless @defaults
+
         @defaults_wia ||= @defaults.with_indifferent_access
       end
     end
