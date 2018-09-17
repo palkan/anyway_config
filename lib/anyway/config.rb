@@ -78,7 +78,7 @@ module Anyway # :nodoc:
 
       raise ArgumentError, "Config name is missing" unless @config_name
 
-      if @config_name.to_s.include?('_') && @env_prefix.nil?
+      if @config_name.to_s.include?('_') && self.class.env_prefix.nil?
         warn "[Deprecated] As your config_name is #{@config_name}, " \
              "the prefix `#{@config_name.to_s.delete('_').upcase}` " \
              "will be used to parse env variables. " \

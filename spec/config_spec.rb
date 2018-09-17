@@ -100,6 +100,35 @@ describe Anyway::Config do
         end
       end
 
+      context "when config_name contains underscores" do
+        let(:conf) do
+          klass = CoolConfig.dup
+          klass.class_eval do
+            config_name :cool_thing
+          end
+          klass.new
+        end
+
+        it "warns user about deprecated behaviour" do
+          expect { conf }.to print_warning
+        end
+
+        context "when env_name is set" do
+          let(:conf) do
+            klass = CoolConfig.dup
+            klass.class_eval do
+              config_name :cool_thing
+              env_prefix  :cool_thing
+            end
+            klass.new
+          end
+
+          it "doesn't print deprecation warning" do
+            expect { conf }.not_to print_warning
+          end
+        end
+      end
+
       it "handle ENV in YML thru ERB" do
         ENV['ANYWAY_SECRET_PASSWORD'] = 'my_pass'
         expect(conf.user[:password]).to eq 'my_pass'
