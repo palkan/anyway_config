@@ -236,4 +236,73 @@ describe Anyway::Config do
       expect(new_config.new_param).to eq 'a'
     end
   end
+
+  describe "parse_options!" do
+    let(:config_instance) { config.new }
+
+    context "when `parse_options` is not provided" do
+      let(:config) do
+        Class.new(described_class) do
+          config_name 'optparse'
+          attr_config :host, :port, :log_level, :debug
+        end
+      end
+
+      it "parses ARGC string" do
+        config_instance.parse_options!(%w(--host localhost --port 3333 --log-level debug --debug T))
+        expect(config_instance.host).to eq("localhost")
+        expect(config_instance.port).to eq(3333)
+        expect(config_instance.log_level).to eq("debug")
+        expect(config_instance.debug).to eq(true)
+      end
+    end
+
+    context 'when `parse_options` is provided' do
+      let(:config) do
+        Class.new(described_class) do
+          config_name 'optparse'
+          attr_config :host, :log_level, :concurrency, server_args: {}
+
+          parse_options :host, :log_level, concurrency: "number of threads to use"
+        end
+      end
+
+      it "parses ARGC string" do
+        config_instance.parse_options!(
+          %w(--host localhost --concurrency 10 --log-level debug --server-args SOME_ARGS)
+        )
+        expect(config_instance.host).to eq("localhost")
+        expect(config_instance.concurrency).to eq(10)
+        expect(config_instance.log_level).to eq("debug")
+        expect(config_instance.server_args).to eq({})
+      end
+
+      it "contains options description" do
+        expect(config_instance.option_parser.help).to include("number of threads to use")
+      end
+    end
+
+    context "customization of option parser" do
+      let(:config) do
+        Class.new(described_class) do
+          config_name 'optparse'
+          attr_config :host, :log_level, :concurrency, server_args: {}
+
+          def build_option_parser
+            super.tap do |parser|
+              parser.banner = "mycli [options]"
+
+              parser.on_tail "-h", "--help" do
+                puts parser
+              end
+            end
+          end
+        end
+
+        it "allows to customize the parser" do
+          expect(config_instance.option_parser.help).to include("mycli [options]")
+        end
+      end
+    end
+  end
 end
