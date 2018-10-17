@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
-require 'anyway/ext/value_serializer'
 require 'anyway/ext/deep_dup'
+require 'anyway/ext/string'
 
 module Anyway
   # Parses environment variables and provides
   # method-like access
   class Env
-    include Anyway::Ext::ValueSerializer
     using Anyway::Ext::DeepDup
+    using Anyway::Ext::String
 
     def initialize
       @data = {}
@@ -30,7 +30,7 @@ module Anyway
         next unless key.start_with?(prefix)
 
         path = key.sub(/^#{prefix}_/, '').downcase
-        set_by_path(data, path, serialize_val(val))
+        set_by_path(data, path, val.serialize)
       end
     end
 

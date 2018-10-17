@@ -3,12 +3,13 @@
 require 'anyway/ext/deep_dup'
 require 'anyway/ext/deep_freeze'
 require 'anyway/ext/hash'
-require 'anyway/ext/value_serializer'
+require 'anyway/ext/string'
 
 module Anyway # :nodoc:
   using Anyway::Ext::DeepDup
   using Anyway::Ext::DeepFreeze
   using Anyway::Ext::Hash
+  using Anyway::Ext::String
 
   # Base config class
   # Provides `attr_config` method to describe
@@ -84,8 +85,6 @@ module Anyway # :nodoc:
         word
       end
     end
-
-    include Anyway::Ext::ValueSerializer
 
     attr_reader :config_name, :env_prefix
 
@@ -196,7 +195,7 @@ module Anyway # :nodoc:
       @option_parser ||= OptionParser.new do |opts|
         self.class.option_parser_attributes.each do |(key, options)|
           opts.on(*option_parser_on_args(key)) do |arg|
-            set_value(key, serialize_val(arg))
+            set_value(key, arg.serialize)
           end
         end
       end
