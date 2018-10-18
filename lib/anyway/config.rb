@@ -192,7 +192,7 @@ module Anyway # :nodoc:
     def build_option_parser
       require 'optparse'
       @option_parser ||= OptionParser.new do |opts|
-        self.class.option_parser_attributes.each do |(key, options)|
+        self.class.option_parser_attributes.each do |key|
           opts.on(*option_parser_on_args(key)) do |arg|
             set_value(key, arg.serialize)
           end
