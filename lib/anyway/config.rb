@@ -46,8 +46,7 @@ module Anyway # :nodoc:
         new_descriptions.stringify_keys!
         @option_parser_descriptions.merge! new_descriptions
 
-        new_keys = (args + new_descriptions.keys) - @option_parser_attributes
-        @option_parser_attributes += new_keys
+        @option_parser_attributes = @option_parser_attributes | (args + new_descriptions.keys)
       end
 
       def option_parser_descriptions
