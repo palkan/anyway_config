@@ -263,7 +263,11 @@ describe Anyway::Config do
           config_name 'optparse'
           attr_config :host, :log_level, :concurrency, server_args: {}
 
-          parse_options :host, :log_level, concurrency: "number of threads to use"
+          parse_options :host, :log_level, :concurrency
+
+          describe_options(
+            concurrency: "number of threads to use"
+          )
         end
       end
 

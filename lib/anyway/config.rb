@@ -38,15 +38,16 @@ module Anyway # :nodoc:
         @config_name
       end
 
-      def parse_options(*args, **hargs)
-        @option_parser_descriptions ||= {}
+      def parse_options(*args)
         @option_parser_attributes ||= []
+        @option_parser_attributes = @option_parser_attributes | args
+      end
 
+      def describe_options(**hargs)
         new_descriptions = hargs.deep_dup
         new_descriptions.stringify_keys!
-        @option_parser_descriptions.merge! new_descriptions
-
-        @option_parser_attributes = @option_parser_attributes | (args + new_descriptions.keys)
+        @option_parser_descriptions ||= {}
+        @option_parser_descriptions.merge!(new_descriptions)
       end
 
       def option_parser_descriptions
