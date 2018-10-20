@@ -237,7 +237,7 @@ describe Anyway::Config do
     end
   end
 
-  describe "parse_options!" do
+  describe "#parse_options!" do
     let(:config_instance) { config.new }
 
     context "when `parse_options` is not provided" do
@@ -249,7 +249,7 @@ describe Anyway::Config do
       end
 
       it "parses ARGC string" do
-        config_instance.parse_options!(%w(--host localhost --port 3333 --log-level debug --debug T))
+        config_instance.parse_options!(%w[--host localhost --port 3333 --log-level debug --debug T])
         expect(config_instance.host).to eq("localhost")
         expect(config_instance.port).to eq(3333)
         expect(config_instance.log_level).to eq("debug")
@@ -264,21 +264,30 @@ describe Anyway::Config do
           attr_config :host, :log_level, :concurrency, server_args: {}
 
           parse_options :host, :log_level, :concurrency
-
-          describe_options(
-            concurrency: "number of threads to use"
-          )
         end
       end
 
       it "parses ARGC string" do
         config_instance.parse_options!(
-          %w(--host localhost --concurrency 10 --log-level debug --server-args SOME_ARGS)
+          %w[--host localhost --concurrency 10 --log-level debug --server-args SOME_ARGS]
         )
         expect(config_instance.host).to eq("localhost")
         expect(config_instance.concurrency).to eq(10)
         expect(config_instance.log_level).to eq("debug")
         expect(config_instance.server_args).to eq({})
+      end
+    end
+
+    context 'when `describe_options` is provided' do
+      let(:config) do
+        Class.new(described_class) do
+          config_name 'optparse'
+          attr_config :host, :log_level, :concurrency, server_args: {}
+
+          describe_options(
+            concurrency: "number of threads to use"
+          )
+        end
       end
 
       it "contains options description" do
