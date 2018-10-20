@@ -43,10 +43,8 @@ module Anyway # :nodoc:
       end
 
       def describe_options(**hargs)
-        new_descriptions = hargs.deep_dup
-        new_descriptions.stringify_keys!
         @option_parser_descriptions ||= {}
-        @option_parser_descriptions.merge!(new_descriptions)
+        @option_parser_descriptions.merge!(hargs.stringify_keys!)
       end
 
       def extend_options(&block)
