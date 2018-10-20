@@ -158,8 +158,7 @@ module Anyway # :nodoc:
     end
 
     def option_parser
-      build_option_parser if @option_parser.nil?
-      @option_parser
+      @option_parser ||= build_option_parser
     end
 
     def parse_options!(options)
