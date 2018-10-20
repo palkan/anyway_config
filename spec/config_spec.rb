@@ -309,10 +309,10 @@ describe Anyway::Config do
             end
           end
         end
+      end
 
-        it "allows to customize the parser" do
-          expect(config_instance.option_parser.help).to include("mycli [options]")
-        end
+      it "allows to customize the parser" do
+        expect(config_instance.option_parser.help).to include("mycli [options]")
       end
     end
   end

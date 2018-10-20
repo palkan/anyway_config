@@ -15,7 +15,7 @@ module Anyway # :nodoc:
   # configuration parameters and set defaults
   class Config
     class << self
-      attr_reader :defaults, :config_attributes
+      attr_reader :defaults, :config_attributes, :option_parser_extension
 
       def attr_config(*args, **hargs)
         @defaults ||= {}
@@ -167,7 +167,7 @@ module Anyway # :nodoc:
         parser = OptionParserBuilder.call(self.class.option_parser_options) do |key, arg|
           set_value(key, arg)
         end
-        @option_parser_extension&.call(parser) || parser
+        self.class.option_parser_extension&.call(parser) || parser
       end
     end
 
