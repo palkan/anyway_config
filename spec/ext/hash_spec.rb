@@ -26,13 +26,13 @@ describe Anyway::Ext::Hash do
       }
     end
 
-    it "transforms keys of hash to strings", :aggregate_failures do
+    it "transforms keys of hash to strings" do
       source.stringify_keys!
 
       expect(source).to eq(expected_result)
     end
 
-    it "returns a hash with transformed keys to strings", :aggregate_failures do
+    it "returns a hash with transformed keys to strings" do
       expect(source.stringify_keys!).to eq(expected_result)
     end
   end
