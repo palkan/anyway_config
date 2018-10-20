@@ -3,13 +3,12 @@
 require 'anyway/ext/deep_dup'
 require 'anyway/ext/deep_freeze'
 require 'anyway/ext/hash'
-require 'anyway/ext/string'
+require 'anyway/option_parser_builder'
 
 module Anyway # :nodoc:
   using Anyway::Ext::DeepDup
   using Anyway::Ext::DeepFreeze
   using Anyway::Ext::Hash
-  using Anyway::Ext::String
 
   # Base config class
   # Provides `attr_config` method to describe
@@ -38,9 +37,9 @@ module Anyway # :nodoc:
         @config_name
       end
 
-      def parse_options(*args)
-        @option_parser_attributes ||= []
-        @option_parser_attributes = @option_parser_attributes | args
+      def ignore_options(*args)
+        @ignore_options ||= []
+        @ignore_options |= args
       end
 
       def describe_options(**hargs)
@@ -50,12 +49,18 @@ module Anyway # :nodoc:
         @option_parser_descriptions.merge!(new_descriptions)
       end
 
-      def option_parser_descriptions
-        @option_parser_descriptions || {}
+      def extend_options(&block)
+        @option_parser_extension = block
       end
 
-      def option_parser_attributes
-        @option_parser_attributes || config_attributes
+      def option_parser_options
+        ignored_options = @ignore_options || []
+        descriptions = @option_parser_descriptions || {}
+        config_attributes.each_with_object({}) do |key, result|
+          next if ignored_options.include?(key.to_sym)
+
+          result[key] ||= descriptions[key.to_s]
+        end
       end
 
       def env_prefix(val = nil)
@@ -158,7 +163,12 @@ module Anyway # :nodoc:
     end
 
     def option_parser
-      @option_parser ||= build_option_parser
+      @option_parser ||= begin
+        parser = OptionParserBuilder.call(self.class.option_parser_options) do |key, arg|
+          set_value(key, arg)
+        end
+        @option_parser_extension&.call(parser) || parser
+      end
     end
 
     def parse_options!(options)
@@ -187,25 +197,6 @@ module Anyway # :nodoc:
       else
         YAML.load_file(path)
       end
-    end
-
-    def build_option_parser
-      require 'optparse'
-      @option_parser ||= OptionParser.new do |opts|
-        self.class.option_parser_attributes.each do |key|
-          opts.on(*option_parser_on_args(key)) do |arg|
-            set_value(key, arg.serialize)
-          end
-        end
-      end
-    end
-
-    def option_parser_on_args(key)
-      description = self.class.option_parser_descriptions[key.to_s]
-
-      on_args = ["--#{key.to_s.tr('_', '-')} VALUE"]
-      on_args << description unless description.nil?
-      on_args
     end
   end
 end

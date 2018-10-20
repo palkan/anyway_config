@@ -240,7 +240,7 @@ describe Anyway::Config do
   describe "#parse_options!" do
     let(:config_instance) { config.new }
 
-    context "when `parse_options` is not provided" do
+    context "when `ignore_options` is not provided" do
       let(:config) do
         Class.new(described_class) do
           config_name 'optparse'
@@ -257,13 +257,13 @@ describe Anyway::Config do
       end
     end
 
-    context 'when `parse_options` is provided' do
+    context 'when `ignore_options` is provided' do
       let(:config) do
         Class.new(described_class) do
           config_name 'optparse'
           attr_config :host, :log_level, :concurrency, server_args: {}
 
-          parse_options :host, :log_level, :concurrency
+          ignore_options :server_args
         end
       end
 
@@ -301,13 +301,11 @@ describe Anyway::Config do
           config_name 'optparse'
           attr_config :host, :log_level, :concurrency, server_args: {}
 
-          def build_option_parser
-            super.tap do |parser|
-              parser.banner = "mycli [options]"
+          extend_options do |parser|
+            parser.banner = "mycli [options]"
 
-              parser.on_tail "-h", "--help" do
-                puts parser
-              end
+            parser.on_tail "-h", "--help" do
+              puts parser
             end
           end
         end
