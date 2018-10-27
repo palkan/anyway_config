@@ -268,9 +268,12 @@ describe Anyway::Config do
       end
 
       it "parses ARGC string" do
-        config_instance.parse_options!(
-          %w[--host localhost --concurrency 10 --log-level debug --server-args SOME_ARGS]
-        )
+        expect do
+          config_instance.parse_options!(
+            %w[--host localhost --concurrency 10 --log-level debug --server-args SOME_ARGS]
+          )
+        end.to raise_error(OptionParser::InvalidOption, /--server-args/)
+
         expect(config_instance.host).to eq("localhost")
         expect(config_instance.concurrency).to eq(10)
         expect(config_instance.log_level).to eq("debug")

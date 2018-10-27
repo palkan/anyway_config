@@ -171,9 +171,6 @@ module Anyway # :nodoc:
 
     def parse_options!(options)
       option_parser.parse!(options)
-    rescue OptionParser::InvalidOption
-      # NOTE: Do not fail when unknown arguments were given
-      nil
     end
 
     def to_h
