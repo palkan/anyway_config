@@ -150,7 +150,7 @@ Your config will be filled up with values from the following sources (ordered by
 By default, Anyway Config is looking for a config YAML at `./config/<config-name>.yml`. You can override this setting
 through special environment variable – 'MYGEM_CONF' – containing the path to the YAML file.
 
-Environmental variables work the same way as with Rails. 
+Environmental variables work the same way as with Rails.
 
 
 ### Config clear and reload
@@ -159,9 +159,49 @@ There are `#clear` and `#reload` functions on your config (which do exactly what
 
 Note: `#reload` also accepts `overrides` key to provide explicit values (see above).
 
+### OptionParser integration
+
+It's possible to use config as option parser (e.g. for CLI apps/libraries). It uses
+[`optparse`](https://ruby-doc.org/stdlib-2.5.1/libdoc/optparse/rdoc/OptionParser.html) under the hood.
+
+Example usage:
+
+```ruby
+class MyConfig < Anyway::Config
+  attr_config :host, :log_level, :concurrency, server_args: {}
+
+  # specify which options shouldn't be handled by option parser
+  ignore_options :server_args
+
+  # provide description for options
+  describe_options(
+    concurrency: "number of threads to use"
+  )
+
+  # extend an option parser object (i.e. add banner or version/help handlers)
+  extend_options do |parser|
+    parser.banner = "mycli [options]"
+    parser.on_tail "-h", "--help" do
+      puts parser
+    end
+  end
+end
+
+config = MyConfig.new
+
+config.parse_options!(%w(--host localhost --port 3333 --log-level debug))
+
+config.host # => "localhost"
+config.port # => 3333
+config.log_level # => "debug"
+
+# Get the instance of OptionParser
+config.option_parser
+```
+
 ## `Rails.application.config_for` vs `Anyway::Config.for`
 
-Rails 4.2 introduced new feature: `Rails.application.config_for`. It looks very similar to 
+Rails 4.2 introduced new feature: `Rails.application.config_for`. It looks very similar to
 `Anyway::Config.for`, but there are some differences:
 
 | Feature       | Rails         | Anyway Config |
@@ -169,7 +209,7 @@ Rails 4.2 introduced new feature: `Rails.application.config_for`. It looks very 
 | load data from `config/app.yml`     | yes | yes |
 | load data from `secrets`      | no      |   yes |
 | load data from environment | no   |   yes |
-| return Hash with indifferent access | no | yes | 
+| return Hash with indifferent access | no | yes |
 | support ERB within `config/app.yml` | yes | yes* |
 | raise errors if file doesn't exist | yes | no |
 
