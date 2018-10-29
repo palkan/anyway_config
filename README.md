@@ -91,8 +91,8 @@ end
 
 #### Customize env variable names prefix
 
-By default, Anyway Config will use config name with stripped underscores as a prefix for env variable names (e.g.
-`config_name :my_app` will result to parsing `MYAPP_HOST` variable, not `MY_APP_HOST`). You can set env prefix
+By default, Anyway Config uses underscored config name as a prefix for env variable names (e.g.
+`config_name :my_app` will result to parsing `MY_APP_HOST` variable). You can set env prefix
 explicitly, and it will be used as is:
 
 ```ruby
@@ -104,10 +104,6 @@ module MyCoolGem
   end
 end
 ```
-
-**DEPRECATION WARNING** In the 1.4 version no stripping will be applied on config_names by default, so if you use explicit config names with
-underscores and use env variables, your app will be broken. In this case it is recommended to start using `env_prefix`
-now.
 
 #### Provide explicit values
 

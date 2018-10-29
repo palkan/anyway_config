@@ -2,9 +2,30 @@
 
 ## master
 
+## 1.4.0 (2018-10-29)
+
 - Add OptionParse integration ([@jastkand][])
 
   See more https://github.com/palkan/anyway_config/pull/18
+
+- Use underscored config name as an env prefix. ([@palkan][])
+
+  For a config class:
+
+  ```ruby
+  class MyApp < Anyway::Config
+  end
+  ```
+
+  Before this change we use `MYAPP_` prefix, now it's `MY_APP_`.
+
+  You can specify the prefix explictly:
+
+  ```ruby
+  class MyApp < Anyway::Config
+    env_prefix "MYAPP_"
+  end
+  ```
 
 ## 1.3.0 (2018-06-15)
 
