@@ -109,10 +109,6 @@ describe Anyway::Config do
           klass.new
         end
 
-        it "warns user about deprecated behaviour" do
-          expect { conf }.to print_warning
-        end
-
         context "when env_name is set" do
           let(:conf) do
             klass = CoolConfig.dup
@@ -177,8 +173,8 @@ describe Anyway::Config do
     end
 
     it "load data by config name", :aggregate_failures do
-      ENV['MYAPP_TEST'] = '1'
-      ENV['MYAPP_NAME'] = 'my_app'
+      ENV['MY_APP_TEST'] = '1'
+      ENV['MY_APP_NAME'] = 'my_app'
       Anyway.env.clear
       data = Anyway::Config.for(:my_app)
       expect(data[:test]).to eq 1

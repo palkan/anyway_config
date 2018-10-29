@@ -97,26 +97,15 @@ module Anyway # :nodoc:
     #
     #   my_config = Anyway::Config.new(name: :my_app, load: true, overrides: { some: :value })
     #
-    # rubocop:disable Metrics/MethodLength,Metrics/AbcSize,Metrics/LineLength,Metrics/CyclomaticComplexity
     def initialize(name: nil, load: true, overrides: {})
       @config_name = name || self.class.config_name
 
       raise ArgumentError, "Config name is missing" unless @config_name
 
-      if @config_name.to_s.include?('_') && self.class.env_prefix.nil?
-        warn "[Deprecated] As your config_name is #{@config_name}, " \
-             "the prefix `#{@config_name.to_s.delete('_').upcase}` " \
-             "will be used to parse env variables. " \
-             "This behavior is about to change in 1.4.0 (no more deleting underscores). " \
-             "Env prefix can be set explicitly with `env_prefix` method now already " \
-             "(check out the docs), and it will be used as is."
-      end
-
-      @env_prefix = self.class.env_prefix || @config_name.to_s&.delete('_')
+      @env_prefix = self.class.env_prefix || @config_name
 
       self.load(overrides) if load
     end
-    # rubocop:enable Metrics/MethodLength,Metrics/AbcSize,Metrics/LineLength,Metrics/CyclomaticComplexity
 
     def reload(overrides = {})
       clear
