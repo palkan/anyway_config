@@ -3,6 +3,7 @@
 require 'anyway/ext/deep_dup'
 require 'anyway/ext/deep_freeze'
 require 'anyway/ext/hash'
+require 'anyway/option_parser_builder'
 
 module Anyway # :nodoc:
   using Anyway::Ext::DeepDup
@@ -14,7 +15,7 @@ module Anyway # :nodoc:
   # configuration parameters and set defaults
   class Config
     class << self
-      attr_reader :defaults, :config_attributes
+      attr_reader :defaults, :config_attributes, :option_parser_extension
 
       def attr_config(*args, **hargs)
         @defaults ||= {}
@@ -34,6 +35,30 @@ module Anyway # :nodoc:
 
         @config_name = underscore_name unless defined?(@config_name)
         @config_name
+      end
+
+      def ignore_options(*args)
+        @ignore_options ||= []
+        @ignore_options |= args
+      end
+
+      def describe_options(**hargs)
+        @option_parser_descriptions ||= {}
+        @option_parser_descriptions.merge!(hargs.stringify_keys!)
+      end
+
+      def extend_options(&block)
+        @option_parser_extension = block
+      end
+
+      def option_parser_options
+        ignored_options = @ignore_options || []
+        descriptions = @option_parser_descriptions || {}
+        config_attributes.each_with_object({}) do |key, result|
+          next if ignored_options.include?(key.to_sym)
+
+          result[key] ||= descriptions[key.to_s]
+        end
       end
 
       def env_prefix(val = nil)
@@ -133,6 +158,19 @@ module Anyway # :nodoc:
     def load_from_env(config)
       config.deep_merge!(Anyway.env.fetch(env_prefix))
       config
+    end
+
+    def option_parser
+      @option_parser ||= begin
+        parser = OptionParserBuilder.call(self.class.option_parser_options) do |key, arg|
+          set_value(key, arg)
+        end
+        self.class.option_parser_extension&.call(parser) || parser
+      end
+    end
+
+    def parse_options!(options)
+      option_parser.parse!(options)
     end
 
     def to_h

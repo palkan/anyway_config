@@ -27,6 +27,8 @@ module Anyway
             value.stringify_keys! if value.is_a?(::Hash)
             self[key.to_s] = value
           end
+
+          self
         end
       end
 

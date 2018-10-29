@@ -2,6 +2,10 @@
 
 ## master
 
+- Add OptionParse integration ([@jastkand][])
+
+  See more https://github.com/palkan/anyway_config/pull/18
+
 ## 1.3.0 (2018-06-15)
 
 - Ruby 2.2 is no longer supported.
@@ -67,3 +71,4 @@ Initial version.
 [@onemanstartup]: https://github.com/onemanstartup
 [@dsalahutdinov]: https://github.com/dsalahutdinov
 [@charlie-wasp]: https://github.com/charlie-wasp
+[@jastkand]: https://github.com/jastkand

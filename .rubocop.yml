@@ -19,7 +19,7 @@ Style/Documentation:
   Exclude:
     - 'spec/**/*.rb'
 
-Style/StringLiterals: 
+Style/StringLiterals:
   Enabled: false
 
 Style/BlockDelimiters:
@@ -33,6 +33,9 @@ Metrics/MethodLength:
 Metrics/BlockLength:
   Exclude:
     - 'spec/**/*.rb'
+
+Metrics/ClassLength:
+  Max: 140
 
 Metrics/LineLength:
   Max: 100
