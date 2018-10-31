@@ -2,6 +2,10 @@
 
 ## master
 
+## 1.4.1 (2018-10-30)
+
+- Add `.flag_options` to mark some params as flags (value-less) for OptionParse. ([@palkan][])
+
 ## 1.4.0 (2018-10-29)
 
 - Add OptionParse integration ([@jastkand][])
