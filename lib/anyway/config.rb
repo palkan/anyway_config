@@ -3,12 +3,14 @@
 require 'anyway/ext/deep_dup'
 require 'anyway/ext/deep_freeze'
 require 'anyway/ext/hash'
+require 'anyway/ext/string_serialize'
 require 'anyway/option_parser_builder'
 
 module Anyway # :nodoc:
   using Anyway::Ext::DeepDup
   using Anyway::Ext::DeepFreeze
   using Anyway::Ext::Hash
+  using Anyway::Ext::StringSerialize
 
   # Base config class
   # Provides `attr_config` method to describe
@@ -38,13 +40,21 @@ module Anyway # :nodoc:
       end
 
       def ignore_options(*args)
-        @ignore_options ||= []
-        @ignore_options |= args
+        args.each do |name|
+          option_parser_descriptors[name.to_s][:ignore] = true
+        end
       end
 
       def describe_options(**hargs)
-        @option_parser_descriptions ||= {}
-        @option_parser_descriptions.merge!(hargs.stringify_keys!)
+        hargs.each do |name, desc|
+          option_parser_descriptors[name.to_s][:desc] = desc
+        end
+      end
+
+      def flag_options(*args)
+        args.each do |name|
+          option_parser_descriptors[name.to_s][:flag] = true
+        end
       end
 
       def extend_options(&block)
@@ -52,12 +62,11 @@ module Anyway # :nodoc:
       end
 
       def option_parser_options
-        ignored_options = @ignore_options || []
-        descriptions = @option_parser_descriptions || {}
         config_attributes.each_with_object({}) do |key, result|
-          next if ignored_options.include?(key.to_sym)
+          descriptor = option_parser_descriptors[key.to_s]
+          next if descriptor[:ignore] == true
 
-          result[key] ||= descriptions[key.to_s]
+          result[key] = descriptor
         end
       end
 
@@ -78,6 +87,10 @@ module Anyway # :nodoc:
       end
 
       private
+
+      def option_parser_descriptors
+        @option_parser_descriptors ||= Hash.new { |h, k| h[k] = {} }
+      end
 
       def underscore_name
         return unless name
@@ -152,9 +165,9 @@ module Anyway # :nodoc:
     def option_parser
       @option_parser ||= begin
         parser = OptionParserBuilder.call(self.class.option_parser_options) do |key, arg|
-          set_value(key, arg)
+          set_value(key, arg.is_a?(String) ? arg.serialize : arg)
         end
-        self.class.option_parser_extension&.call(parser) || parser
+        self.class.option_parser_extension&.call(parser, self) || parser
       end
     end
 

@@ -164,7 +164,7 @@ Example usage:
 
 ```ruby
 class MyConfig < Anyway::Config
-  attr_config :host, :log_level, :concurrency, server_args: {}
+  attr_config :host, :log_level, :concurrency, :debug, server_args: {}
 
   # specify which options shouldn't be handled by option parser
   ignore_options :server_args
@@ -174,9 +174,17 @@ class MyConfig < Anyway::Config
     concurrency: "number of threads to use"
   )
 
+  # mark some options as flag
+  flag_options :debug
+
   # extend an option parser object (i.e. add banner or version/help handlers)
-  extend_options do |parser|
+  extend_options do |parser, config|
     parser.banner = "mycli [options]"
+
+    parser.on("--server-args VALUE") do |value|
+      config.server_args = JSON.parse(value)
+    end
+
     parser.on_tail "-h", "--help" do
       puts parser
     end

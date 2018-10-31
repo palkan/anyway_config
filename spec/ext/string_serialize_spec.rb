@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-describe Anyway::Ext::String do
-  using Anyway::Ext::String
+describe Anyway::Ext::StringSerialize do
+  using Anyway::Ext::StringSerialize
 
   it "serializes a string", :aggregate_failures do
     expect("1,2, 3".serialize).to eq [1, 2, 3]

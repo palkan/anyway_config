@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 require 'anyway/ext/deep_dup'
-require 'anyway/ext/string'
+require 'anyway/ext/string_serialize'
 
 module Anyway
   # Parses environment variables and provides
   # method-like access
   class Env
     using Anyway::Ext::DeepDup
-    using Anyway::Ext::String
+    using Anyway::Ext::StringSerialize
 
     def initialize
       @data = {}

@@ -3,13 +3,13 @@
 module Anyway
   module Ext
     # Extend String through refinements
-    module String
-      refine ::String do
-        # Regexp to detect array values
-        # Array value is a values that contains at least one comma
-        # and doesn't start/end with quote
-        ARRAY_RXP = /\A[^'"].*\s*,\s*.*[^'"]\z/
+    module StringSerialize
+      # Regexp to detect array values
+      # Array value is a values that contains at least one comma
+      # and doesn't start/end with quote
+      ARRAY_RXP = /\A[^'"].*\s*,\s*.*[^'"]\z/
 
+      refine ::String do
         # rubocop:disable Metrics/MethodLength
         # rubocop:disable Metrics/CyclomaticComplexity
         def serialize

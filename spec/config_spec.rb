@@ -241,11 +241,12 @@ describe Anyway::Config do
         Class.new(described_class) do
           config_name 'optparse'
           attr_config :host, :port, :log_level, :debug
+          flag_options :debug
         end
       end
 
       it "parses ARGC string" do
-        config_instance.parse_options!(%w[--host localhost --port 3333 --log-level debug --debug T])
+        config_instance.parse_options!(%w[--host localhost --port 3333 --log-level debug --debug])
         expect(config_instance.host).to eq("localhost")
         expect(config_instance.port).to eq(3333)
         expect(config_instance.log_level).to eq("debug")
@@ -300,8 +301,12 @@ describe Anyway::Config do
           config_name 'optparse'
           attr_config :host, :log_level, :concurrency, server_args: {}
 
-          extend_options do |parser|
+          extend_options do |parser, config|
             parser.banner = "mycli [options]"
+
+            parser.on("--server-args VALUE") do |value|
+              config.server_args = JSON.parse(value)
+            end
 
             parser.on_tail "-h", "--help" do
               puts parser
@@ -312,6 +317,13 @@ describe Anyway::Config do
 
       it "allows to customize the parser" do
         expect(config_instance.option_parser.help).to include("mycli [options]")
+      end
+
+      it "passes config to extension" do
+        config_instance.parse_options!(
+          ['--server-args', '{"host":"0.0.0.0"}']
+        )
+        expect(config_instance.server_args["host"]).to eq "0.0.0.0"
       end
     end
   end
