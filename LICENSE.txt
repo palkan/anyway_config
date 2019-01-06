@@ -1,4 +1,4 @@
-Copyright (c) 2017 palkan
+Copyright (c) 2015-2019 Vladimir Dementyev
 
 MIT License
 

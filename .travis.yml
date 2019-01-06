@@ -8,8 +8,7 @@ notifications:
   email: false
 
 before_install:
-  - gem install bundler
-  - gem update bundler
+  - gem install bundler -v 1.17.3
 
 matrix:
   include:
