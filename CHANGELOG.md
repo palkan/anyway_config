@@ -2,6 +2,8 @@
 
 ## master
 
+## 1.4.2 (2018-01-05)
+
 - Fix: detect Rails by presence of `Rails::VERSION` (instead of just `Rails`). ([@palkan][])
 
 ## 1.4.1 (2018-10-30)
