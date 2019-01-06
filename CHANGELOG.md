@@ -2,6 +2,8 @@
 
 ## master
 
+- Fix: detect Rails by presence of `Rails::VERSION` (instead of just `Rails`). ([@palkan][])
+
 ## 1.4.1 (2018-10-30)
 
 - Add `.flag_options` to mark some params as flags (value-less) for OptionParse. ([@palkan][])
