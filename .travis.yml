@@ -21,10 +21,6 @@ matrix:
       gemfile: gemfiles/jruby.gemfile
     - rvm: 2.5.1
       gemfile: gemfiles/rails5.gemfile
-    - rvm: 2.5.1
-      gemfile: gemfiles/rails42.gemfile
-    - rvm: 2.3.2
-      gemfile: gemfiles/rails5.gemfile
   allow_failures:
     - rvm: ruby-head
       gemfile: gemfiles/railsmaster.gemfile

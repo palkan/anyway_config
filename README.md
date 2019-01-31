@@ -25,7 +25,7 @@ Libraries using Anyway Config:
 # my-cool-gem.gemspec
 Gem::Specification.new do |spec|
   ...
-  spec.add_dependency "anyway_config", "~> 1.0"
+  spec.add_dependency "anyway_config", "~> 2.0"
   ...
 end
 ```
@@ -34,7 +34,7 @@ end
 
 ```ruby
 # Gemfile
-gem "anyway_config", "~> 1.0"
+gem "anyway_config", "~> 2.0"
 ```
 
 3) Install globally:
@@ -134,11 +134,13 @@ config = Anyway::Config.for(:my_app)
 
 ### Using with Rails
 
+**NOTE:** version 2.x supports Rails >= 5.0; for Rails 4.x use version 1.x of the gem.
+
 Your config will be filled up with values from the following sources (ordered by priority from low to high):
 
 - `RAILS_ROOT/config/my_cool_gem.yml` (for the current `RAILS_ENV`, supports `ERB`)
 
-- `Rails.application.secrets.my_cool_gem`
+- `Rails.application.secrets.my_cool_gem` (if `secrets.yml` present)
 
 - `ENV['MYCOOLGEM_*']`.
 

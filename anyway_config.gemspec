@@ -20,10 +20,10 @@ Gem::Specification.new do |s|
 
   s.files         = `git ls-files`.split($INPUT_RECORD_SEPARATOR)
   s.require_paths = ["lib"]
-  s.required_ruby_version = '>= 2.3'
+  s.required_ruby_version = '>= 2.5'
 
   s.add_development_dependency "bundler", ">= 1.15"
-  s.add_development_dependency "rspec", "~> 3.5"
+  s.add_development_dependency "rspec", "~> 3.8"
   s.add_development_dependency "rubocop", "~> 0.60.0"
   s.add_development_dependency "simplecov", ">= 0.3.8"
 end
