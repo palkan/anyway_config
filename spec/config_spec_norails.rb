@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_norails_helper'
+require "spec_norails_helper"
 
 describe Anyway::Config do
   let(:conf) { Anyway::TestConfig.new }
@@ -20,40 +20,40 @@ describe Anyway::Config do
     end
 
     it "works", :aggregate_failures do
-      ENV['ANYWAY_CONF'] = File.join(File.dirname(__FILE__), "anyway.yml")
-      ENV['ANYWAY_API__KEY'] = 'test1'
-      ENV['ANYWAY_TEST'] = 'test'
-      ENV['ANYWAY_LOG__FORMAT__COLOR'] = 't'
-      ENV['ANYWAY_LOG_LEVELS'] = 'debug,warning,info'
+      ENV["ANYWAY_CONF"] = File.join(File.dirname(__FILE__), "anyway.yml")
+      ENV["ANYWAY_API__KEY"] = "test1"
+      ENV["ANYWAY_TEST"] = "test"
+      ENV["ANYWAY_LOG__FORMAT__COLOR"] = "t"
+      ENV["ANYWAY_LOG_LEVELS"] = "debug,warning,info"
 
       Anyway.env.clear
-      expect(conf.api['key']).to eq "test1"
-      expect(conf.api['endpoint']).to eq "localhost"
+      expect(conf.api["key"]).to eq "test1"
+      expect(conf.api["endpoint"]).to eq "localhost"
       expect(conf.test).to eq "test"
-      expect(conf.log['format']['color']).to eq true
+      expect(conf.log["format"]["color"]).to eq true
       expect(conf.log_levels).to eq(%w[debug warning info])
     end
 
     it "reloads config", :aggregate_failures do
-      ENV['ANYWAY_CONF'] = File.join(File.dirname(__FILE__), "anyway.yml")
+      ENV["ANYWAY_CONF"] = File.join(File.dirname(__FILE__), "anyway.yml")
 
-      expect(conf.api['key']).to eq ""
-      expect(conf.api['endpoint']).to eq 'localhost'
+      expect(conf.api["key"]).to eq ""
+      expect(conf.api["endpoint"]).to eq "localhost"
       expect(conf.test).to be_nil
-      expect(conf.log['format']['color']).to eq false
+      expect(conf.log["format"]["color"]).to eq false
 
-      ENV['ANYWAY_API__KEY'] = 'test1'
-      ENV['ANYWAY_API__SSL'] = 'yes'
-      ENV['ANYWAY_TEST'] = 'test'
-      ENV['ANYWAY_LOG__FORMAT__COLOR'] = 't'
+      ENV["ANYWAY_API__KEY"] = "test1"
+      ENV["ANYWAY_API__SSL"] = "yes"
+      ENV["ANYWAY_TEST"] = "test"
+      ENV["ANYWAY_LOG__FORMAT__COLOR"] = "t"
       Anyway.env.clear
 
       conf.reload
-      expect(conf.api['key']).to eq "test1"
-      expect(conf.api['ssl']).to eq true
-      expect(conf.api['endpoint']).to eq "localhost"
+      expect(conf.api["key"]).to eq "test1"
+      expect(conf.api["ssl"]).to eq true
+      expect(conf.api["endpoint"]).to eq "localhost"
       expect(conf.test).to eq "test"
-      expect(conf.log['format']['color']).to eq true
+      expect(conf.log["format"]["color"]).to eq true
     end
 
     context "config without keys" do

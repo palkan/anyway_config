@@ -1,6 +1,8 @@
 # Change log
 
-## master
+## 2.0.0-dev
+
+- **Require Ruby >= 2.5.0.**
 
 ## 1.4.3 (2019-02-04)
 

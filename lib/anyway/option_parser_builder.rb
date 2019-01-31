@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'optparse'
+require "optparse"
 
 module Anyway # :nodoc:
   # Initializes the OptionParser instance using the given configuration
@@ -19,7 +19,7 @@ module Anyway # :nodoc:
       private
 
       def option_parser_on_args(key, flag: false, desc: nil)
-        on_args = ["--#{key.to_s.tr('_', '-')}#{flag ? '' : ' VALUE'}"]
+        on_args = ["--#{key.to_s.tr("_", "-")}#{flag ? "" : " VALUE"}"]
         on_args << desc unless desc.nil?
         on_args
       end

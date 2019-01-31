@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-lib = File.expand_path('../lib', __FILE__)
+lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'anyway/version'
+require "anyway/version"
 
 Gem::Specification.new do |s|
   s.name        = "anyway_config"
@@ -18,12 +18,13 @@ Gem::Specification.new do |s|
 
   s.license = "MIT"
 
-  s.files         = `git ls-files`.split($INPUT_RECORD_SEPARATOR)
+  s.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(spec|gemfiles|\.)/}) }
   s.require_paths = ["lib"]
-  s.required_ruby_version = '>= 2.5'
+  s.required_ruby_version = ">= 2.5"
 
   s.add_development_dependency "bundler", ">= 1.15"
   s.add_development_dependency "rspec", "~> 3.8"
   s.add_development_dependency "rubocop", "~> 0.60.0"
   s.add_development_dependency "simplecov", ">= 0.3.8"
+  s.add_development_dependency "standard", "~> 0.0.12"
 end

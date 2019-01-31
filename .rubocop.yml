@@ -1,50 +1,30 @@
+require:
+  - standard/cop/semantic_blocks
+
+inherit_gem:
+  standard: config/base.yml
+
 AllCops:
-  Include:
-    - 'lib/**/*.rb'
-    - 'lib/**/*.rake'
-    - 'spec/**/*.rb'
-    - 'Gemfile'
-    - 'Rakefile'
   Exclude:
-    - 'bin/**/*'
-    - 'spec/dummy/**/*'
+    - 'bin/*'
     - 'tmp/**/*'
-    - 'gemfiles/vendor/**/*'
+    - 'Gemfile'
     - 'vendor/**/*'
+    - 'gemfiles/**/*'
   DisplayCopNames: true
-  StyleGuideCopsOnly: false
   TargetRubyVersion: 2.5
 
-Style/Documentation:
-  Exclude:
-    - 'spec/**/*.rb'
-
-Style/StringLiterals:
+Standard/SemanticBlocks:
   Enabled: false
 
-Style/BlockDelimiters:
-  Exclude:
-    - 'spec/**/*.rb'
+Style/FrozenStringLiteralComment:
+  Enabled: true
 
-Metrics/MethodLength:
-  Exclude:
-    - 'spec/**/*.rb'
+Style/TrailingCommaInArrayLiteral:
+  EnforcedStyleForMultiline: no_comma
 
-Metrics/BlockLength:
-  Exclude:
-    - 'spec/**/*.rb'
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: no_comma
 
-Metrics/ClassLength:
-  Max: 140
-
-Metrics/LineLength:
-  Max: 100
-
-Bundler/OrderedGems:
-  Enabled: false
-
-Style/MutableConstant:
-  Enabled: false
-
-Naming/MemoizedInstanceVariableName:
-  Enabled: false
+Layout/AlignParameters:
+  EnforcedStyle: with_first_parameter

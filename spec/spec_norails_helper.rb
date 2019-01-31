@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
-$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
+$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), "..", "lib"))
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 
 begin
   require "pry-byebug"
-rescue LoadError # rubocop:disable all
+rescue LoadError
 end
 
-require 'anyway_config'
-require 'erb'
+require "anyway_config"
+require "erb"
 
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
 

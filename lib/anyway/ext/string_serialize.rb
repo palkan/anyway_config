@@ -10,14 +10,10 @@ module Anyway
       ARRAY_RXP = /\A[^'"].*\s*,\s*.*[^'"]\z/
 
       refine ::String do
-        # rubocop:disable Metrics/MethodLength
-        # rubocop:disable Metrics/CyclomaticComplexity
         def serialize
           case self
           when ARRAY_RXP
-            # rubocop:disable Style/SymbolProc
             split(/\s*,\s*/).map { |word| word.serialize }
-            # rubocop:enable Style/SymbolProc
           when /\A(true|t|yes|y)\z/i
             true
           when /\A(false|f|no|n)\z/i
@@ -29,13 +25,11 @@ module Anyway
           when /\A\d*\.\d+\z/
             to_f
           when /\A['"].*['"]\z/
-            gsub(/(\A['"]|['"]\z)/, '')
+            gsub(/(\A['"]|['"]\z)/, "")
           else
             self
           end
         end
-        # rubocop:enable Metrics/MethodLength
-        # rubocop:enable Metrics/CyclomaticComplexity
       end
 
       using self

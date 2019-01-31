@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require "spec_helper"
 
 describe Anyway::Config do
   let(:conf) { CoolConfig.new }
@@ -15,7 +15,7 @@ describe Anyway::Config do
 
     describe "defaults" do
       specify { expect(CoolConfig.defaults[:port]).to eq 8080 }
-      specify { expect(CoolConfig.defaults[:host]).to eq 'localhost' }
+      specify { expect(CoolConfig.defaults[:host]).to eq "localhost" }
     end
 
     it "generates accessors", :aggregate_failures do
@@ -55,7 +55,7 @@ describe Anyway::Config do
       end
 
       it "sets overrides after loading YAML" do
-        config = CoolConfig.new(overrides: { host: 'overrided.host' })
+        config = CoolConfig.new(overrides: {host: "overrided.host"})
         expect(config.host).to eq "overrided.host"
       end
 
@@ -74,11 +74,11 @@ describe Anyway::Config do
     describe "load from env" do
       context "when env_prefix is not specified" do
         it "uses config_name as a prefix to load variables" do
-          ENV['COOL_PORT'] = '80'
-          ENV['COOL_USER__NAME'] = 'john'
+          ENV["COOL_PORT"] = "80"
+          ENV["COOL_USER__NAME"] = "john"
           Anyway.env.clear
           expect(conf.port).to eq 80
-          expect(conf.user[:name]).to eq 'john'
+          expect(conf.user[:name]).to eq "john"
         end
       end
 
@@ -90,13 +90,13 @@ describe Anyway::Config do
         end
 
         it "uses env_prefix value as a prefix to load variables" do
-          ENV['COOL_PORT'] = '80'
-          ENV['COOL_ENV_PORT'] = '8888'
-          ENV['COOL_USER__NAME'] = 'john'
-          ENV['COOL_ENV_USER__NAME'] = 'bill'
+          ENV["COOL_PORT"] = "80"
+          ENV["COOL_ENV_PORT"] = "8888"
+          ENV["COOL_USER__NAME"] = "john"
+          ENV["COOL_ENV_USER__NAME"] = "bill"
           Anyway.env.clear
           expect(conf.port).to eq 8888
-          expect(conf.user[:name]).to eq 'bill'
+          expect(conf.user[:name]).to eq "bill"
         end
       end
 
@@ -126,16 +126,16 @@ describe Anyway::Config do
       end
 
       it "handle ENV in YML thru ERB" do
-        ENV['ANYWAY_SECRET_PASSWORD'] = 'my_pass'
-        expect(conf.user[:password]).to eq 'my_pass'
+        ENV["ANYWAY_SECRET_PASSWORD"] = "my_pass"
+        expect(conf.user[:password]).to eq "my_pass"
       end
 
       it "overrides loaded value by explicit" do
-        ENV['ANYWAY_SECRET_PASSWORD'] = 'my_pass'
+        ENV["ANYWAY_SECRET_PASSWORD"] = "my_pass"
 
         config = CoolConfig.new(
           overrides: {
-            user: { password: 'explicit_password' }
+            user: {password: "explicit_password"}
           }
         )
         expect(config.user[:password]).to eq "explicit_password"
@@ -157,12 +157,12 @@ describe Anyway::Config do
     describe "reload" do
       it do
         expect(conf.port).to eq 8080
-        ENV['COOL_PORT'] = '80'
-        ENV['COOL_USER__NAME'] = 'john'
+        ENV["COOL_PORT"] = "80"
+        ENV["COOL_USER__NAME"] = "john"
         Anyway.env.clear
         conf.reload
         expect(conf.port).to eq 80
-        expect(conf.user[:name]).to eq 'john'
+        expect(conf.user[:name]).to eq "john"
       end
     end
   end
@@ -173,13 +173,13 @@ describe Anyway::Config do
     end
 
     it "load data by config name", :aggregate_failures do
-      ENV['MY_APP_TEST'] = '1'
-      ENV['MY_APP_NAME'] = 'my_app'
+      ENV["MY_APP_TEST"] = "1"
+      ENV["MY_APP_NAME"] = "my_app"
       Anyway.env.clear
       data = Anyway::Config.for(:my_app)
       expect(data[:test]).to eq 1
-      expect(data[:name]).to eq 'my_app'
-      expect(data[:secret]).to eq 'my_secret' if Rails.application.respond_to?(:secrets)
+      expect(data[:name]).to eq "my_app"
+      expect(data[:secret]).to eq "my_secret" if Rails.application.respond_to?(:secrets)
     end
   end
 
@@ -193,10 +193,10 @@ describe Anyway::Config do
   end
 
   context "config with initial hash values" do
-    let(:conf) { SmallConfig.new(overrides: { 'meta': 'dummy' }) }
+    let(:conf) { SmallConfig.new(overrides: {'meta': "dummy"}) }
 
     it "works" do
-      expect(conf.meta).to eq 'dummy'
+      expect(conf.meta).to eq "dummy"
     end
   end
 
@@ -213,7 +213,7 @@ describe Anyway::Config do
   context "extending config" do
     let(:config) do
       Class.new(described_class) do
-        config_name 'testo'
+        config_name "testo"
         attr_config :test, debug: false
       end
     end
@@ -224,12 +224,12 @@ describe Anyway::Config do
       expect(old_config.debug).to eq false
       expect(old_config.test).to be_nil
 
-      config.attr_config new_param: 'a'
+      config.attr_config new_param: "a"
 
       new_config = config.new
       expect(new_config.debug).to eq false
       expect(new_config.test).to be_nil
-      expect(new_config.new_param).to eq 'a'
+      expect(new_config.new_param).to eq "a"
     end
   end
 
@@ -239,7 +239,7 @@ describe Anyway::Config do
     context "when `ignore_options` is not provided" do
       let(:config) do
         Class.new(described_class) do
-          config_name 'optparse'
+          config_name "optparse"
           attr_config :host, :port, :log_level, :debug
           flag_options :debug
         end
@@ -254,10 +254,10 @@ describe Anyway::Config do
       end
     end
 
-    context 'when `ignore_options` is provided' do
+    context "when `ignore_options` is provided" do
       let(:config) do
         Class.new(described_class) do
-          config_name 'optparse'
+          config_name "optparse"
           attr_config :host, :log_level, :concurrency, server_args: {}
 
           ignore_options :server_args
@@ -278,10 +278,10 @@ describe Anyway::Config do
       end
     end
 
-    context 'when `describe_options` is provided' do
+    context "when `describe_options` is provided" do
       let(:config) do
         Class.new(described_class) do
-          config_name 'optparse'
+          config_name "optparse"
           attr_config :host, :log_level, :concurrency, server_args: {}
 
           describe_options(
@@ -298,7 +298,7 @@ describe Anyway::Config do
     context "customization of option parser" do
       let(:config) do
         Class.new(described_class) do
-          config_name 'optparse'
+          config_name "optparse"
           attr_config :host, :log_level, :concurrency, server_args: {}
 
           extend_options do |parser, config|
@@ -321,7 +321,7 @@ describe Anyway::Config do
 
       it "passes config to extension" do
         config_instance.parse_options!(
-          ['--server-args', '{"host":"0.0.0.0"}']
+          ["--server-args", '{"host":"0.0.0.0"}']
         )
         expect(config_instance.server_args["host"]).to eq "0.0.0.0"
       end

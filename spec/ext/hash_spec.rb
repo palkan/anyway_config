@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require "spec_helper"
 
 describe Anyway::Ext::Hash do
   using Anyway::Ext::Hash
@@ -9,7 +9,7 @@ describe Anyway::Ext::Hash do
     let(:source) do
       {
         a: 1,
-        b: 'hello',
+        b: "hello",
         c: {
           id: 1
         }
@@ -18,10 +18,10 @@ describe Anyway::Ext::Hash do
 
     let(:expected_result) do
       {
-        'a' => 1,
-        'b' => 'hello',
-        'c' => {
-          'id' => 1
+        "a" => 1,
+        "b" => "hello",
+        "c" => {
+          "id" => 1
         }
       }
     end

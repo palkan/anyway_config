@@ -1,11 +1,10 @@
 # frozen_string_literal: true
 
-require 'anyway/ext/jruby' if defined? JRUBY_VERSION
-require 'anyway/ext/deep_dup'
-require 'anyway/ext/deep_freeze'
-require 'anyway/ext/hash'
-require 'anyway/ext/string_serialize'
-require 'anyway/option_parser_builder'
+require "anyway/ext/deep_dup"
+require "anyway/ext/deep_freeze"
+require "anyway/ext/hash"
+require "anyway/ext/string_serialize"
+require "anyway/option_parser_builder"
 
 module Anyway # :nodoc:
   if defined? JRUBY_VERSION
@@ -156,7 +155,7 @@ module Anyway # :nodoc:
     end
 
     def load_from_file(config)
-      config_path = Anyway.env.fetch(env_prefix).delete('conf') ||
+      config_path = Anyway.env.fetch(env_prefix).delete("conf") ||
                     "./config/#{config_name}.yml"
       config.deep_merge!(parse_yml(config_path) || {}) if config_path && File.file?(config_path)
       config
@@ -193,7 +192,7 @@ module Anyway # :nodoc:
     end
 
     def parse_yml(path)
-      require 'yaml'
+      require "yaml"
       if defined?(ERB)
         YAML.safe_load(ERB.new(File.read(path)).result, [], [], true)
       else

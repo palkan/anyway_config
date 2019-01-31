@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-require 'anyway/ext/deep_freeze'
+require "spec_helper"
+require "anyway/ext/deep_freeze"
 
 describe Anyway::Ext::DeepFreeze do
   using Anyway::Ext::DeepFreeze
@@ -9,12 +9,12 @@ describe Anyway::Ext::DeepFreeze do
   it "freezes nested arrays and hashes", :aggregate_failures do
     source = {
       a: 1,
-      b: 'hello',
+      b: "hello",
       c: {
         id: 1,
-        list: [1, 2, { name: 'John' }]
+        list: [1, 2, {name: "John"}]
       },
-      d: [{ id: 1 }, { id: 2 }]
+      d: [{id: 1}, {id: 2}]
     }
 
     dup = source.deep_freeze

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'anyway/ext/deep_dup'
-require 'anyway/ext/string_serialize'
+require "anyway/ext/deep_dup"
+require "anyway/ext/string_serialize"
 
 module Anyway
   # Parses environment variables and provides
@@ -29,7 +29,7 @@ module Anyway
       ENV.each_pair.with_object({}) do |(key, val), data|
         next unless key.start_with?(prefix)
 
-        path = key.sub(/^#{prefix}_/, '').downcase
+        path = key.sub(/^#{prefix}_/, "").downcase
         set_by_path(data, path, val.serialize)
       end
     end
