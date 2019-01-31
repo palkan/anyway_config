@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
 
   s.license = "MIT"
 
-  s.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(spec|gemfiles|\.)/}) }
+  s.files = `git ls-files README.md LICENSE.txt lib bin`.split
   s.require_paths = ["lib"]
   s.required_ruby_version = ">= 2.5"
 
