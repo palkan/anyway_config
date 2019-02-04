@@ -71,6 +71,10 @@ describe Anyway::Config do
         ENV.delete_if { |var| var =~ /^cool_/i }
       end
 
+      around do |ex|
+        Dir.chdir(File.join(__dir__), &ex)
+      end
+
       it "loads from ./config", :aggregate_failures do
         expect(conf.user).to eq("name" => "root", "password" => "root")
         expect(conf.host).to eq "test.host"
