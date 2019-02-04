@@ -6,12 +6,13 @@ describe Anyway::Config do
   let(:conf) { CoolConfig.new }
   let(:test_conf) { Anyway::TestConfig.new }
 
-  context "config with name" do
+  context "config with explicit name" do
     before(:each) do
       ENV.delete_if { |var| var =~ /^(cool|anyway)_/i }
     end
 
     specify { expect(CoolConfig.config_name).to eq "cool" }
+    specify { expect(CoolConfig.env_prefix).to eq "COOL" }
 
     describe "defaults" do
       specify { expect(CoolConfig.defaults[:port]).to eq 8080 }
@@ -24,6 +25,35 @@ describe Anyway::Config do
       expect(conf).to respond_to(:port)
       expect(conf).to respond_to(:host)
       expect(conf).to respond_to(:user)
+    end
+
+    context "inheritance" do
+      let(:sub_config) do
+        Class.new(CoolConfig) do
+          attr_config :submeta,
+                      port: 3000
+        end
+      end
+
+      let(:conf) { sub_config.new }
+
+      it "uses superclass naming", :aggregate_failures do
+        expect(sub_config.config_name).to eq "cool"
+        expect(sub_config.env_prefix).to eq "COOL"
+      end
+
+      it "has its own attributes settings (cloned from parent config)", :aggregate_failures do
+        expect(conf).to respond_to(:meta)
+        expect(conf).to respond_to(:data)
+        expect(conf).to respond_to(:port)
+        expect(conf).to respond_to(:host)
+        expect(conf).to respond_to(:user)
+        expect(conf).to respond_to(:submeta)
+
+        # defaults
+        expect(conf.port).to eq 3000
+        expect(conf.host).to eq "test.host"
+      end
     end
 
     describe "#to_h" do
@@ -85,7 +115,7 @@ describe Anyway::Config do
       context "when env_prefix is specified" do
         let(:conf) do
           klass = CoolConfig.dup
-          klass.class_eval { env_prefix(:cool_env) }
+          klass.env_prefix(:cool_env)
           klass.new
         end
 
@@ -94,7 +124,6 @@ describe Anyway::Config do
           ENV["COOL_ENV_PORT"] = "8888"
           ENV["COOL_USER__NAME"] = "john"
           ENV["COOL_ENV_USER__NAME"] = "bill"
-          Anyway.env.clear
           expect(conf.port).to eq 8888
           expect(conf.user[:name]).to eq "bill"
         end
@@ -167,22 +196,6 @@ describe Anyway::Config do
     end
   end
 
-  context "config for name" do
-    before(:each) do
-      ENV.delete_if { |var| var =~ /^myapp_/i }
-    end
-
-    it "load data by config name", :aggregate_failures do
-      ENV["MY_APP_TEST"] = "1"
-      ENV["MY_APP_NAME"] = "my_app"
-      Anyway.env.clear
-      data = Anyway::Config.for(:my_app)
-      expect(data[:test]).to eq 1
-      expect(data[:name]).to eq "my_app"
-      expect(data[:secret]).to eq "my_secret" if Rails.application.respond_to?(:secrets)
-    end
-  end
-
   context "config without defaults" do
     let(:conf) { SmallConfig.new }
 
@@ -230,101 +243,6 @@ describe Anyway::Config do
       expect(new_config.debug).to eq false
       expect(new_config.test).to be_nil
       expect(new_config.new_param).to eq "a"
-    end
-  end
-
-  describe "#parse_options!" do
-    let(:config_instance) { config.new }
-
-    context "when `ignore_options` is not provided" do
-      let(:config) do
-        Class.new(described_class) do
-          config_name "optparse"
-          attr_config :host, :port, :log_level, :debug
-          flag_options :debug
-        end
-      end
-
-      it "parses ARGC string" do
-        config_instance.parse_options!(%w[--host localhost --port 3333 --log-level debug --debug])
-        expect(config_instance.host).to eq("localhost")
-        expect(config_instance.port).to eq(3333)
-        expect(config_instance.log_level).to eq("debug")
-        expect(config_instance.debug).to eq(true)
-      end
-    end
-
-    context "when `ignore_options` is provided" do
-      let(:config) do
-        Class.new(described_class) do
-          config_name "optparse"
-          attr_config :host, :log_level, :concurrency, server_args: {}
-
-          ignore_options :server_args
-        end
-      end
-
-      it "parses ARGC string" do
-        expect do
-          config_instance.parse_options!(
-            %w[--host localhost --concurrency 10 --log-level debug --server-args SOME_ARGS]
-          )
-        end.to raise_error(OptionParser::InvalidOption, /--server-args/)
-
-        expect(config_instance.host).to eq("localhost")
-        expect(config_instance.concurrency).to eq(10)
-        expect(config_instance.log_level).to eq("debug")
-        expect(config_instance.server_args).to eq({})
-      end
-    end
-
-    context "when `describe_options` is provided" do
-      let(:config) do
-        Class.new(described_class) do
-          config_name "optparse"
-          attr_config :host, :log_level, :concurrency, server_args: {}
-
-          describe_options(
-            concurrency: "number of threads to use"
-          )
-        end
-      end
-
-      it "contains options description" do
-        expect(config_instance.option_parser.help).to include("number of threads to use")
-      end
-    end
-
-    context "customization of option parser" do
-      let(:config) do
-        Class.new(described_class) do
-          config_name "optparse"
-          attr_config :host, :log_level, :concurrency, server_args: {}
-
-          extend_options do |parser, config|
-            parser.banner = "mycli [options]"
-
-            parser.on("--server-args VALUE") do |value|
-              config.server_args = JSON.parse(value)
-            end
-
-            parser.on_tail "-h", "--help" do
-              puts parser
-            end
-          end
-        end
-      end
-
-      it "allows to customize the parser" do
-        expect(config_instance.option_parser.help).to include("mycli [options]")
-      end
-
-      it "passes config to extension" do
-        config_instance.parse_options!(
-          ["--server-args", '{"host":"0.0.0.0"}']
-        )
-        expect(config_instance.server_args["host"]).to eq "0.0.0.0"
-      end
     end
   end
 end

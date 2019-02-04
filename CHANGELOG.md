@@ -2,6 +2,29 @@
 
 ## 2.0.0-dev
 
+- Fix config classes inheritance. ([@palkan][])
+
+  Previously, inheritance didn't work due to the lack of proper handling of class-level
+  configuration (naming, option parses settings, defaults).
+
+  Now it's possible to extend config classes without breaking the original classes functionality.
+
+  Noticable features:
+  - if `config_name` is explicitly defined on class, it's inherited by subclasses:
+  ```ruby
+  class MyAppBaseConfig < Anyway::Config
+    config_name :my_app
+  end
+
+  class MyServiceConfig < MyAppBaseConfig
+  end
+
+  MyServiceConfig.config_name #=> "my_app"
+  ```
+  - defaults are merged leaving the parent class defaults unchanged
+  - option parse extension are not overriden, but added to the parent class extensions
+
+
 - **Require Ruby >= 2.5.0.**
 
 ## 1.4.3 (2019-02-04)

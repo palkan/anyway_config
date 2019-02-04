@@ -1,13 +1,7 @@
 # frozen_string_literal: true
 
-require "anyway/ext/jruby" if defined? JRUBY_VERSION
-
-require "anyway/ext/deep_dup"
-require "anyway/ext/deep_freeze"
-require "anyway/ext/hash"
-
-require "anyway/ext/string_serialize"
-require "anyway/option_parser_builder"
+require "anyway/optparse_config"
+require "anyway/dynamic_config"
 
 module Anyway # :nodoc:
   if defined? JRUBY_VERSION
@@ -23,81 +17,78 @@ module Anyway # :nodoc:
   # Provides `attr_config` method to describe
   # configuration parameters and set defaults
   class Config
+    include OptparseConfig
+    include DynamicConfig
+
     class << self
-      attr_reader :defaults, :config_attributes, :option_parser_extension
-
       def attr_config(*args, **hargs)
-        @defaults ||= {}
-        @config_attributes ||= []
-
         new_defaults = hargs.deep_dup
         new_defaults.stringify_keys!
+
         defaults.merge! new_defaults
 
         new_keys = (args + new_defaults.keys) - config_attributes
-        @config_attributes += new_keys
+        config_attributes.push(*new_keys)
         attr_accessor(*new_keys)
       end
 
+      def defaults
+        return @defaults if instance_variable_defined?(:@defaults)
+
+        @defaults =
+          if superclass < Anyway::Config
+            superclass.defaults.deep_dup
+          else
+            {}
+          end
+      end
+
+      def config_attributes
+        return @config_attributes if instance_variable_defined?(:@config_attributes)
+
+        @config_attributes =
+          if superclass < Anyway::Config
+            superclass.config_attributes.dup
+          else
+            []
+          end
+      end
+
       def config_name(val = nil)
-        return (@config_name = val.to_s) unless val.nil?
+        return (@explicit_config_name = val.to_s) unless val.nil?
 
-        @config_name = underscore_name unless defined?(@config_name)
-        @config_name
+        return @config_name if instance_variable_defined?(:@config_name)
+
+        @config_name = explicit_config_name || underscore_name
       end
 
-      def ignore_options(*args)
-        args.each do |name|
-          option_parser_descriptors[name.to_s][:ignore] = true
-        end
+      def explicit_config_name
+        return @explicit_config_name if instance_variable_defined?(:@explicit_config_name)
+
+        @explicit_config_name =
+          if superclass.respond_to?(:explicit_config_name)
+            superclass.explicit_config_name
+          end
       end
 
-      def describe_options(**hargs)
-        hargs.each do |name, desc|
-          option_parser_descriptors[name.to_s][:desc] = desc
-        end
-      end
-
-      def flag_options(*args)
-        args.each do |name|
-          option_parser_descriptors[name.to_s][:flag] = true
-        end
-      end
-
-      def extend_options(&block)
-        @option_parser_extension = block
-      end
-
-      def option_parser_options
-        config_attributes.each_with_object({}) do |key, result|
-          descriptor = option_parser_descriptors[key.to_s]
-          next if descriptor[:ignore] == true
-
-          result[key] = descriptor
-        end
+      def explicit_config_name?
+        !explicit_config_name.nil?
       end
 
       def env_prefix(val = nil)
-        return (@env_prefix = val.to_s) unless val.nil?
+        return (@env_prefix = val.to_s.upcase) unless val.nil?
 
-        @env_prefix
-      end
+        return @env_prefix if instance_variable_defined?(:@env_prefix)
 
-      # Load config as Hash by any name
-      #
-      # Example:
-      #
-      #   my_config = Anyway::Config.for(:my_app)
-      #   # will load data from config/my_app.yml, secrets.my_app, ENV["MY_APP_*"]
-      def for(name)
-        new(name: name, load: false).load_from_sources
+        @env_prefix =
+          if superclass < Anyway::Config && superclass.explicit_config_name?
+            superclass.env_prefix
+          else
+            config_name.upcase
+          end
       end
 
       private
-
-      def option_parser_descriptors
-        @option_parser_descriptors ||= Hash.new { |h, k| h[k] = {} }
-      end
 
       def underscore_name
         return unless name
@@ -122,7 +113,7 @@ module Anyway # :nodoc:
 
       raise ArgumentError, "Config name is missing" unless @config_name
 
-      @env_prefix = self.class.env_prefix || @config_name
+      @env_prefix = name.nil? ? self.class.env_prefix : name.to_s.upcase
 
       self.load(overrides) if load
     end
@@ -167,19 +158,6 @@ module Anyway # :nodoc:
     def load_from_env(config)
       config.deep_merge!(Anyway.env.fetch(env_prefix))
       config
-    end
-
-    def option_parser
-      @option_parser ||= begin
-        parser = OptionParserBuilder.call(self.class.option_parser_options) do |key, arg|
-          set_value(key, arg.is_a?(String) ? arg.serialize : arg)
-        end
-        self.class.option_parser_extension&.call(parser, self) || parser
-      end
-    end
-
-    def parse_options!(options)
-      option_parser.parse!(options)
     end
 
     def to_h

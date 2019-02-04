@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require "anyway/ext/deep_dup"
-require "anyway/ext/string_serialize"
-
 module Anyway
   # Parses environment variables and provides
   # method-like access
@@ -19,7 +16,7 @@ module Anyway
     end
 
     def fetch(prefix)
-      @data[prefix] ||= parse_env(prefix.to_s.upcase)
+      @data[prefix] ||= parse_env(prefix)
       @data[prefix].deep_dup
     end
 

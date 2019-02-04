@@ -5,18 +5,18 @@ require "spec_helper"
 describe Anyway::Env do
   let(:env) { Anyway.env }
 
-  it "loads simple key/values by module", :aggregate_failures do
+  it "loads simple key/values", :aggregate_failures do
     ENV["TESTO_KEY"] = "a"
     ENV["MY_TEST_KEY"] = "b"
-    expect(env.fetch("testo")["key"]).to eq "a"
-    expect(env.fetch("my_test")["key"]).to eq "b"
+    expect(env.fetch("TESTO")["key"]).to eq "a"
+    expect(env.fetch("MY_TEST")["key"]).to eq "b"
   end
 
   it "loads hash values", :aggregate_failures do
     ENV["TESTO_DATA__ID"] = "1"
     ENV["TESTO_DATA__META__NAME"] = "meta"
     ENV["TESTO_DATA__META__VAL"] = "true"
-    testo_config = env.fetch("testo")
+    testo_config = env.fetch("TESTO")
     expect(testo_config["data"]["id"]).to eq 1
     expect(testo_config["data"]["meta"]["name"]).to eq "meta"
     expect(testo_config["data"]["meta"]["val"]).to be_truthy
@@ -27,7 +27,7 @@ describe Anyway::Env do
     ENV["TESTO_DATA__META__NAMES"] = "meta, kotleta"
     ENV["TESTO_DATA__META__SIZE"] = "2"
     ENV["TESTO_DATA__TEXT"] = '"C\'mon, everybody"'
-    testo_config = env.fetch("testo")
+    testo_config = env.fetch("TESTO")
     expect(testo_config["data"]["ids"]).to include(1, 2, 3)
     expect(testo_config["data"]["meta"]["names"]).to include("meta", "kotleta")
     expect(testo_config["data"]["meta"]["size"]).to eq 2
@@ -39,11 +39,11 @@ describe Anyway::Env do
     ENV["TESTO_DATA__ID"] = "1"
     ENV["TESTO_DATA__META__NAME"] = "meta"
     ENV["TESTO_DATA__META__VAL"] = "true"
-    testo_config = env.fetch("testo")
+    testo_config = env.fetch("TESTO")
     testo_config.delete("conf")
     testo_config["data"]["meta"].delete("name")
 
-    new_config = env.fetch("testo")
+    new_config = env.fetch("TESTO")
     expect(new_config["data"]["meta"]["name"]).to eq "meta"
     expect(new_config["conf"]).to eq "path/to/conf.yml"
   end
