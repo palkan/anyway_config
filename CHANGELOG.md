@@ -2,6 +2,8 @@
 
 ## master
 
+## 1.4.3 (2019-02-04)
+
 - Add a temporary fix for JRuby regression [#5550](https://github.com/jruby/jruby/issues/5550). ([@palkan][])
 
 ## 1.4.2 (2018-01-05)
