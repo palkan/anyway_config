@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "active_support/core_ext/hash/indifferent_access"
+
 module Anyway
   module Rails
     # Enhance config to be more Railsy-like:

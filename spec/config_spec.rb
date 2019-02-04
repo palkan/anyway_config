@@ -242,7 +242,7 @@ describe Anyway::Config do
   end
 
   context "config with initial hash values" do
-    let(:conf) { SmallConfig.new(overrides: {'meta': "dummy"}) }
+    let(:conf) { SmallConfig.new(overrides: {"meta" => "dummy"}) }
 
     it "works" do
       expect(conf.meta).to eq "dummy"

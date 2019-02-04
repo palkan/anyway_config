@@ -2,12 +2,6 @@
 
 source 'https://rubygems.org'
 
-# Specify your gem's dependencies in anyway_config.gemspec
-gem 'sqlite3', platform: :mri
-
-gem 'activerecord-jdbcsqlite3-adapter', '~> 50.0', platform: :jruby
-gem 'jdbc-sqlite3', platform: :jruby
-
 gem 'pry-byebug', platform: :mri
 
 gemspec
