@@ -22,6 +22,11 @@ module Anyway
         end
       end
 
+      begin
+        require "active_support/core_ext/hash/indifferent_access"
+      rescue LoadError
+      end
+
       if defined?(::ActiveSupport::HashWithIndifferentAccess)
         refine ::ActiveSupport::HashWithIndifferentAccess do
           def deep_freeze
