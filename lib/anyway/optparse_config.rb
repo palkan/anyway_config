@@ -2,6 +2,9 @@
 
 require "anyway/option_parser_builder"
 
+require "anyway/ext/deep_dup"
+require "anyway/ext/string_serialize"
+
 module Anyway
   using Anyway::Ext::DeepDup
   using Anyway::Ext::StringSerialize

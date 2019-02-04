@@ -26,9 +26,9 @@ Libraries using Anyway Config:
 ```ruby
 # my-cool-gem.gemspec
 Gem::Specification.new do |spec|
-  ...
+  # ...
   spec.add_dependency "anyway_config", "~> 2.0"
-  ...
+  # ...
 end
 ```
 
@@ -52,11 +52,11 @@ $ gem install anyway_config
 Create configuration class:
 
 ```ruby
-require 'anyway'
+require "anyway"
 
 module MyCoolGem
   class Config < Anyway::Config
-    attr_config user: 'root', password: 'root', host: 'localhost'
+    attr_config user: "root", password: "root", host: "localhost"
   end
 end
 ```
@@ -64,7 +64,7 @@ end
 `attr_config` creates accessors and default values. If you don't need default values just write:
 
 ```ruby
-attr_config :user, :password, host: 'localhost'
+attr_config :user, :password, host: "localhost", options: {}
 ```
 
 Then create an instance of the config class and use it:
@@ -76,34 +76,43 @@ module MyCoolGem
   end
 end
 
-MyCoolGem.config.user #=> 'root'
+MyCoolGem.config.user #=> "root"
 ```
 
-#### Customize name
+#### Config name
 
-By default, Anyway Config uses the namespace (the outer module name) as the config name, but you can set it manually:
+Anyway Config relies on the notion of _config name_ to populate data.
+
+By default, Anyway Config uses the config class name to infer the config name using the following rules:
+- if the class name has a form of `<Module>::Config` then use the module name (`SomeModule::Config => "somemodule"`)
+- if the class name has a form of `<Something>Config` then use the class name prefix (`SomeConfig => "some"`)
+
+**NOTE:** in both cases the config name is a **downcased** module/class prefix, not underscored.
+
+You can also specify the config name explicitly (it's required in cases when you class name doesn't match any of the patterns above):
 
 ```ruby
 module MyCoolGem
   class Config < Anyway::Config
     config_name :cool
-    attr_config user: 'root', password: 'root', host: 'localhost', options: {}
+    attr_config user: "root", password: "root", host: "localhost", options: {}
   end
 end
 ```
 
 #### Customize env variable names prefix
 
-By default, Anyway Config uses underscored config name as a prefix for env variable names (e.g.
-`config_name :my_app` will result to parsing `MY_APP_HOST` variable). You can set env prefix
-explicitly, and it will be used as is:
+By default, Anyway Config uses upcased config name as a prefix for env variable names (e.g.
+`config_name :my_app` will result to parsing `MY_APP_` prefix).
+
+You can set env prefix explicitly:
 
 ```ruby
 module MyCoolGem
   class Config < Anyway::Config
     config_name :cool_gem
     env_prefix :really_cool # now variables, starting wih `REALLY_COOL_`, will be parsed
-    attr_config user: 'root', password: 'root', host: 'localhost', options: {}
+    attr_config user: "root", password: "root", host: "localhost", options: {}
   end
 end
 ```
@@ -116,13 +125,13 @@ You can do that using `overrides` option:
 ```ruby
 config = MyCoolGem::Config.new(
   overrides: {
-    user: 'john',
-    password: 'rubyisnotdead'
+    user: "john",
+    password: "rubyisnotdead"
   }
 )
 
 # The value would not be overriden from other sources (such as YML file, env)
-config.user == 'john'
+config.user == "john"
 ```
 
 ### Dynamic configuration
@@ -130,8 +139,10 @@ config.user == 'john'
 You can also create configuration objects without pre-defined schema (just like `Rails.application.config_for` but more [powerful](#railsapplicationconfig_for-vs-anywayconfigfor)):
 
 ```ruby
-# load data from config/my_app.yml, secrets.my_app (if using Rails), ENV["MYAPP_*"]
+# load data from config/my_app.yml, secrets.my_app (if using Rails), ENV["MY_APP_*"]
+# MY_APP_VALUE=42
 config = Anyway::Config.for(:my_app)
+config.value #=> 42
 ```
 
 ### Using with Rails
@@ -140,23 +151,44 @@ config = Anyway::Config.for(:my_app)
 
 Your config will be filled up with values from the following sources (ordered by priority from low to high):
 
-- `RAILS_ROOT/config/my_cool_gem.yml` (for the current `RAILS_ENV`, supports `ERB`)
+- `RAILS_ROOT/config/my_cool_gem.yml` (for the current `RAILS_ENV`, supports `ERB`):
+
+```yml
+test:
+  host: localhost
+  port: 3002
+
+development:
+  host: localhost
+  port: 3000
+```
 
 - `Rails.application.secrets.my_cool_gem` (if `secrets.yml` present)
+
+- **WIP** `RAILS_ROOT/config/credentials/<env>.enc`
 
 - `ENV['MYCOOLGEM_*']`.
 
 ### Using with Ruby
 
-By default, Anyway Config is looking for a config YAML at `./config/<config-name>.yml`. You can override this setting
-through special environment variable – 'MYGEM_CONF' – containing the path to the YAML file.
+When you're using Anyway Config in non-Rails environment, we're looking for a YANL config file
+at `./config/<config-name>.yml`.
+
+You can override this setting through special environment variable – 'MYGEM_CONF' – containing the path to the YAML file.
+
+**NOTE:** in pure Ruby apps we have no knowledge of _environments_ (`test`, `development`, `production`, etc.); thus we assume that the YAML contains values for a single environment:
+
+```yml
+host: localhost
+port: 3000
+```
 
 Environmental variables work the same way as with Rails.
 
 
-### Config clear and reload
+### Reload configuration
 
-There are `#clear` and `#reload` functions on your config (which do exactly what they state).
+There are `#clear` and `#reload` methods which do exactly what they state.
 
 Note: `#reload` also accepts `overrides` key to provide explicit values (see above).
 
@@ -198,7 +230,7 @@ end
 
 config = MyConfig.new
 
-config.parse_options!(%w(--host localhost --port 3333 --log-level debug))
+config.parse_options!(%w[--host localhost --port 3333 --log-level debug])
 
 config.host # => "localhost"
 config.port # => 3333
@@ -228,23 +260,18 @@ But the main advantage of Anyway::Config is that it can be used [without Rails](
 
 ## How to set env vars
 
-Environmental variables for your config should start with your config name, uppercased and underscore-free.
+Environmental variables for your config should start with your config name, uppercased.
 
-For example, if your module is called "MyCoolGem" then the env var "MYCOOLGEM_PASSWORD" is used as `config.password`.
+For example, if your config name is "mycoolgem" then the env var "MYCOOLGEM_PASSWORD" is used as `config.password`.
 
-Environment variables are type-casted (case-insensitive).
-
-Examples:
-
+Environment variables are automatically serialized:
 - `"True"`, `"t"` and `"yes"` to `true`;
-
 - `"False"`, `"f"` and `"no"` to `false`;
-
 - `"nil"` and `"null"` to `nil` (do you really need it?);
-
 - `"123"` to 123 and `"3.14"` to 3.14.
 
 *Anyway Config* supports nested (_hashed_) env variables. Just separate keys with double-underscore.
+
 For example, "MYCOOLGEM_OPTIONS__VERBOSE" is parsed as `config.options["verbose"]`.
 
 Array values are also supported:
@@ -257,13 +284,13 @@ config.ids #=> [1,2,3]
 If you want to provide a text-like env variable which contains commas then wrap it into quotes:
 
 ```ruby
-MYCOOLGEM="Nif-Nif, Naf-Naf and Nouf-Nouf"
+MYCOOLGEM = "Nif-Nif, Naf-Naf and Nouf-Nouf"
 ```
 
 ## Contributing
 
-1. Fork it
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create a new Pull Request
+Bug reports and pull requests are welcome on GitHub at https://github.com/palkan/anyway_config.
+
+## License
+
+The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).

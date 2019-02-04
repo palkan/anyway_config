@@ -3,6 +3,12 @@
 require "anyway/optparse_config"
 require "anyway/dynamic_config"
 
+require "anyway/ext/jruby" if defined? JRUBY_VERSION
+require "anyway/ext/deep_dup"
+require "anyway/ext/deep_freeze"
+require "anyway/ext/hash"
+require "anyway/ext/string_serialize"
+
 module Anyway # :nodoc:
   if defined? JRUBY_VERSION
     using Anyway::Ext::JRuby
