@@ -1,8 +1,11 @@
 # frozen_string_literal: true
 
+require "anyway/ext/jruby" if defined? JRUBY_VERSION
+
 require "anyway/ext/deep_dup"
 require "anyway/ext/deep_freeze"
 require "anyway/ext/hash"
+
 require "anyway/ext/string_serialize"
 require "anyway/option_parser_builder"
 

@@ -13,10 +13,10 @@ module Anyway
         def deep_dup
           each_with_object(dup) do |(key, value), hash|
             hash[key] = if value.is_a?(::Hash) || value.is_a?(::Array)
-                          value.deep_dup
-                        else
-                          value
-                        end
+              value.deep_dup
+            else
+              value
+            end
           end
         end
 

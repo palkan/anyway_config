@@ -17,8 +17,6 @@ matrix:
       gemfile: gemfiles/railsmaster.gemfile
     - rvm: jruby-9.2.5.0
       gemfile: gemfiles/jruby.gemfile
-    - rvm: jruby-9.1.15.0
-      gemfile: gemfiles/jruby.gemfile
     - rvm: 2.5.1
       gemfile: gemfiles/rails5.gemfile
   allow_failures:
