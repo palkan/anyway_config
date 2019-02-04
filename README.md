@@ -15,6 +15,8 @@ Libraries using Anyway Config:
 
 - [Sniffer](https://github.com/aderyabin/sniffer)
 
+- [Blood Contracts](https://github.com/sclinede/blood_contracts)
+
 - [and others](https://github.com/palkan/anyway_config/network/dependents).
 
 ## Installation
