@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-module Anyway
-  class TestConfig < Anyway::Config # :nodoc:
+module AnywayTest
+  class Config < Anyway::Config # :nodoc:
     attr_config :test,
                 api: {key: ""},
                 log: {

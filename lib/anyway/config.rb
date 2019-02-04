@@ -59,7 +59,7 @@ module Anyway # :nodoc:
 
         return @config_name if instance_variable_defined?(:@config_name)
 
-        @config_name = explicit_config_name || underscore_name
+        @config_name = explicit_config_name || build_config_name
       end
 
       def explicit_config_name
@@ -90,13 +90,21 @@ module Anyway # :nodoc:
 
       private
 
-      def underscore_name
-        return unless name
+      def build_config_name
+        unless name
+          raise "Please, specify config name explicitly for anonymous class " \
+            "via `config_name :my_config`"
+        end
 
-        word = name[/^(\w+)/]
-        word.gsub!(/([A-Z\d]+)([A-Z][a-z])/, '\1_\2')
-        word.downcase!
-        word
+        # handle two cases:
+        # - SomeModule::Config => "some_module"
+        # - SomeConfig => "some"
+        unless name =~ /^(\w+)(\:\:)?Config$/
+          raise "Couldn't infer config name, please, specify it explicitly" \
+            "via `config_name :my_config`"
+        end
+
+        Regexp.last_match[1].tap(&:downcase!)
       end
     end
 

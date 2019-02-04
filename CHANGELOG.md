@@ -2,6 +2,12 @@
 
 ## 2.0.0-dev
 
+- Update config name inference logic. ([@palkan][])
+
+  Config name is automatically inferred only if:
+  - the class name has a form of `<Module>::Config` (`SomeModule::Config => "some_module"`)
+  - the class name has a form of `<Something>Config` (`SomeConfig => "some"`)
+
 - Fix config classes inheritance. ([@palkan][])
 
   Previously, inheritance didn't work due to the lack of proper handling of class-level

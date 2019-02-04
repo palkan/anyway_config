@@ -8,7 +8,7 @@ describe Anyway::Config do
 
   context "config with explicit name" do
     before(:each) do
-      ENV.delete_if { |var| var =~ /^(cool|anyway)_/i }
+      ENV.delete_if { |var| var =~ /^(cool|anyway_test)_/i }
     end
 
     specify { expect(CoolConfig.config_name).to eq "cool" }
@@ -102,6 +102,22 @@ describe Anyway::Config do
     end
 
     describe "load from env" do
+      it "handle ENV in YML thru ERB" do
+        ENV["ANYWAY_SECRET_PASSWORD"] = "my_pass"
+        expect(conf.user[:password]).to eq "my_pass"
+      end
+
+      it "overrides loaded value by explicit" do
+        ENV["ANYWAY_SECRET_PASSWORD"] = "my_pass"
+
+        config = CoolConfig.new(
+          overrides: {
+            user: {password: "explicit_password"}
+          }
+        )
+        expect(config.user[:password]).to eq "explicit_password"
+      end
+
       context "when env_prefix is not specified" do
         it "uses config_name as a prefix to load variables" do
           ENV["COOL_PORT"] = "80"
@@ -153,22 +169,6 @@ describe Anyway::Config do
           end
         end
       end
-
-      it "handle ENV in YML thru ERB" do
-        ENV["ANYWAY_SECRET_PASSWORD"] = "my_pass"
-        expect(conf.user[:password]).to eq "my_pass"
-      end
-
-      it "overrides loaded value by explicit" do
-        ENV["ANYWAY_SECRET_PASSWORD"] = "my_pass"
-
-        config = CoolConfig.new(
-          overrides: {
-            user: {password: "explicit_password"}
-          }
-        )
-        expect(config.user[:password]).to eq "explicit_password"
-      end
     end
 
     describe "clear" do
@@ -196,6 +196,42 @@ describe Anyway::Config do
     end
   end
 
+  describe ".config_name" do
+    specify "<SomeModule>::Config", :aggregate_failures do
+      expect(AnywayTest::Config.config_name).to eq "anywaytest"
+      expect(AnywayTest::Config.env_prefix).to eq "ANYWAYTEST"
+    end
+
+    specify "<Some>Config" do
+      expect(SmallConfig.config_name).to eq "small"
+      expect(SmallConfig.env_prefix).to eq "SMALL"
+    end
+
+    context "anonymous" do
+      let(:config) do
+        Class.new(described_class)
+      end
+
+      it "raises error" do
+        expect { config.new }.to raise_error(/specify config name explicitly/)
+      end
+    end
+
+    context "non-inferrable name" do
+      let(:config) do
+        Class.new(described_class) do
+          def self.name
+            "Some::Nested::Config"
+          end
+        end
+      end
+
+      it "raises error" do
+        expect { config.new }.to raise_error(/specify .+ explicitly/)
+      end
+    end
+  end
+
   context "config without defaults" do
     let(:conf) { SmallConfig.new }
 
@@ -210,16 +246,6 @@ describe Anyway::Config do
 
     it "works" do
       expect(conf.meta).to eq "dummy"
-    end
-  end
-
-  context "when name is missing" do
-    let(:config) do
-      Class.new(described_class)
-    end
-
-    it "raises ArgumentError" do
-      expect { config.new }.to raise_error(ArgumentError)
     end
   end
 
