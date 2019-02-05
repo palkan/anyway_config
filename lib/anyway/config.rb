@@ -156,14 +156,12 @@ module Anyway # :nodoc:
     end
 
     def load_from_file(config)
-      config_path = Anyway.env.fetch(env_prefix).delete('conf') ||
-                    "./config/#{config_name}.yml"
       config.deep_merge!(parse_yml(config_path) || {}) if config_path && File.file?(config_path)
       config
     end
 
     def load_from_env(config)
-      config.deep_merge!(Anyway.env.fetch(env_prefix))
+      config.deep_merge!(env_part)
       config
     end
 
@@ -187,6 +185,18 @@ module Anyway # :nodoc:
     end
 
     private
+
+    def env_part
+      Anyway.env.fetch(env_prefix)
+    end
+
+    def config_path
+      env_part.delete('conf') || default_config_path
+    end
+
+    def default_config_path
+      "./config/#{config_name}.yml"
+    end
 
     def set_value(key, val)
       send("#{key}=", val) if respond_to?(key)
