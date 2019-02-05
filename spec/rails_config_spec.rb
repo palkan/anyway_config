@@ -26,6 +26,20 @@ describe Anyway::Config do
           expect(conf.meta).to eq("kot" => "leta")
           expect(conf.user[:password]).to eq "root"
         end
+
+        context "when using local files" do
+          around do |ex|
+            Anyway::Settings.use_local_files = true
+            ex.run
+            Anyway::Settings.use_local_files = false
+          end
+
+          it "load config local credentials too" do
+            expect(conf.user[:name]).to eq "secret man"
+            expect(conf.meta).to eq("kot" => "murkot")
+            expect(conf.user[:password]).to eq "password"
+          end
+        end
       else
         it "load config from secrets" do
           expect(conf.user[:name]).to eq "test"

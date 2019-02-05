@@ -27,8 +27,14 @@ module Anyway
       end
 
       def load_from_file(config)
-        config_path = ::Rails.root.join("config", "#{config_name}.yml")
-        config.deep_merge!(parse_yml(config_path)[::Rails.env] || {}) if File.file? config_path
+        config_path = resolve_config_path
+        config.deep_merge!(load_from_yml(config_path)[::Rails.env] || {})
+
+        if Anyway::Settings.use_local_files
+          local_config_path = config_path.sub(/\.yml/, ".local.yml")
+          config.deep_merge!(load_from_yml(local_config_path) || {})
+        end
+
         config
       end
 
@@ -42,8 +48,27 @@ module Anyway
       def load_from_credentials(config)
         if ::Rails.application.respond_to?(:credentials)
           config.deep_merge!(::Rails.application.credentials.public_send(config_name) || {})
+
+          load_from_local_credentials(config) if Anyway::Settings.use_local_files
         end
         config
+      end
+
+      def load_from_local_credentials(config)
+        local_creds_path = ::Rails.root.join("config/credentials/local.yml.enc").to_s
+
+        return unless File.file?(local_creds_path)
+
+        creds = ::Rails.application.encrypted(
+          local_creds_path,
+          key_path: ::Rails.root.join("config/credentials/local.key")
+        )
+
+        config.deep_merge!(creds.public_send(config_name) || {})
+      end
+
+      def default_config_path
+        ::Rails.root.join("config", "#{config_name}.yml")
       end
     end
   end

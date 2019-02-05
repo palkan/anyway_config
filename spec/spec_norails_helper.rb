@@ -9,6 +9,9 @@ rescue LoadError
 end
 
 require "anyway_config"
+
+Anyway::Settings.use_local_files = false
+
 require "erb"
 
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }

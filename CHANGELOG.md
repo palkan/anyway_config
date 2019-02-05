@@ -2,6 +2,16 @@
 
 ## 2.0.0-dev
 
+- Add support for _local_ files. ([@palkan][])
+
+  Now users can store their personal configurations in _local_ files:
+  - `<config_name>.local.yml`
+  - `config/credentials/local.yml.enc` (for Rails 6).
+
+  Local configs are meant for using in development and only loaded if
+  `Anyway::Settings.use_local_files` is `true` (which is true by default if
+  `RACK_ENV` or `RAILS_ENV` env variable is equal to `"development"`).
+
 - Add Rails credentials support. ([@palkan][])
 
   The data from credentials is loaded after the data from YAML config and secrets,

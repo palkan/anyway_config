@@ -11,6 +11,8 @@ module Anyway
       #
       #   my_config = Anyway::Config.for(:my_app)
       #   # will load data from config/my_app.yml, secrets.my_app, ENV["MY_APP_*"]
+      #
+      # TODO: add config_path option, env_prefix option
       def for(name)
         new(name: name, load: false).load_from_sources
       end

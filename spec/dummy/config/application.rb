@@ -20,6 +20,13 @@ module Dummy
       ).change do |tmp_path|
         FileUtils.cp File.join(__dir__, "credentials/test.yml"), tmp_path
       end
+
+      Rails.application.encrypted(
+        File.join(__dir__, "credentials/local.yml.enc"),
+        key_path: File.join(__dir__, "credentials/local.key")
+      ).change do |tmp_path|
+        FileUtils.cp File.join(__dir__, "credentials/local.yml"), tmp_path
+      end
     end
   end
 end

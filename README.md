@@ -163,6 +163,8 @@ development:
   port: 3000
 ```
 
+**NOTE:** you can override the default YML lookup path by setting `MYCOOLGEM_CONF` env variable.
+
 - `Rails.application.secrets.my_cool_gem` (if `secrets.yml` present):
 
 ```yml
@@ -186,7 +188,7 @@ my_cool_gem:
 When you're using Anyway Config in non-Rails environment, we're looking for a YANL config file
 at `./config/<config-name>.yml`.
 
-You can override this setting through special environment variable – 'MYGEM_CONF' – containing the path to the YAML file.
+You can override this setting through special environment variable – 'MYCOOLGEM_CONF' – containing the path to the YAML file.
 
 **NOTE:** in pure Ruby apps we have no knowledge of _environments_ (`test`, `development`, `production`, etc.); thus we assume that the YAML contains values for a single environment:
 
@@ -197,6 +199,22 @@ port: 3000
 
 Environmental variables work the same way as with Rails.
 
+### Local files
+
+It's useful to have personal, user-specific configuration in development, which extends the project-wide one.
+
+We support this by looking at _local_ files when loading the configuration data:
+- `<config_name>.local.yml` files (next to\* the _global_ `<config_name>.yml`)
+- `config/credentials/local.yml.enc` (for Rails >= 6, generate it via `rails credentials:edit --environment local`).
+
+\* If the YAML config path is not default (i.e. set via `<CONFIG_NAME>_CONF`), we lookup the local
+config at this location, too.
+
+Local configs are meant for using in development and only loaded if `Anyway::Settings.use_local_files` is `true` (which is true by default if `RACK_ENV` or `RAILS_ENV` env variable is equal to `"development"`).
+
+Don't forget to add `*.local.yml` (and `config/credentials/local.*`) to your `.gitignore`.
+
+**NOTE:** local YAML configs for Rails app must be environment-free (i.e. you shouldn't have top-level `development:` key).
 
 ### Reload configuration
 
@@ -259,11 +277,12 @@ Rails 4.2 introduced new feature: `Rails.application.config_for`. It looks very 
 
 | Feature       | Rails         | Anyway Config |
 | ------------- |:-------------:| -----:|
-| load data from `config/app.yml`     | yes | yes |
-| load data from `secrets`      | no      |   yes |
-| load data from `credentials`  | no      |   yes |
-| load data from environment | no   |   yes |
-| return Hash with indifferent access | no | yes |
+| load data from `config/app.yml`      | yes | yes |
+| load data from `secrets`      | no       |   yes |
+| load data from `credentials`  | no       |   yes |
+| load data from environment    | no       |   yes |
+| local config files            | no       |   yes |
+| return Hash with indifferent access | no | yes  |
 | support ERB within `config/app.yml` | yes | yes* |
 | raise errors if file doesn't exist | yes | no |
 

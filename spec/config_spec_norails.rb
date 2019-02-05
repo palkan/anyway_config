@@ -50,6 +50,37 @@ describe Anyway::Config do
       expect(conf.log["format"]["color"]).to eq true
     end
 
+    context "when using local files" do
+      around do |ex|
+        Anyway::Settings.use_local_files = true
+        ex.run
+        Anyway::Settings.use_local_files = false
+      end
+
+      it "load config local from local file" do
+        ENV["ANYWAYTEST_CONF"] = File.join(File.dirname(__FILE__), "anyway.yml")
+
+        expect(conf.api["key"]).to eq "zyx213"
+        expect(conf.api["endpoint"]).to eq "localhost"
+        expect(conf.test).to be_nil
+        expect(conf.log["format"]["color"]).to eq true
+
+        ENV["ANYWAYTEST_API__KEY"] = "test1"
+        ENV["ANYWAYTEST_API__SSL"] = "yes"
+        ENV["ANYWAYTEST_TEST"] = "test"
+        ENV["ANYWAYTEST_LOG__FORMAT__COLOR"] = "t"
+
+        Anyway.env.clear
+
+        conf.reload
+        expect(conf.api["key"]).to eq "test1"
+        expect(conf.api["ssl"]).to eq true
+        expect(conf.api["endpoint"]).to eq "localhost"
+        expect(conf.test).to eq "test"
+        expect(conf.log["format"]["color"]).to eq true
+      end
+    end
+
     context "config without keys" do
       let(:empty_config_class) { Class.new(Anyway::Config) }
 
@@ -78,6 +109,20 @@ describe Anyway::Config do
       it "handle ENV in YML thru ERB" do
         ENV["ANYWAY_COOL_PORT"] = "1957"
         expect(conf.port).to eq 1957
+      end
+
+      context "when using local files" do
+        around do |ex|
+          Anyway::Settings.use_local_files = true
+          ex.run
+          Anyway::Settings.use_local_files = false
+        end
+
+        it "load config local from local file" do
+          expect(conf.user).to eq("name" => "root", "password" => "root")
+          expect(conf.host).to eq "local.host"
+          expect(conf.port).to eq 9292
+        end
       end
     end
   end
