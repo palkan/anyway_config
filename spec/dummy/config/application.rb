@@ -10,5 +10,15 @@ module Dummy
   class Application < Rails::Application
     config.logger = Logger.new("/dev/null")
     config.eager_load = false
+
+    # Rails 6: generate encrypted credentials from plain yml
+    if Rails.application.respond_to?(:credentials)
+      Rails.application.encrypted(
+        File.join(__dir__, "credentials/test.yml.enc"),
+        key_path: File.join(__dir__, "credentials/test.key")
+      ).change do |tmp_path|
+        FileUtils.cp File.join(__dir__, "credentials/test.yml"), tmp_path
+      end
+    end
   end
 end

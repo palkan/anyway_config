@@ -90,8 +90,18 @@ describe Anyway::Config do
       end
 
       if Rails.application.respond_to?(:secrets)
-        it "load config from secrets" do
-          expect(conf.user[:name]).to eq "test"
+        if Rails.application.respond_to?(:credentials)
+          it "load config from secrets and credentials" do
+            expect(conf.user[:name]).to eq "secret man"
+            expect(conf.meta).to eq("kot" => "leta")
+            expect(conf.user[:password]).to eq "root"
+          end
+        else
+          it "load config from secrets" do
+            expect(conf.user[:name]).to eq "test"
+            expect(conf.meta).to eq("kot" => "leta")
+            expect(conf.user[:password]).to eq "root"
+          end
         end
       else
         it "load config from file if no secrets" do

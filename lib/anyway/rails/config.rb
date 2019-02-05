@@ -22,6 +22,7 @@ module Anyway
         config = config.with_indifferent_access
         load_from_file(config)
         load_from_secrets(config)
+        load_from_credentials(config)
         load_from_env(config)
       end
 
@@ -34,6 +35,13 @@ module Anyway
       def load_from_secrets(config)
         if ::Rails.application.respond_to?(:secrets)
           config.deep_merge!(::Rails.application.secrets.public_send(config_name) || {})
+        end
+        config
+      end
+
+      def load_from_credentials(config)
+        if ::Rails.application.respond_to?(:credentials)
+          config.deep_merge!(::Rails.application.credentials.public_send(config_name) || {})
         end
         config
       end
