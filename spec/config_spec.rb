@@ -7,10 +7,6 @@ describe Anyway::Config do
   let(:test_conf) { Anyway::TestConfig.new }
 
   context "config with explicit name" do
-    before(:each) do
-      ENV.delete_if { |var| var =~ /^(cool|anyway_test)_/i }
-    end
-
     specify { expect(CoolConfig.config_name).to eq "cool" }
     specify { expect(CoolConfig.env_prefix).to eq "COOL" }
 
@@ -92,12 +88,12 @@ describe Anyway::Config do
 
     describe "load from env" do
       it "handle ENV in YML thru ERB" do
-        ENV["ANYWAY_SECRET_PASSWORD"] = "my_pass"
+        ENV["ANY_SECRET_PASSWORD"] = "my_pass"
         expect(conf.user[:password]).to eq "my_pass"
       end
 
       it "overrides loaded value by explicit" do
-        ENV["ANYWAY_SECRET_PASSWORD"] = "my_pass"
+        ENV["ANY_SECRET_PASSWORD"] = "my_pass"
 
         config = CoolConfig.new(
           overrides: {

@@ -27,5 +27,8 @@ RSpec.configure do |config|
   config.order = :random
   Kernel.srand config.seed
 
-  config.after(:each) { Anyway.env.clear }
+  config.after(:each) do
+    Anyway.env.clear
+    ENV.delete_if { |var| var =~ /^(cool_|any|testo_|myapp_)/i }
+  end
 end

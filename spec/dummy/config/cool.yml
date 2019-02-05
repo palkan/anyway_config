@@ -2,4 +2,4 @@ test:
   host: "test.host"
   user:
     name: "root"
-    password: <%= ENV['ANYWAY_SECRET_PASSWORD'] || "root" %>
+    password: <%= ENV['ANY_SECRET_PASSWORD'] || "root" %>

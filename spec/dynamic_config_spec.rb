@@ -3,10 +3,6 @@
 require "spec_helper"
 
 describe Anyway::Config do
-  before(:each) do
-    ENV.delete_if { |var| var =~ /^myapp_/i }
-  end
-
   it "loads data by config name", :aggregate_failures do
     ENV["MY_APP_TEST"] = "1"
     ENV["MY_APP_NAME"] = "my_app"

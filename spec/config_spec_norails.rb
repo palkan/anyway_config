@@ -6,10 +6,6 @@ describe Anyway::Config do
   let(:conf) { AnywayTest::Config.new }
 
   describe "config without Rails" do
-    before(:each) do
-      ENV.delete_if { |var| var =~ /^anywaytest_/i }
-    end
-
     it "has getters", :aggregate_failures do
       expect(conf).to respond_to(:test)
       expect(conf).to respond_to(:api)

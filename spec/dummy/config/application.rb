@@ -12,7 +12,8 @@ module Dummy
     config.eager_load = false
 
     # Rails 6: generate encrypted credentials from plain yml
-    if Rails.application.respond_to?(:credentials)
+    if Rails::VERSION::MAJOR >= 6
+      require "tmpdir"
       Rails.application.encrypted(
         File.join(__dir__, "credentials/test.yml.enc"),
         key_path: File.join(__dir__, "credentials/test.key")
