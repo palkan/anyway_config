@@ -69,6 +69,13 @@ describe Anyway::Config do
           expect(conf.user[:password]).to eq "root"
         end
       end
+
+      context "with overiden path" do
+        it "reads custom config path" do
+          ENV['COOL_CONF'] = Rails.root.join("config", "cool_custom.yml").to_s
+          expect(conf.host).to eq "custom.host"
+        end
+      end
     end
 
     describe "load from env" do

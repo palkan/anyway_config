@@ -99,7 +99,6 @@ explicitly, and it will be used as is:
 ```ruby
 module MyCoolGem
   class Config < Anyway::Config
-    config_name :cool_gem
     env_prefix :really_cool # now variables, starting wih `REALLY_COOL_`, will be parsed
     attr_config user: 'root', password: 'root', host: 'localhost', options: {}
   end
@@ -136,7 +135,8 @@ config = Anyway::Config.for(:my_app)
 
 Your config will be filled up with values from the following sources (ordered by priority from low to high):
 
-- `RAILS_ROOT/config/my_cool_gem.yml` (for the current `RAILS_ENV`, supports `ERB`)
+- `RAILS_ROOT/config/my_cool_gem.yml` (for the current `RAILS_ENV`, supports `ERB`). You can override this setting
+through special environment variable – 'MYCOOLGEM_CONF' – containing the path to the YAML file.
 
 - `Rails.application.secrets.my_cool_gem`
 
@@ -144,10 +144,10 @@ Your config will be filled up with values from the following sources (ordered by
 
 ### Using with Ruby
 
-By default, Anyway Config is looking for a config YAML at `./config/<config-name>.yml`. You can override this setting
-through special environment variable – 'MYGEM_CONF' – containing the path to the YAML file.
+By default, Anyway Config is looking for a config YAML at `./config/<config-name>.yml` e.g. `./config/my_cool_gem.yml`.
+You can override this location the same way as for Rails.
 
-Environmental variables work the same way as with Rails.
+Environmental variables work the same way too.
 
 
 ### Config clear and reload
