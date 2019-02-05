@@ -163,9 +163,21 @@ development:
   port: 3000
 ```
 
-- `Rails.application.secrets.my_cool_gem` (if `secrets.yml` present)
+- `Rails.application.secrets.my_cool_gem` (if `secrets.yml` present):
 
-- **WIP** `RAILS_ROOT/config/credentials/<env>.enc`
+```yml
+# config/secrets.yml
+development:
+  my_cool_gem:
+    port: 4444
+```
+
+- `Rails.application.credentials` (if supported):
+
+```yml
+my_cool_gem:
+  host: secret.host
+```
 
 - `ENV['MYCOOLGEM_*']`.
 
@@ -249,6 +261,7 @@ Rails 4.2 introduced new feature: `Rails.application.config_for`. It looks very 
 | ------------- |:-------------:| -----:|
 | load data from `config/app.yml`     | yes | yes |
 | load data from `secrets`      | no      |   yes |
+| load data from `credentials`  | no      |   yes |
 | load data from environment | no   |   yes |
 | return Hash with indifferent access | no | yes |
 | support ERB within `config/app.yml` | yes | yes* |

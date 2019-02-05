@@ -2,6 +2,11 @@
 
 ## 2.0.0-dev
 
+- Add Rails credentials support. ([@palkan][])
+
+  The data from credentials is loaded after the data from YAML config and secrets,
+  but before environmental variables (i.e. env variables are _stronger_)
+
 - Update config name inference logic. ([@palkan][])
 
   Config name is automatically inferred only if:
