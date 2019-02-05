@@ -82,5 +82,17 @@ describe Anyway::Config do
         expect(conf.port).to eq 1957
       end
     end
+
+    context "loading from custom path" do
+      let(:conf) { CoolConfig.new(config_path: "./config/cool_custom.yml") }
+
+      before(:each) do
+        ENV.delete_if { |var| var =~ /^cool_/i }
+      end
+
+      it "loads", :aggregate_failures do
+        expect(conf.host).to eq "custom.host"
+      end
+    end
   end
 end

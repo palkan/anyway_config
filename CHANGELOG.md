@@ -2,6 +2,14 @@
 
 ## master
 
+- Allow overriding default config file path via Anyway::Config options ([@sponomarev][])
+
+  ```ruby
+    my_config = Anyway::Config.new(config_path: './myconfig/myconf.yml')
+  ```
+
+- Fix overriding default config file path via ENV with Rails integration ([@sponomarev][])
+
 ## 1.4.3 (2019-02-04)
 
 - Add a temporary fix for JRuby regression [#5550](https://github.com/jruby/jruby/issues/5550). ([@palkan][])
@@ -105,3 +113,4 @@ Initial version.
 [@dsalahutdinov]: https://github.com/dsalahutdinov
 [@charlie-wasp]: https://github.com/charlie-wasp
 [@jastkand]: https://github.com/jastkand
+[@sponomarev]: https://github.com/sponomarev

@@ -3,7 +3,9 @@
 require 'spec_helper'
 
 describe Anyway::Config do
-  let(:conf) { CoolConfig.new }
+  let(:overrides) { {} }
+  let(:config_path) { nil }
+  let(:conf) { CoolConfig.new(config_path: config_path, overrides: overrides) }
   let(:test_conf) { Anyway::TestConfig.new }
 
   context "config with name" do
@@ -27,7 +29,7 @@ describe Anyway::Config do
     end
 
     describe "#to_h" do
-      subject(:config) { CoolConfig.new }
+      subject(:config) { conf }
 
       it "returns deeply frozen hash" do
         hashed = config.to_h
@@ -54,11 +56,6 @@ describe Anyway::Config do
         expect(conf.host).to eq "test.host"
       end
 
-      it "sets overrides after loading YAML" do
-        config = CoolConfig.new(overrides: { host: 'overrided.host' })
-        expect(config.host).to eq "overrided.host"
-      end
-
       if Rails.application.respond_to?(:secrets)
         it "load config from secrets" do
           expect(conf.user[:name]).to eq "test"
@@ -67,6 +64,29 @@ describe Anyway::Config do
         it "load config from file if no secrets" do
           expect(conf.user[:name]).to eq "root"
           expect(conf.user[:password]).to eq "root"
+        end
+      end
+
+      context "with overrides" do
+        let(:overrides) { { host: 'overrided.host' } }
+
+        it "sets overrides after loading YAML" do
+          expect(conf.host).to eq "overrided.host"
+        end
+      end
+
+      context 'with config via `config_path`' do
+        let(:config_path) { Rails.root.join("config", "cool_custom.yml") }
+
+        it "reads custom config path" do
+          expect(conf.host).to eq "custom.host"
+        end
+      end
+
+      context 'with config via ENV' do
+        it "reads custom config path" do
+          ENV['COOL_CONF'] = Rails.root.join("config", "cool_custom.yml").to_s
+          expect(conf.host).to eq "custom.host"
         end
       end
     end
@@ -130,15 +150,14 @@ describe Anyway::Config do
         expect(conf.user[:password]).to eq 'my_pass'
       end
 
-      it "overrides loaded value by explicit" do
-        ENV['ANYWAY_SECRET_PASSWORD'] = 'my_pass'
+      context 'with overrides' do
+        let(:overrides) { { user: { password: 'explicit_password' } } }
 
-        config = CoolConfig.new(
-          overrides: {
-            user: { password: 'explicit_password' }
-          }
-        )
-        expect(config.user[:password]).to eq "explicit_password"
+        it "overrides loaded value by explicit" do
+          ENV['ANYWAY_SECRET_PASSWORD'] = 'my_pass'
+
+          expect(conf.user[:password]).to eq "explicit_password"
+        end
       end
     end
 

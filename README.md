@@ -145,7 +145,8 @@ Your config will be filled up with values from the following sources (ordered by
 ### Using with Ruby
 
 By default, Anyway Config is looking for a config YAML at `./config/<config-name>.yml`. You can override this setting
-through special environment variable – 'MYGEM_CONF' – containing the path to the YAML file.
+through special environment variable – 'MYGEM_CONF' – containing the path to the YAML file or passing `config_path` to
+`Anyway::Config` initializer.
 
 Environmental variables work the same way as with Rails.
 
