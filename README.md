@@ -319,6 +319,43 @@ If you want to provide a text-like env variable which contains commas then wrap 
 MYCOOLGEM = "Nif-Nif, Naf-Naf and Nouf-Nouf"
 ```
 
+## Test helpers
+
+We provide the `with_env` test helper to test code in the context of the specified environment variables values:
+
+```ruby
+describe HerokuConfig, type: :config do
+  subject { described_class.new }
+
+  specify do
+    # Ensure that the env vars are set to the specified
+    # values within the block and reset to the previous values
+    # outside of it.
+    with_env(
+      "HEROKU_APP_NAME" => "kin-web-staging",
+      "HEROKU_APP_ID" => "abc123",
+      "HEROKU_DYNO_ID" => "ddyy",
+      "HEROKU_RELEASE_VERSION" => "v0",
+      "HEROKU_SLUG_COMMIT" => "3e4d5a"
+    ) do
+      is_expected.to have_attributes(
+        app_name: "kin-web-staging",
+        app_id: "abc123",
+        dyno_id: "ddyy",
+        release_version: "v0",
+        slug_commit: "3e4d5a"
+      )
+    end
+  end
+end
+```
+
+If you want to delete the env var, pass `nil` as the value.
+
+This helper is automatically included to RSpec if `RAILS_ENV` or `RACK_ENV` env variable is equal to "test". It's only available for the example with the tag `type: :config` or with the path `spec/configs/...`.
+
+You can add it manually by requiring `"anyway/testing/helpers"` and including the `Anyway::Test::Helpers` module (into RSpec configuration or Minitest test class).
+
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/palkan/anyway_config.

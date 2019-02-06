@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe Anyway::Config do
+describe Anyway::Config, type: :config do
   let(:conf) { CoolConfig.new }
 
   describe "load_from_sources in Rails" do
@@ -25,6 +25,16 @@ describe Anyway::Config do
           expect(conf.user[:name]).to eq "secret man"
           expect(conf.meta).to eq("kot" => "leta")
           expect(conf.user[:password]).to eq "root"
+        end
+
+        context "with env" do
+          specify "env overrides credentials" do
+            with_env("COOL_META__KOT" => "zhmot") do
+              expect(conf.user[:name]).to eq "secret man"
+              expect(conf.meta).to eq("kot" => "zhmot")
+              expect(conf.user[:password]).to eq "root"
+            end
+          end
         end
 
         context "when using local files" do

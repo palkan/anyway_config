@@ -2,49 +2,58 @@
 
 require "spec_helper"
 
-describe Anyway::Env do
+describe Anyway::Env, type: :config do
   let(:env) { Anyway.env }
 
   it "loads simple key/values", :aggregate_failures do
-    ENV["TESTO_KEY"] = "a"
-    ENV["MY_TEST_KEY"] = "b"
-    expect(env.fetch("TESTO")["key"]).to eq "a"
-    expect(env.fetch("MY_TEST")["key"]).to eq "b"
+    with_env("TESTO_KEY" => "a", "MY_TEST_KEY" => "b") do
+      expect(env.fetch("TESTO")["key"]).to eq "a"
+      expect(env.fetch("MY_TEST")["key"]).to eq "b"
+    end
   end
 
   it "loads hash values", :aggregate_failures do
-    ENV["TESTO_DATA__ID"] = "1"
-    ENV["TESTO_DATA__META__NAME"] = "meta"
-    ENV["TESTO_DATA__META__VAL"] = "true"
-    testo_config = env.fetch("TESTO")
-    expect(testo_config["data"]["id"]).to eq 1
-    expect(testo_config["data"]["meta"]["name"]).to eq "meta"
-    expect(testo_config["data"]["meta"]["val"]).to be_truthy
+    with_env(
+      "TESTO_DATA__ID" => "1",
+      "TESTO_DATA__META__NAME" => "meta",
+      "TESTO_DATA__META__VAL" => "true"
+    ) do
+      testo_config = env.fetch("TESTO")
+      expect(testo_config["data"]["id"]).to eq 1
+      expect(testo_config["data"]["meta"]["name"]).to eq "meta"
+      expect(testo_config["data"]["meta"]["val"]).to be_truthy
+    end
   end
 
   it "loads array values", :aggregate_failures do
-    ENV["TESTO_DATA__IDS"] = "1,2, 3"
-    ENV["TESTO_DATA__META__NAMES"] = "meta, kotleta"
-    ENV["TESTO_DATA__META__SIZE"] = "2"
-    ENV["TESTO_DATA__TEXT"] = '"C\'mon, everybody"'
-    testo_config = env.fetch("TESTO")
-    expect(testo_config["data"]["ids"]).to include(1, 2, 3)
-    expect(testo_config["data"]["meta"]["names"]).to include("meta", "kotleta")
-    expect(testo_config["data"]["meta"]["size"]).to eq 2
-    expect(testo_config["data"]["text"]).to eq "C'mon, everybody"
+    with_env(
+      "TESTO_DATA__IDS" => "1,2, 3",
+      "TESTO_DATA__META__NAMES" => "meta, kotleta",
+      "TESTO_DATA__META__SIZE" => "2",
+      "TESTO_DATA__TEXT" => '"C\'mon, everybody"'
+    ) do
+      testo_config = env.fetch("TESTO")
+      expect(testo_config["data"]["ids"]).to include(1, 2, 3)
+      expect(testo_config["data"]["meta"]["names"]).to include("meta", "kotleta")
+      expect(testo_config["data"]["meta"]["size"]).to eq 2
+      expect(testo_config["data"]["text"]).to eq "C'mon, everybody"
+    end
   end
 
   it "returns deep duped hash" do
-    ENV["TESTO_CONF"] = "path/to/conf.yml"
-    ENV["TESTO_DATA__ID"] = "1"
-    ENV["TESTO_DATA__META__NAME"] = "meta"
-    ENV["TESTO_DATA__META__VAL"] = "true"
-    testo_config = env.fetch("TESTO")
-    testo_config.delete("conf")
-    testo_config["data"]["meta"].delete("name")
+    with_env(
+      "TESTO_CONF" => "path/to/conf.yml",
+      "TESTO_DATA__ID" => "1",
+      "TESTO_DATA__META__NAME" => "meta",
+      "TESTO_DATA__META__VAL" => "true"
+    ) do
+      testo_config = env.fetch("TESTO")
+      testo_config.delete("conf")
+      testo_config["data"]["meta"].delete("name")
 
-    new_config = env.fetch("TESTO")
-    expect(new_config["data"]["meta"]["name"]).to eq "meta"
-    expect(new_config["conf"]).to eq "path/to/conf.yml"
+      new_config = env.fetch("TESTO")
+      expect(new_config["data"]["meta"]["name"]).to eq "meta"
+      expect(new_config["conf"]).to eq "path/to/conf.yml"
+    end
   end
 end

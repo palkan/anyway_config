@@ -2,6 +2,14 @@
 
 ## 2.0.0-dev
 
+- Add test helpers. ([@palkan][])
+
+  Added `with_env` helper to test code in the context of the specified
+  environment variables.
+
+  Included automatically in RSpec for examples with the `type: :config` meta
+  or with the `spec/configs` path.
+
 - Add support for _local_ files. ([@palkan][])
 
   Now users can store their personal configurations in _local_ files:

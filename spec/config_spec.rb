@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe Anyway::Config do
+describe Anyway::Config, type: :config do
   let(:conf) { CoolConfig.new }
   let(:test_conf) { Anyway::TestConfig.new }
 
@@ -88,28 +88,31 @@ describe Anyway::Config do
 
     describe "load from env" do
       it "handle ENV in YML thru ERB" do
-        ENV["ANY_SECRET_PASSWORD"] = "my_pass"
-        expect(conf.user[:password]).to eq "my_pass"
+        with_env("ANY_SECRET_PASSWORD" => "my_pass") do
+          expect(conf.user[:password]).to eq "my_pass"
+        end
       end
 
       it "overrides loaded value by explicit" do
-        ENV["ANY_SECRET_PASSWORD"] = "my_pass"
-
-        config = CoolConfig.new(
-          overrides: {
-            user: {password: "explicit_password"}
-          }
-        )
-        expect(config.user[:password]).to eq "explicit_password"
+        with_env("ANY_SECRET_PASSWORD" => "my_pass") do
+          config = CoolConfig.new(
+            overrides: {
+              user: {password: "explicit_password"}
+            }
+          )
+          expect(config.user[:password]).to eq "explicit_password"
+        end
       end
 
       context "when env_prefix is not specified" do
         it "uses config_name as a prefix to load variables" do
-          ENV["COOL_PORT"] = "80"
-          ENV["COOL_USER__NAME"] = "john"
-          Anyway.env.clear
-          expect(conf.port).to eq 80
-          expect(conf.user[:name]).to eq "john"
+          with_env(
+            "COOL_PORT" => "80",
+            "COOL_USER__NAME" => "john"
+          ) do
+            expect(conf.port).to eq 80
+            expect(conf.user[:name]).to eq "john"
+          end
         end
       end
 
@@ -121,12 +124,15 @@ describe Anyway::Config do
         end
 
         it "uses env_prefix value as a prefix to load variables" do
-          ENV["COOL_PORT"] = "80"
-          ENV["COOL_ENV_PORT"] = "8888"
-          ENV["COOL_USER__NAME"] = "john"
-          ENV["COOL_ENV_USER__NAME"] = "bill"
-          expect(conf.port).to eq 8888
-          expect(conf.user[:name]).to eq "bill"
+          with_env(
+            "COOL_PORT" => "80",
+            "COOL_ENV_PORT" => "8888",
+            "COOL_USER__NAME" => "john",
+            "COOL_ENV_USER__NAME" => "bill"
+          ) do
+            expect(conf.port).to eq 8888
+            expect(conf.user[:name]).to eq "bill"
+          end
         end
       end
 
@@ -171,12 +177,14 @@ describe Anyway::Config do
     describe "reload" do
       it do
         expect(conf.port).to eq 8080
-        ENV["COOL_PORT"] = "80"
-        ENV["COOL_USER__NAME"] = "john"
-        Anyway.env.clear
-        conf.reload
-        expect(conf.port).to eq 80
-        expect(conf.user[:name]).to eq "john"
+        with_env(
+          "COOL_PORT" => "80",
+          "COOL_USER__NAME" => "john"
+        ) do
+          conf.reload
+          expect(conf.port).to eq 80
+          expect(conf.user[:name]).to eq "john"
+        end
       end
     end
   end

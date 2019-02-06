@@ -26,4 +26,6 @@ module Anyway # :nodoc:
       @env ||= ::Anyway::Env.new
     end
   end
+
+  require "anyway/testing" if ENV["RACK_ENV"] == "test" || ENV["RAILS_ENV"] == "test"
 end
