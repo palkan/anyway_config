@@ -20,7 +20,7 @@ describe Anyway::Config, type: :config do
     end
 
     if Rails.application.respond_to?(:secrets)
-      if Rails::VERSION::MAJOR >= 6
+      if Rails.application.respond_to?(:credentials)
         it "load config from secrets and credentials" do
           expect(conf.user[:name]).to eq "secret man"
           expect(conf.meta).to eq("kot" => "leta")

@@ -11,15 +11,25 @@ module Dummy
     config.logger = Logger.new("/dev/null")
     config.eager_load = false
 
-    # Rails 6: generate encrypted credentials from plain yml
-    if Rails::VERSION::MAJOR >= 6
+    # Rails 5.2+: generate encrypted credentials from plain yml
+    if Rails.application.respond_to?(:credentials)
       require "tmpdir"
+
+      # Rails 6 support per-env credentials...
       Rails.application.encrypted(
         File.join(__dir__, "credentials/test.yml.enc"),
         key_path: File.join(__dir__, "credentials/test.key")
       ).change do |tmp_path|
         FileUtils.cp File.join(__dir__, "credentials/test.yml"), tmp_path
       end
+
+      # ...but Rails 5.2 doesn't
+      FileUtils.cp(
+        File.join(__dir__, "credentials/test.yml.enc"), File.join(__dir__, "credentials.yml.enc")
+      )
+      FileUtils.cp(
+        File.join(__dir__, "credentials/test.key"), File.join(__dir__, "master.key")
+      )
 
       Rails.application.encrypted(
         File.join(__dir__, "credentials/local.yml.enc"),
