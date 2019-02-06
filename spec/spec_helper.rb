@@ -11,9 +11,6 @@ end
 ENV["RAILS_ENV"] = "test"
 
 require File.expand_path("dummy/config/environment", __dir__)
-require "anyway_config"
-
-Anyway::Settings.use_local_files = false
 
 Rails.application.eager_load!
 

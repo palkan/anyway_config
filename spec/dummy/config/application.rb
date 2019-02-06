@@ -3,6 +3,7 @@
 require File.expand_path("../boot", __FILE__)
 
 require "rails"
+require "anyway_config"
 
 Bundler.require(*Rails.groups)
 
@@ -10,6 +11,8 @@ module Dummy
   class Application < Rails::Application
     config.logger = Logger.new("/dev/null")
     config.eager_load = false
+
+    config.anyway_config.use_local_files = false
 
     # Rails 5.2+: generate encrypted credentials from plain yml
     if Rails.application.respond_to?(:credentials)

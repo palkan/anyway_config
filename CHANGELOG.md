@@ -2,6 +2,13 @@
 
 ## 2.0.0-dev
 
+- Add Railtie. ([@palkan][])
+
+  `Anyway::Railtie` provides `Anyway::Settings` access via `Rails.applicaiton.configuration.anyway_config`.
+
+  It also adds `app/configs` path to autoload paths (low-level, `ActiveSupport::Dependencies`) to
+  make it possible to use configs in the app configuration files.
+
 - Add test helpers. ([@palkan][])
 
   Added `with_env` helper to test code in the context of the specified

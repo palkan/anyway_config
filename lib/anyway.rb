@@ -27,5 +27,6 @@ module Anyway # :nodoc:
     end
   end
 
+  require "anyway/railtie" if defined?(::Rails::VERSION)
   require "anyway/testing" if ENV["RACK_ENV"] == "test" || ENV["RAILS_ENV"] == "test"
 end
