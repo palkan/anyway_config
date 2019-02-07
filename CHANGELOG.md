@@ -2,6 +2,8 @@
 
 ## master
 
+## 1.4.4 (2019-02-07)
+
 - Allow overriding default config file path via ENV with Rails integration ([@sponomarev][])
 
 ## 1.4.3 (2019-02-04)
