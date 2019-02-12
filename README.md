@@ -136,11 +136,11 @@ config = Anyway::Config.for(:my_app)
 Your config will be filled up with values from the following sources (ordered by priority from low to high):
 
 - `RAILS_ROOT/config/my_cool_gem.yml` (for the current `RAILS_ENV`, supports `ERB`). You can override this setting
-through special environment variable – 'MYCOOLGEM_CONF' – containing the path to the YAML file.
+through special environment variable – 'MY_COOL_GEM_CONF' – containing the path to the YAML file.
 
 - `Rails.application.secrets.my_cool_gem`
 
-- `ENV['MYCOOLGEM_*']`.
+- `ENV['MY_COOL_GEM_*']`.
 
 ### Using with Ruby
 

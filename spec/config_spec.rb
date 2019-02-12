@@ -176,16 +176,16 @@ describe Anyway::Config do
 
   context "config for name" do
     before(:each) do
-      ENV.delete_if { |var| var =~ /^myapp_/i }
+      ENV.delete_if { |var| var =~ /^my_app_/i }
     end
 
     it "load data by config name", :aggregate_failures do
       ENV['MY_APP_TEST'] = '1'
-      ENV['MY_APP_NAME'] = 'my_app'
+      ENV['MY_APP_NAME'] = 'my_app_from_env'
       Anyway.env.clear
       data = Anyway::Config.for(:my_app)
       expect(data[:test]).to eq 1
-      expect(data[:name]).to eq 'my_app'
+      expect(data[:name]).to eq 'my_app_from_env'
       expect(data[:secret]).to eq 'my_secret' if Rails.application.respond_to?(:secrets)
     end
   end
