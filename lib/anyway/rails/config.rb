@@ -46,6 +46,10 @@ module Anyway
       end
 
       def load_from_credentials(config)
+        # do not load from credentials if we're in the context
+        # of the `credentials:edit` command
+        return if defined?(::Rails::Command::CredentialsCommand)
+
         if ::Rails.application.respond_to?(:credentials)
           config.deep_merge!(::Rails.application.credentials.public_send(config_name) || {})
 
