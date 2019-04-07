@@ -116,20 +116,23 @@ module Anyway # :nodoc:
 
     attr_reader :config_name, :env_prefix
 
-    # Instantiate config with specified name, loads the data and applies overrides
+    # Instantiate config instance.
     #
     # Example:
     #
-    #   my_config = Anyway::Config.new(name: :my_app, load: true, overrides: { some: :value })
+    #   my_config = Anyway::Config.new()
     #
-    def initialize(name: nil, load: true, overrides: {})
-      @config_name = name || self.class.config_name
+    #   # provide some values explicitly
+    #   my_config = Anyway::Config.new({some: :value})
+    #
+    def initialize(overrides = {})
+      @config_name = self.class.config_name
 
       raise ArgumentError, "Config name is missing" unless @config_name
 
-      @env_prefix = name.nil? ? self.class.env_prefix : name.to_s.upcase
+      @env_prefix = self.class.env_prefix
 
-      self.load(overrides) if load
+      load(overrides)
     end
 
     def reload(overrides = {})
@@ -146,43 +149,59 @@ module Anyway # :nodoc:
     end
 
     def load(overrides = {})
-      config = load_from_sources((self.class.defaults || {}).deep_dup)
+      base_config = (self.class.defaults || {}).deep_dup
 
-      config.merge!(overrides) unless overrides.nil?
-      config.each do |key, val|
+      base_config.deep_merge!(
+        load_from_sources(
+          name: config_name,
+          env_prefix: env_prefix,
+          config_path: resolve_config_path(config_name, env_prefix)
+        )
+      )
+
+      base_config.merge!(overrides) unless overrides.nil?
+
+      base_config.each do |key, val|
         set_value(key, val)
       end
     end
 
-    def load_from_sources(config = {})
-      # Handle anonymous configs
-      return config unless config_name
-
-      load_from_file(config)
-      load_from_env(config)
+    def load_from_sources(**options)
+      base_config = {}
+      each_source(options) do |config|
+        base_config.deep_merge!(config) if config
+      end
+      base_config
     end
 
-    def load_from_file(config)
-      config_path = resolve_config_path
-      config.deep_merge!(load_from_yml(config_path))
+    def each_source(options)
+      yield load_from_file(options)
+      yield load_from_env(options)
+    end
+
+    def load_from_file(name:, env_prefix:, config_path:, **_options)
+      file_config = load_from_yml(config_path)
 
       if Anyway::Settings.use_local_files
         local_config_path = config_path.sub(/\.yml/, ".local.yml")
-        config.deep_merge!(load_from_yml(local_config_path))
+        file_config.deep_merge!(load_from_yml(local_config_path))
       end
 
-      config
+      file_config
     end
 
-    def load_from_env(config)
-      config.deep_merge!(Anyway.env.fetch(env_prefix))
-      config
+    def load_from_env(name:, env_prefix:, **_options)
+      Anyway.env.fetch(env_prefix)
     end
 
     def to_h
       self.class.config_attributes.each_with_object({}) do |key, obj|
         obj[key.to_sym] = send(key)
       end.deep_dup.deep_freeze
+    end
+
+    def resolve_config_path(name, env_prefix)
+      Anyway.env.fetch(env_prefix).delete("conf") || default_config_path(name)
     end
 
     private
@@ -197,12 +216,8 @@ module Anyway # :nodoc:
       parse_yml(path)
     end
 
-    def resolve_config_path
-      Anyway.env.fetch(env_prefix).delete("conf") || default_config_path
-    end
-
-    def default_config_path
-      "./config/#{config_name}.yml"
+    def default_config_path(name)
+      "./config/#{name}.yml"
     end
 
     def parse_yml(path)

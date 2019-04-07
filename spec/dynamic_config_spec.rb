@@ -19,6 +19,17 @@ describe Anyway::Config, type: :config do
     expect(data[:credo]).to eq "my_credo" if Rails.application.respond_to?(:credentials)
   end
 
+  it "loads using custom env_prefix" do
+    with_env(
+      "MYAPP_TEST" => "2",
+      "MYAPP_NAME" => "myapp"
+    ) do
+      data = Anyway::Config.for(:my_app, env_prefix: "MYAPP")
+      expect(data[:test]).to eq 2
+      expect(data[:name]).to eq "myapp"
+    end
+  end
+
   context "when using local files" do
     around do |ex|
       Anyway::Settings.use_local_files = true

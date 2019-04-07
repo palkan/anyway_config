@@ -15,7 +15,7 @@ describe Anyway::Config, type: :config do
     end
 
     it "sets overrides after loading YAML" do
-      config = CoolConfig.new(overrides: {host: "overrided.host"})
+      config = CoolConfig.new(host: "overrided.host")
       expect(config.host).to eq "overrided.host"
     end
 

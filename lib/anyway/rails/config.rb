@@ -18,47 +18,55 @@ module Anyway
         end
       end
 
-      def load_from_sources(config = {})
-        config = config.with_indifferent_access
-        load_from_file(config)
-        load_from_secrets(config)
-        load_from_credentials(config)
-        load_from_env(config)
+      def load_from_sources(**options)
+        base_config = {}.with_indifferent_access
+        each_source(options) do |config|
+          base_config.deep_merge!(config) if config
+        end
+        base_config
       end
 
-      def load_from_file(config)
-        config_path = resolve_config_path
-        config.deep_merge!(load_from_yml(config_path)[::Rails.env] || {})
+      def each_source(options)
+        yield load_from_file(options)
+        yield load_from_secrets(options)
+        yield load_from_credentials(options)
+        yield load_from_env(options)
+      end
+
+      def load_from_file(name:, config_path:, env_prefix:, **_options)
+        file_config = load_from_yml(config_path)[::Rails.env] || {}
 
         if Anyway::Settings.use_local_files
           local_config_path = config_path.sub(/\.yml/, ".local.yml")
-          config.deep_merge!(load_from_yml(local_config_path) || {})
+          file_config.deep_merge!(load_from_yml(local_config_path) || {})
         end
 
-        config
+        file_config
       end
 
-      def load_from_secrets(config)
-        if ::Rails.application.respond_to?(:secrets)
-          config.deep_merge!(::Rails.application.secrets.public_send(config_name) || {})
-        end
-        config
+      def load_from_secrets(name:, **_options)
+        return unless ::Rails.application.respond_to?(:secrets)
+
+        ::Rails.application.secrets.public_send(name)
       end
 
-      def load_from_credentials(config)
+      def load_from_credentials(name:, **_options)
         # do not load from credentials if we're in the context
         # of the `credentials:edit` command
         return if defined?(::Rails::Command::CredentialsCommand)
 
-        if ::Rails.application.respond_to?(:credentials)
-          config.deep_merge!(::Rails.application.credentials.public_send(config_name) || {})
+        return unless ::Rails.application.respond_to?(:credentials)
 
-          load_from_local_credentials(config) if Anyway::Settings.use_local_files
-        end
-        config
+        # Create a new hash cause credentials are mutable!
+        creds_config = {}
+
+        creds_config.deep_merge!(::Rails.application.credentials.public_send(name) || {})
+
+        creds_config.deep_merge!(load_from_local_credentials(name: name)) if Anyway::Settings.use_local_files
+        creds_config
       end
 
-      def load_from_local_credentials(config)
+      def load_from_local_credentials(name:)
         local_creds_path = ::Rails.root.join("config/credentials/local.yml.enc").to_s
 
         return unless File.file?(local_creds_path)
@@ -68,11 +76,11 @@ module Anyway
           key_path: ::Rails.root.join("config/credentials/local.key")
         )
 
-        config.deep_merge!(creds.public_send(config_name) || {})
+        creds.public_send(name) || {}
       end
 
-      def default_config_path
-        ::Rails.root.join("config", "#{config_name}.yml")
+      def default_config_path(name)
+        ::Rails.root.join("config", "#{name}.yml")
       end
     end
   end

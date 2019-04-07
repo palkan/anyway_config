@@ -81,7 +81,7 @@ describe Anyway::Config, type: :config do
       end
 
       it "sets overrides after loading YAML" do
-        config = CoolConfig.new(overrides: {host: "overrided.host"})
+        config = CoolConfig.new(host: "overrided.host")
         expect(config.host).to eq "overrided.host"
       end
     end
@@ -96,9 +96,7 @@ describe Anyway::Config, type: :config do
       it "overrides loaded value by explicit" do
         with_env("ANY_SECRET_PASSWORD" => "my_pass") do
           config = CoolConfig.new(
-            overrides: {
-              user: {password: "explicit_password"}
-            }
+            user: {password: "explicit_password"}
           )
           expect(config.user[:password]).to eq "explicit_password"
         end
@@ -235,7 +233,7 @@ describe Anyway::Config, type: :config do
   end
 
   context "config with initial hash values" do
-    let(:conf) { SmallConfig.new(overrides: {"meta" => "dummy"}) }
+    let(:conf) { SmallConfig.new("meta" => "dummy") }
 
     it "works" do
       expect(conf.meta).to eq "dummy"

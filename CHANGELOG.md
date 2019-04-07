@@ -2,6 +2,16 @@
 
 ## 2.0.0-dev
 
+- **BREAKING** Changed the way of providing explicit values. ([@palkan][])
+
+  ```ruby
+  # BEFORE
+  Config.new(overrides: data)
+
+  # AFTER
+  Config.new(data)
+  ```
+
 - Add Railtie. ([@palkan][])
 
   `Anyway::Railtie` provides `Anyway::Settings` access via `Rails.applicaiton.configuration.anyway_config`.

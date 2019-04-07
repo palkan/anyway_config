@@ -120,14 +120,12 @@ end
 #### Provide explicit values
 
 Sometimes it's useful to set some parameters explicitly during config initialization.
-You can do that using `overrides` option:
+You can do that by passing a Hash into `.new` method:
 
 ```ruby
 config = MyCoolGem::Config.new(
-  overrides: {
-    user: "john",
-    password: "rubyisnotdead"
-  }
+  user: "john",
+  password: "rubyisnotdead"
 )
 
 # The value would not be overriden from other sources (such as YML file, env)
@@ -143,6 +141,9 @@ You can also create configuration objects without pre-defined schema (just like 
 # MY_APP_VALUE=42
 config = Anyway::Config.for(:my_app)
 config.value #=> 42
+
+# you can specify the config file path or env prefix
+config = Anyway::Config.for(:my_app, config_path: "my_config.yml", env_prefix: "MYAPP")
 ```
 
 ### Using with Rails
@@ -183,6 +184,36 @@ my_cool_gem:
 
 - `ENV['MYCOOLGEM_*']`.
 
+#### `app/configs`
+
+You can store application-level config classes in `app/configs` folder.
+
+Anyway Config automatically adds this folder to Rails autoloading system to make it possible to
+autoload configs even during the configuration phase.
+
+Consider an example: setting the Action Mailer host name for Heroku review apps.
+
+We have the following config to fetch the Heroku provided [metadata](https://devcenter.heroku.com/articles/dyno-metadata):
+
+```ruby
+# This data is provided by Heroku Dyno Metadadata add-on.
+class HerokuConfig < Anyway::Config
+  attr_config :app_id, :app_name,
+              :dyno_id, :release_version,
+              :slug_commit
+
+  def hostname
+    "#{app_name}.herokuapp.com"
+  end
+end
+```
+
+Then in `config/application.rb` you can do the following:
+
+```ruby
+config.action_mailer.default_url_options = {host: HerokuConfig.new.hostname}
+```
+
 ### Using with Ruby
 
 When you're using Anyway Config in non-Rails environment, we're looking for a YANL config file
@@ -211,6 +242,8 @@ We support this by looking at _local_ files when loading the configuration data:
 config at this location, too.
 
 Local configs are meant for using in development and only loaded if `Anyway::Settings.use_local_files` is `true` (which is true by default if `RACK_ENV` or `RAILS_ENV` env variable is equal to `"development"`).
+
+**NOTE:** in Rails apps you can use `Rails.applicaiton.configuration.anyway_config.use_local_files`.
 
 Don't forget to add `*.local.yml` (and `config/credentials/local.*`) to your `.gitignore`.
 
