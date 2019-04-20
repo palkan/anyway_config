@@ -3,7 +3,7 @@
 
 # Anyway Config
 
-Rails/Ruby plugin/application configuration tool which allows you to load parameters from different sources: YAML, Rails secrets, environment.
+Rails/Ruby plugin/application configuration tool which allows you to load parameters from different sources: YAML, Rails secrets/credentials, environment.
 
 Allows you to easily follow the [twelve-factor application](https://12factor.net/config) principles and adds zero complexity to your development process.
 
