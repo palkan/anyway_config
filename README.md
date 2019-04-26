@@ -3,6 +3,9 @@
 
 # Anyway Config
 
+**NOTE:** this readme shows doc for the upcoming 2.0 version (`2.0.0.pre` is available on RubyGems).
+For version 1.x see [1-4-stable branch](https://github.com/palkan/anyway_config/tree/1-4-stable).
+
 Rails/Ruby plugin/application configuration tool which allows you to load parameters from different sources: YAML, Rails secrets/credentials, environment.
 
 Allows you to easily follow the [twelve-factor application](https://12factor.net/config) principles and adds zero complexity to your development process.
@@ -27,7 +30,7 @@ Libraries using Anyway Config:
 # my-cool-gem.gemspec
 Gem::Specification.new do |spec|
   # ...
-  spec.add_dependency "anyway_config", "~> 2.0"
+  spec.add_dependency "anyway_config", "2.0.0.pre"
   # ...
 end
 ```
@@ -36,7 +39,7 @@ end
 
 ```ruby
 # Gemfile
-gem "anyway_config", "~> 2.0"
+gem "anyway_config", "2.0.0.pre"
 ```
 
 3) Install globally:
