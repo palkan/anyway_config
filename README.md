@@ -143,7 +143,7 @@ You can also create configuration objects without pre-defined schema (just like 
 # load data from config/my_app.yml, secrets.my_app (if using Rails), ENV["MY_APP_*"]
 # MY_APP_VALUE=42
 config = Anyway::Config.for(:my_app)
-config.value #=> 42
+config["value"] #=> 42
 
 # you can specify the config file path or env prefix
 config = Anyway::Config.for(:my_app, config_path: "my_config.yml", env_prefix: "MYAPP")
