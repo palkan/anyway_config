@@ -16,6 +16,14 @@ Gem::Specification.new do |s|
     Allows you to easily follow the twelve-factor application principles (https://12factor.net/config).
   }
 
+  s.metadata = {
+    "bug_tracker_uri" => "http://github.com/palkan/anyway_config/issues",
+    "changelog_uri" => "https://github.com/palkan/anyway_config/blob/master/CHANGELOG.md",
+    "documentation_uri" => "http://github.com/palkan/anyway_config",
+    "homepage_uri" => "http://github.com/palkan/anyway_config",
+    "source_code_uri" => "http://github.com/palkan/anyway_config"
+  }
+
   s.license = "MIT"
 
   s.files = `git ls-files README.md LICENSE.txt lib bin`.split
