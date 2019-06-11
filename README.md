@@ -246,7 +246,7 @@ config at this location, too.
 
 Local configs are meant for using in development and only loaded if `Anyway::Settings.use_local_files` is `true` (which is true by default if `RACK_ENV` or `RAILS_ENV` env variable is equal to `"development"`).
 
-**NOTE:** in Rails apps you can use `Rails.applicaiton.configuration.anyway_config.use_local_files`.
+**NOTE:** in Rails apps you can use `Rails.application.configuration.anyway_config.use_local_files`.
 
 Don't forget to add `*.local.yml` (and `config/credentials/local.*`) to your `.gitignore`.
 
