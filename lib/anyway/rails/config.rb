@@ -62,7 +62,7 @@ module Anyway
 
         creds_config.deep_merge!(::Rails.application.credentials.public_send(name) || {})
 
-        creds_config.deep_merge!(load_from_local_credentials(name: name)) if Anyway::Settings.use_local_files
+        creds_config.deep_merge!(load_from_local_credentials(name: name) || {}) if Anyway::Settings.use_local_files
         creds_config
       end
 
@@ -76,7 +76,7 @@ module Anyway
           key_path: ::Rails.root.join("config/credentials/local.key")
         )
 
-        creds.public_send(name) || {}
+        creds.public_send(name)
       end
 
       def default_config_path(name)
