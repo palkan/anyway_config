@@ -219,7 +219,7 @@ config.action_mailer.default_url_options = {host: HerokuConfig.new.hostname}
 
 ### Using with Ruby
 
-When you're using Anyway Config in non-Rails environment, we're looking for a YANL config file
+When you're using Anyway Config in non-Rails environment, we're looking for a YAML config file
 at `./config/<config-name>.yml`.
 
 You can override this setting through special environment variable – 'MYCOOLGEM_CONF' – containing the path to the YAML file.
