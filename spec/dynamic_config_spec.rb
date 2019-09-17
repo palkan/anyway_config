@@ -11,12 +11,18 @@ describe Anyway::Config, type: :config do
     )
   end
 
-  it "loads data by config name", :aggregate_failures do
+  it "loads data by config name", :aggregate_failures, :rails do
     data = Anyway::Config.for(:my_app)
     expect(data[:test]).to eq 1
     expect(data[:name]).to eq "my_app"
     expect(data[:secret]).to eq "my_secret" if Rails.application.respond_to?(:secrets)
     expect(data[:credo]).to eq "my_credo" if Rails.application.respond_to?(:credentials)
+  end
+
+  it "loads data by config name", :aggregate_failures, :norails do
+    data = Anyway::Config.for(:my_app)
+    expect(data["test"]).to eq 1
+    expect(data["name"]).to eq "my_app"
   end
 
   it "loads using custom env_prefix" do
@@ -25,8 +31,8 @@ describe Anyway::Config, type: :config do
       "MYAPP_NAME" => "myapp"
     ) do
       data = Anyway::Config.for(:my_app, env_prefix: "MYAPP")
-      expect(data[:test]).to eq 2
-      expect(data[:name]).to eq "myapp"
+      expect(data["test"]).to eq 2
+      expect(data["name"]).to eq "myapp"
     end
   end
 
@@ -37,7 +43,7 @@ describe Anyway::Config, type: :config do
       Anyway::Settings.use_local_files = false
     end
 
-    it "load config local credentials too" do
+    it "load config local credentials too", :rails do
       data = Anyway::Config.for(:my_app)
       expect(data[:test]).to eq 1
       expect(data[:name]).to eq "my_app"

@@ -6,13 +6,13 @@ require "rspec/core/rake_task"
 task(:spec).clear
 desc "Run specs with Rails app"
 RSpec::Core::RakeTask.new("spec") do |task|
-  task.exclude_pattern = "spec/**/*_norails.rb"
+  ENV["NORAILS"] = "0"
   task.verbose = false
 end
 
 desc "Run acceptance specs without Rails"
 RSpec::Core::RakeTask.new("spec:norails") do |task|
-  task.pattern = "spec/**/*_norails.rb"
+  ENV["NORAILS"] = "1"
   task.verbose = false
 end
 
