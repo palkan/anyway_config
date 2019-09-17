@@ -40,7 +40,7 @@ module Anyway # :nodoc:
           if superclass < Anyway::Config
             superclass.defaults.deep_dup
           else
-            {}
+            new_empty_config
           end
       end
 
@@ -87,6 +87,10 @@ module Anyway # :nodoc:
           else
             config_name.upcase
           end
+      end
+
+      def new_empty_config
+        {}
       end
 
       private
@@ -144,14 +148,13 @@ module Anyway # :nodoc:
     end
 
     def load(overrides = {})
-      base_config = (self.class.defaults || {}).deep_dup
+      base_config = self.class.defaults&.deep_dup || new_empty_config
 
-      base_config.deep_merge!(
-        load_from_sources(
-          name: config_name,
-          env_prefix: env_prefix,
-          config_path: resolve_config_path(config_name, env_prefix)
-        )
+      load_from_sources(
+        base_config,
+        name: config_name,
+        env_prefix: env_prefix,
+        config_path: resolve_config_path(config_name, env_prefix)
       )
 
       base_config.merge!(overrides) unless overrides.nil?
@@ -161,8 +164,7 @@ module Anyway # :nodoc:
       end
     end
 
-    def load_from_sources(**options)
-      base_config = {}
+    def load_from_sources(base_config, **options)
       each_source(options) do |config|
         base_config.deep_merge!(config) if config
       end

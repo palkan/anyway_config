@@ -11,19 +11,9 @@ module Anyway
     module Config
       module ClassMethods
         # Make defaults to be a Hash with indifferent access
-        def defaults
-          return @defaults if instance_variable_defined?(:@defaults)
-
-          @defaults = super.with_indifferent_access
+        def new_empty_config
+          {}.with_indifferent_access
         end
-      end
-
-      def load_from_sources(**options)
-        base_config = {}.with_indifferent_access
-        each_source(options) do |config|
-          base_config.deep_merge!(config) if config
-        end
-        base_config
       end
 
       def each_source(options)
