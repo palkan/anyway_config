@@ -1,6 +1,6 @@
 [![Cult Of Martians](http://cultofmartians.com/assets/badges/badge.svg)](http://cultofmartians.com)
-[![Gem Version](https://badge.fury.io/rb/anyway_config.svg)](https://rubygems.org/gems/anyway_config) [![Build](https://github.com/palkan/anyway-config/workflows/Build/badge.svg)](https://github.com/palkan/anyway-config/actions)
-[![JRuby Build](https://github.com/palkan/anyway-config/workflows/JRuby%20Build/badge.svg)](https://github.com/palkan/anyway-config/actions)
+[![Gem Version](https://badge.fury.io/rb/anyway_config.svg)](https://rubygems.org/gems/anyway_config) [![Build](https://github.com/palkan/anyway_config/workflows/Build/badge.svg)](https://github.com/palkan/anyway_config/actions)
+[![JRuby Build](https://github.com/palkan/anyway_config/workflows/JRuby%20Build/badge.svg)](https://github.com/palkan/anyway_config/actions)
 
 # Anyway Config
 
