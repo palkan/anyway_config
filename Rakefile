@@ -2,9 +2,6 @@
 
 require "bundler/gem_tasks"
 require "rspec/core/rake_task"
-require "rubocop/rake_task"
-
-RuboCop::RakeTask.new
 
 task(:spec).clear
 desc "Run specs with Rails app"
@@ -19,5 +16,5 @@ RSpec::Core::RakeTask.new("spec:norails") do |task|
   task.verbose = false
 end
 
-desc "Run the all specs and linters"
-task default: %w[rubocop spec:norails spec]
+desc "Run the all specs"
+task default: %w[spec:norails spec]

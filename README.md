@@ -1,5 +1,6 @@
 [![Cult Of Martians](http://cultofmartians.com/assets/badges/badge.svg)](http://cultofmartians.com)
-[![Gem Version](https://badge.fury.io/rb/anyway_config.svg)](https://rubygems.org/gems/anyway_config) [![Build Status](https://travis-ci.org/palkan/anyway_config.svg?branch=master)](https://travis-ci.org/palkan/anyway_config)
+[![Gem Version](https://badge.fury.io/rb/anyway_config.svg)](https://rubygems.org/gems/anyway_config) [![Build](https://github.com/palkan/anyway-config/workflows/Build/badge.svg)](https://github.com/palkan/anyway-config/actions)
+[![JRuby Build](https://github.com/palkan/anyway-config/workflows/JRuby%20Build/badge.svg)](https://github.com/palkan/anyway-config/actions)
 
 # Anyway Config
 
@@ -24,7 +25,7 @@ Libraries using Anyway Config:
 
 ## Installation
 
-1) Adding to a gem:
+Adding to a gem:
 
 ```ruby
 # my-cool-gem.gemspec
@@ -35,17 +36,11 @@ Gem::Specification.new do |spec|
 end
 ```
 
-2) Adding to your project:
+Or adding to your project:
 
 ```ruby
 # Gemfile
 gem "anyway_config", "2.0.0.pre"
-```
-
-3) Install globally:
-
-```sh
-$ gem install anyway_config
 ```
 
 ## Usage
@@ -87,6 +82,7 @@ MyCoolGem.config.user #=> "root"
 Anyway Config relies on the notion of _config name_ to populate data.
 
 By default, Anyway Config uses the config class name to infer the config name using the following rules:
+
 - if the class name has a form of `<Module>::Config` then use the module name (`SomeModule::Config => "somemodule"`)
 - if the class name has a form of `<Something>Config` then use the class name prefix (`SomeConfig => "some"`)
 
@@ -105,7 +101,7 @@ end
 
 #### Customize env variable names prefix
 
-By default, Anyway Config uses upcased config name as a prefix for env variable names (e.g.
+By default, Anyway Config uses upper-cased config name as a prefix for env variable names (e.g.
 `config_name :my_app` will result to parsing `MY_APP_` prefix).
 
 You can set env prefix explicitly:
@@ -204,8 +200,8 @@ We have the following config to fetch the Heroku provided [metadata](https://dev
 # This data is provided by Heroku Dyno Metadadata add-on.
 class HerokuConfig < Anyway::Config
   attr_config :app_id, :app_name,
-              :dyno_id, :release_version,
-              :slug_commit
+    :dyno_id, :release_version,
+    :slug_commit
 
   def hostname
     "#{app_name}.herokuapp.com"
@@ -240,6 +236,7 @@ Environmental variables work the same way as with Rails.
 It's useful to have personal, user-specific configuration in development, which extends the project-wide one.
 
 We support this by looking at _local_ files when loading the configuration data:
+
 - `<config_name>.local.yml` files (next to\* the _global_ `<config_name>.yml`)
 - `config/credentials/local.yml.enc` (for Rails >= 6, generate it via `rails credentials:edit --environment local`).
 
@@ -314,12 +311,12 @@ Rails 4.2 introduced new feature: `Rails.application.config_for`. It looks very 
 `Anyway::Config.for`, but there are some differences:
 
 | Feature       | Rails         | Anyway Config |
-| ------------- |:-------------:| -----:|
-| load data from `config/app.yml`      | yes | yes |
-| load data from `secrets`      | no       |   yes |
-| load data from `credentials`  | no       |   yes |
-| load data from environment    | no       |   yes |
-| local config files            | no       |   yes |
+| ------------- |-------------:| -----:|
+| load data from `config/app.yml`      | yes  | yes  |
+| load data from `secrets`      | no       |   yes  |
+| load data from `credentials`  | no       |   yes  |
+| load data from environment    | no       |   yes  |
+| local config files            | no       |   yes  |
 | return Hash with indifferent access | no | yes  |
 | support ERB within `config/app.yml` | yes | yes* |
 | raise errors if file doesn't exist | yes | no |
@@ -330,11 +327,12 @@ But the main advantage of Anyway::Config is that it can be used [without Rails](
 
 ## How to set env vars
 
-Environmental variables for your config should start with your config name, uppercased.
+Environmental variables for your config should start with your config name, upper-cased.
 
 For example, if your config name is "mycoolgem" then the env var "MYCOOLGEM_PASSWORD" is used as `config.password`.
 
 Environment variables are automatically serialized:
+
 - `"True"`, `"t"` and `"yes"` to `true`;
 - `"False"`, `"f"` and `"no"` to `false`;
 - `"nil"` and `"null"` to `nil` (do you really need it?);
@@ -396,7 +394,7 @@ You can add it manually by requiring `"anyway/testing/helpers"` and including th
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/palkan/anyway_config.
+Bug reports and pull requests are welcome on GitHub at [https://github.com/palkan/anyway_config](https://github.com/palkan/anyway_config).
 
 ## License
 

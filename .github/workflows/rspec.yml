@@ -1,0 +1,41 @@
+name: Build
+
+on:
+  push:
+    branches:
+    - master
+  pull_request:
+
+jobs:
+  rspec:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby: ["2.5.x", "2.6.x"]
+        gemfile: [
+          "gemfiles/railsmaster.gemfile",
+          "gemfiles/rails6.gemfile",
+          "gemfiles/rails5.gemfile",
+        ]
+        exclude:
+        - ruby: "2.5.x"
+          gemfile: "gemfiles/railsmaster.gemfile"
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up Ruby
+      uses: actions/setup-ruby@v1
+      with:
+        ruby-version: ${{ matrix.ruby }}
+    - name: Install Bundler
+      run: |
+        gem install bundler
+    - name: Configure Gemfile
+      run: |
+        bundle config --global gemfile ${{ matrix.gemfile }}
+    - name: Install Ruby deps
+      run: |
+        bundle install --jobs 4 --retry 3
+    - name: Run RSpec
+      run: |
+        bundle exec rake spec spec:norails
