@@ -1,5 +1,7 @@
 # Change log
 
+- Fix bug with loading from credentials when local creds are missing. ([@palkan][])
+
 ## 2.0.0.pre (2019-04-26)
 
 - **BREAKING** Changed the way of providing explicit values. ([@palkan][])
