@@ -68,13 +68,11 @@ module Anyway
 
         creds.public_send(name)
       end
-
-      def default_config_path(name)
-        ::Rails.root.join("config", "#{name}.yml")
-      end
     end
   end
 end
 
 Anyway::Config.prepend Anyway::Rails::Config
 Anyway::Config.singleton_class.prepend Anyway::Rails::Config::ClassMethods
+
+Anyway::Settings.default_config_path = ->(name) { ::Rails.root.join("config", "#{name}.yml") }

@@ -198,7 +198,7 @@ module Anyway # :nodoc:
     end
 
     def resolve_config_path(name, env_prefix)
-      Anyway.env.fetch(env_prefix).delete("conf") || default_config_path(name)
+      Anyway.env.fetch(env_prefix).delete("conf") || Settings.default_config_path.call(name)
     end
 
     private
@@ -211,10 +211,6 @@ module Anyway # :nodoc:
       return {} unless File.file?(path)
 
       parse_yml(path)
-    end
-
-    def default_config_path(name)
-      "./config/#{name}.yml"
     end
 
     def parse_yml(path)
