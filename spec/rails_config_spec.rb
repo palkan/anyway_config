@@ -5,7 +5,7 @@ require "spec_helper"
 describe Anyway::Config, type: :config do
   let(:conf) { CoolConfig.new }
 
-  describe "load_from_sources in Rails" do
+  describe "load_from_sources in Rails", :rails do
     it "set defaults" do
       expect(conf.port).to eq 8080
     end
@@ -19,7 +19,7 @@ describe Anyway::Config, type: :config do
       expect(config.host).to eq "overrided.host"
     end
 
-    if Rails.application.respond_to?(:secrets)
+    if !NORAILS && Rails.application.respond_to?(:secrets)
       if Rails.application.respond_to?(:credentials)
         it "load config from secrets and credentials" do
           expect(conf.user[:name]).to eq "secret man"
