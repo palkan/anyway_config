@@ -185,6 +185,8 @@ my_cool_gem:
   host: secret.host
 ```
 
+**NOTE:** You can backport Rails 6 per-environment credentials to Rails 5.2 app using [this patch](https://gist.github.com/palkan/e27e4885535ff25753aefce45378e0cb).
+
 - `ENV['MYCOOLGEM_*']`.
 
 #### `app/configs`
