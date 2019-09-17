@@ -1,6 +1,6 @@
 # Change log
 
-- Fix bug with loading from credentials when local creds are missing. ([@palkan][])
+- Fix bug with loading from credentials when local credentials are missing. ([@palkan][])
 
 ## 2.0.0.pre (2019-04-26)
 
@@ -57,8 +57,9 @@
 
   Now it's possible to extend config classes without breaking the original classes functionality.
 
-  Noticable features:
+  Noticeable features:
   - if `config_name` is explicitly defined on class, it's inherited by subclasses:
+
   ```ruby
   class MyAppBaseConfig < Anyway::Config
     config_name :my_app
@@ -69,9 +70,9 @@
 
   MyServiceConfig.config_name #=> "my_app"
   ```
+
   - defaults are merged leaving the parent class defaults unchanged
   - option parse extension are not overriden, but added to the parent class extensions
-
 
 - **Require Ruby >= 2.5.0.**
 
@@ -91,7 +92,7 @@
 
 - Add OptionParse integration ([@jastkand][])
 
-  See more https://github.com/palkan/anyway_config/pull/18
+  See more [PR#18](https://github.com/palkan/anyway_config/pull/18).
 
 - Use underscored config name as an env prefix. ([@palkan][])
 
@@ -104,7 +105,7 @@
 
   Before this change we use `MYAPP_` prefix, now it's `MY_APP_`.
 
-  You can specify the prefix explictly:
+  You can specify the prefix explicitly:
 
   ```ruby
   class MyApp < Anyway::Config
@@ -137,7 +138,7 @@ Now works on JRuby 9.1+.
   )
   ```
 
-  See more https://github.com/palkan/anyway_config/pull/10
+  See more [PR#10](https://github.com/palkan/anyway_config/pull/10).
 
 ## 1.1.2 (2017-11-19)
 
@@ -157,7 +158,7 @@ See [#4](https://github.com/palkan/anyway_config/issues/4).
 
 ## 1.0.0 (2017-06-20)
 
-- Lazy load and parse ENV configurtaion. ([@palkan][])
+- Lazy load and parse ENV configuration. ([@palkan][])
 
 - Add support for ERB in YML configuration. ([@palkan][])
 

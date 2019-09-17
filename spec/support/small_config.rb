@@ -2,5 +2,5 @@
 
 class SmallConfig < Anyway::Config # :nodoc:
   attr_config :meta,
-              :data
+    :data
 end

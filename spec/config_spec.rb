@@ -27,7 +27,7 @@ describe Anyway::Config, type: :config do
       let(:sub_config) do
         Class.new(CoolConfig) do
           attr_config :submeta,
-                      port: 3000
+            port: 3000
         end
       end
 
@@ -148,7 +148,7 @@ describe Anyway::Config, type: :config do
             klass = CoolConfig.dup
             klass.class_eval do
               config_name :cool_thing
-              env_prefix  :cool_thing
+              env_prefix :cool_thing
             end
             klass.new
           end
