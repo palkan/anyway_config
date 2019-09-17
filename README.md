@@ -43,6 +43,12 @@ Or adding to your project:
 gem "anyway_config", "2.0.0.pre"
 ```
 
+## Supported Ruby versions
+
+- Ruby (MRI) >= 2.5.0
+
+- JRuby >= 9.2.7
+
 ## Usage
 
 ### Pre-defined configuration
