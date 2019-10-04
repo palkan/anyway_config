@@ -1,5 +1,7 @@
 # Change log
 
+## 2.0.0.pre2 (2019-04-26)
+
 - Fix bug with loading from credentials when local credentials are missing. ([@palkan][])
 
 ## 2.0.0.pre (2019-04-26)
