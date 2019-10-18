@@ -29,10 +29,19 @@ module Anyway # :nodoc:
     def env
       @env ||= ::Anyway::Env.new
     end
+
+    def loaders
+      @loaders ||= ::Anyway::Loaders::Registry.new
+    end
   end
 
-  require "anyway/rails/config" if defined?(::Rails::VERSION)
   require "anyway/env"
-  require "anyway/railtie" if defined?(::Rails::VERSION)
+  require "anyway/loaders"
+
+  # Configure default loaders
+  loaders.append :yml, Loaders::YAML
+  loaders.append :env, Loaders::Env
+
+  require "anyway/rails" if defined?(::Rails::VERSION)
   require "anyway/testing" if ENV["RACK_ENV"] == "test" || ENV["RAILS_ENV"] == "test"
 end
