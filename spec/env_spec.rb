@@ -6,9 +6,9 @@ describe Anyway::Env, type: :config do
   let(:env) { Anyway.env }
 
   it "loads simple key/values", :aggregate_failures do
-    with_env("TESTO_KEY" => "a", "MY_TEST_KEY" => "b") do
-      expect(env.fetch("TESTO")["key"]).to eq "a"
-      expect(env.fetch("MY_TEST")["key"]).to eq "b"
+    with_env("TESTO_KEY" => "a", "MY_TEST_KEY" => "b", "TESTOS" => "c") do
+      expect(env.fetch("TESTO")).to eq("key" => "a")
+      expect(env.fetch("MY_TEST")).to eq("key" => "b")
     end
   end
 
