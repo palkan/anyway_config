@@ -4,7 +4,7 @@ module Anyway
   module Loaders
     class Base
       class << self
-        def call(local: false, **opts)
+        def call(local: Anyway::Settings.use_local_files, **opts)
           new(local: local).call(**opts)
         end
       end

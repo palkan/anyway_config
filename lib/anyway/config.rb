@@ -165,30 +165,10 @@ module Anyway # :nodoc:
     end
 
     def load_from_sources(base_config, **options)
-      each_source(options) do |config|
-        base_config.deep_merge!(config) if config
+      Anyway.loaders.each do |(_id, loader)|
+        base_config.deep_merge!(loader.call(**options))
       end
       base_config
-    end
-
-    def each_source(options)
-      yield load_from_file(**options)
-      yield load_from_env(**options)
-    end
-
-    def load_from_file(name:, env_prefix:, config_path:, **_options)
-      file_config = load_from_yml(config_path)
-
-      if Anyway::Settings.use_local_files
-        local_config_path = config_path.sub(/\.yml/, ".local.yml")
-        file_config.deep_merge!(load_from_yml(local_config_path))
-      end
-
-      file_config
-    end
-
-    def load_from_env(name:, env_prefix:, **_options)
-      Anyway.env.fetch(env_prefix)
     end
 
     def to_h
@@ -205,21 +185,6 @@ module Anyway # :nodoc:
 
     def set_value(key, val)
       send("#{key}=", val) if respond_to?(key)
-    end
-
-    def load_from_yml(path)
-      return {} unless File.file?(path)
-
-      parse_yml(path)
-    end
-
-    def parse_yml(path)
-      require "yaml"
-      if defined?(ERB)
-        YAML.safe_load(ERB.new(File.read(path)).result, [], [], true)
-      else
-        YAML.load_file(path)
-      end
     end
   end
 end
