@@ -98,4 +98,13 @@ describe Anyway::Loaders::Registry do
   specify "#override with non-existing id" do
     expect { loaders.override :c, "c" }.to raise_error(ArgumentError)
   end
+
+  specify "#delete" do
+    loaders.delete :a
+    expect(iter.next).to eq([:b, loader_b])
+  end
+
+  specify "#delete with non-existing id" do
+    expect { loaders.delete :c }.to raise_error(ArgumentError)
+  end
 end
