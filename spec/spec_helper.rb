@@ -10,17 +10,22 @@ end
 
 NORAILS = ENV["NORAILS"] == "1"
 
-if NORAILS
-  ENV["RACK_ENV"] = "test"
+begin
+  if NORAILS
+    ENV["RACK_ENV"] = "test"
 
-  require "anyway_config"
+    require "anyway_config"
 
-  Anyway::Settings.use_local_files = false
-else
-  ENV["RAILS_ENV"] = "test"
+    Anyway::Settings.use_local_files = false
+  else
+    ENV["RAILS_ENV"] = "test"
 
-  require File.expand_path("dummy/config/environment", __dir__)
-  Rails.application.eager_load!
+    require File.expand_path("dummy/config/environment", __dir__)
+    Rails.application.eager_load!
+  end
+rescue => err
+  $stdout.puts "Failed to load test env: #{err}\n#{err.backtrace.take(5).join("\n")}"
+  exit(1)
 end
 
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].sort.each { |f| require f }
