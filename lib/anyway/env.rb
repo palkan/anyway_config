@@ -23,8 +23,9 @@ module Anyway
     private
 
     def parse_env(prefix)
+      match_prefix = "#{prefix}_"
       ENV.each_pair.with_object({}) do |(key, val), data|
-        next unless key.start_with?(prefix)
+        next unless key.start_with?(match_prefix)
 
         path = key.sub(/^#{prefix}_/, "").downcase
         set_by_path(data, path, val.serialize)
