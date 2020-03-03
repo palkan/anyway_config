@@ -27,10 +27,10 @@ module Anyway
       end
 
       def each_source(options)
-        yield load_from_file(options)
-        yield load_from_secrets(options)
-        yield load_from_credentials(options)
-        yield load_from_env(options)
+        yield load_from_file(**options)
+        yield load_from_secrets(**options)
+        yield load_from_credentials(**options)
+        yield load_from_env(**options)
       end
 
       def load_from_file(name:, config_path:, env_prefix:, **_options)

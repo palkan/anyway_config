@@ -170,8 +170,8 @@ module Anyway # :nodoc:
     end
 
     def each_source(options)
-      yield load_from_file(options)
-      yield load_from_env(options)
+      yield load_from_file(**options)
+      yield load_from_env(**options)
     end
 
     def load_from_file(name:, env_prefix:, config_path:, **_options)
