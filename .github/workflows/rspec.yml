@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ruby: ["2.5.x", "2.6.x"]
+        ruby: ["2.5.x", "2.6.x", "2.7.x"]
         gemfile: [
           "gemfiles/railsmaster.gemfile",
           "gemfiles/rails6.gemfile",
