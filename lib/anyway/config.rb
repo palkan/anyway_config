@@ -32,11 +32,15 @@ module Anyway # :nodoc:
       load
       load_from_sources
       option_parser
+      raise_validation_error
       reload
       resolve_config_path
       to_h
       write_config_attr
     ].freeze
+
+    class Error < StandardError; end
+    class ValidationError < Error; end
 
     include OptparseConfig
     include DynamicConfig
@@ -81,6 +85,25 @@ module Anyway # :nodoc:
         @config_attributes =
           if superclass < Anyway::Config
             superclass.config_attributes.dup
+          else
+            []
+          end
+      end
+
+      def required(*names)
+        unless (unknown_names = (names - config_attributes)).empty?
+          raise ArgumentError, "Unknown config param: #{unknown_names.join(",")}"
+        end
+
+        required_attributes.push(*names)
+      end
+
+      def required_attributes
+        return @required_attributes if instance_variable_defined?(:@required_attributes)
+
+        @required_attributes =
+          if superclass < Anyway::Config
+            superclass.required_attributes.dup
           else
             []
           end
@@ -161,7 +184,7 @@ module Anyway # :nodoc:
         invalid_names = names.reject { |name| name =~ PARAM_NAME }
         return if invalid_names.empty?
 
-        raise ArgumentError, "Invalid attr_config name: #{invalid_names.join(",")}.\n" \
+        raise ArgumentError, "Invalid attr_config name: #{invalid_names.join(", ")}.\n" \
           "Valid names must satisfy /#{PARAM_NAME.source}/."
       end
     end
@@ -214,6 +237,10 @@ module Anyway # :nodoc:
       base_config.each do |key, val|
         write_config_attr(key.to_sym, val)
       end
+
+      validate!
+
+      self
     end
 
     def load_from_sources(base_config, **options)
@@ -231,6 +258,16 @@ module Anyway # :nodoc:
       Anyway.env.fetch(env_prefix).delete("conf") || Settings.default_config_path.call(name)
     end
 
+    # Default validation only checks for required params
+    def validate!
+      self.class.required_attributes.select do |name|
+        values[name].nil? || (values[name].is_a?(String) && values[name].empty?)
+      end.yield_self do |missing|
+        next if missing.empty?
+        raise_validation_error "The following config parameters are missing or empty: #{missing.join(", ")}"
+      end
+    end
+
     private
 
     attr_reader :values
@@ -240,6 +277,10 @@ module Anyway # :nodoc:
       return unless self.class.config_attributes.include?(key)
 
       values[key] = val
+    end
+
+    def raise_validation_error(msg)
+      raise ValidationError, msg
     end
   end
 end

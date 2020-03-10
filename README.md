@@ -155,6 +155,39 @@ config = MyCoolGem::Config.new(
 config.user == "john"
 ```
 
+### Validation
+
+Anyway Config provides basic ways of ensuring that the configuration is valid.
+
+There is a built-in `required` class method to define the list of parameters that must be present in the
+configuration after loading (where present means non-`nil` and non-empty for strings):
+
+```ruby
+class MyConfig < Anyway::Config
+  attr_config :api_key, :api_secret, :debug
+
+  required :api_key, :api_secret
+end
+
+MyConfig.new(api_secret: "") #=> raises Anyway::Config::ValidationError
+```
+
+If you need more flexibility, you can override the `#validate!` method in your configuration class:
+
+```ruby
+class MyConfig < Anyway::Config
+  attr_config :api_key, :api_secret, :mode
+
+  def validate!
+    # don't forget to call super if you're using `required`
+    super
+    unless %w[production test].include?(mode)
+      raise_validation_error "Unknown mode; #{mode}"
+    end
+  end
+end
+```
+
 ### Dynamic configuration
 
 You can also create configuration objects without pre-defined schema (just like `Rails.application.config_for` but more [powerful](#railsapplicationconfig_for-vs-anywayconfigfor)):
