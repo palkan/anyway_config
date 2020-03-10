@@ -29,8 +29,9 @@ module Anyway # :nodoc:
         defaults.merge! new_defaults
 
         new_keys = (args + new_defaults.keys) - config_attributes
-        config_attributes.push(*new_keys)
-        attr_accessor(*new_keys)
+        config_attributes.push(*new_keys.map(&:to_sym))
+
+        define_config_accessor(*new_keys)
       end
 
       def defaults
@@ -95,6 +96,20 @@ module Anyway # :nodoc:
 
       private
 
+      def define_config_accessor(*names)
+        names.each do |name|
+          class_eval <<~RUBY, __FILE__, __LINE__ + 1
+            def #{name}=(val)
+              values[:#{name}] = val
+            end
+
+            def #{name}
+              values[:#{name}]
+            end
+          RUBY
+        end
+      end
+
       def build_config_name
         unless name
           raise "Please, specify config name explicitly for anonymous class " \
@@ -130,6 +145,7 @@ module Anyway # :nodoc:
       raise ArgumentError, "Config name is missing" unless @config_name
 
       @env_prefix = self.class.env_prefix
+      @values = {}
 
       load(overrides)
     end
@@ -141,9 +157,7 @@ module Anyway # :nodoc:
     end
 
     def clear
-      self.class.config_attributes.each do |attr|
-        send("#{attr}=", nil)
-      end
+      values.clear
       self
     end
 
@@ -160,7 +174,7 @@ module Anyway # :nodoc:
       base_config.merge!(overrides) unless overrides.nil?
 
       base_config.each do |key, val|
-        set_value(key, val)
+        write_config_attr(key.to_sym, val)
       end
     end
 
@@ -172,9 +186,7 @@ module Anyway # :nodoc:
     end
 
     def to_h
-      self.class.config_attributes.each_with_object({}) do |key, obj|
-        obj[key.to_sym] = send(key)
-      end.deep_dup.deep_freeze
+      values.deep_dup.deep_freeze
     end
 
     def resolve_config_path(name, env_prefix)
@@ -183,8 +195,13 @@ module Anyway # :nodoc:
 
     private
 
-    def set_value(key, val)
-      send("#{key}=", val) if respond_to?(key)
+    attr_reader :values
+
+    def write_config_attr(key, val)
+      key = key.to_sym
+      return unless self.class.config_attributes.include?(key)
+
+      values[key] = val
     end
   end
 end
