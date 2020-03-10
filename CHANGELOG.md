@@ -1,14 +1,31 @@
 # Change log
 
+- Add param presence validation. ([@palkan][])
+
+  You can specify some params as required, and the validation
+  error would be raised if they're missing or empty (only for strings):
+
+  ```ruby
+  class MyConfig < Anyway::Config
+    attr_config :api_key, :api_secret, :debug
+
+    required :api_key, :api_secret
+  end
+
+  MyConfig.new(api_secret: "") #=> raises Anyway::Config::ValidationError
+  ```
+
+  You can change the validation behaviour by overriding the `#validate!` method in your config class.
+
 - Validate config attribute names. ([@palkan][])
 
-Do not allow using reserved names (`Anyway::Config` method names).
-Allow only alphanumeric names (matching `/^[a-z_]([\w]+)?$/`).
+  Do not allow using reserved names (`Anyway::Config` method names).
+  Allow only alphanumeric names (matching `/^[a-z_]([\w]+)?$/`).
 
 - Add Loaders API. ([@palkan][])
 
-All config sources have standardized via _loaders_ API. It's possible to define
-custom loaders or change the sources order.
+  All config sources have standardized via _loaders_ API. It's possible to define
+  custom loaders or change the sources order.
 
 ## 2.0.0.pre2 (2019-04-26)
 
@@ -164,7 +181,7 @@ Now works on JRuby 9.1+.
 
 - Add `#to_h` method. ([@palkan][])
 
-See [#4](https://github.com/palkan/anyway_config/issues/4).
+  See [#4](https://github.com/palkan/anyway_config/issues/4).
 
 - Make it possible to extend configuration parameters. ([@palkan][])
 
@@ -178,13 +195,13 @@ See [#4](https://github.com/palkan/anyway_config/issues/4).
 
 - Drop `active_support` dependency. ([@palkan][])
 
-Use custom refinements instead of requiring `active_support`.
+  Use custom refinements instead of requiring `active_support`.
 
-No we're dependency-free!
+  No we're dependency-free!
 
 ## 0.1.0 (2015-01-20)
 
-Initial version.
+  Initial version.
 
 [@palkan]: https://github.com/palkan
 [@onemanstartup]: https://github.com/onemanstartup

@@ -404,4 +404,58 @@ describe Anyway::Config, type: :config do
         .not_to raise_error
     end
   end
+
+  context "required parameters" do
+    let(:config) do
+      Class.new(described_class) do
+        config_name "testo"
+        attr_config :test, :secret, debug: false
+
+        required :test, :secret
+      end
+    end
+
+    it "raises ValidationError if value is not provided" do
+      expect { config.new }
+        .to raise_error(Anyway::Config::ValidationError, /missing or empty: test, secret/)
+    end
+
+    it "raises ValidationError if value is empty string" do
+      expect { config.new(secret: "", test: 1) }
+        .to raise_error(Anyway::Config::ValidationError, /missing or empty: secret/)
+    end
+
+    it "raises ArgumentError if required is called with unknown param" do
+      expect { Class.new(described_class) { required :test } }
+        .to raise_error(ArgumentError, /unknown config param: test/i)
+    end
+
+    specify "inheritance" do
+      subconfig = Class.new(config) { required :debug }
+
+      expect { subconfig.new }
+        .to raise_error(Anyway::Config::ValidationError, /missing or empty: test, secret/)
+    end
+
+    context "with custom validation method" do
+      let(:config) do
+        Class.new(described_class) do
+          config_name "testo"
+          attr_config :test, debug: false
+
+          required :test
+
+          def validate!
+            super
+            raise_validation_error("test must be a number") unless test.is_a?(Numeric)
+          end
+        end
+      end
+
+      it "calls #validate! method" do
+        expect { config.new(test: "nan") }
+          .to raise_error(Anyway::Config::ValidationError, /test must be a number/i)
+      end
+    end
+  end
 end

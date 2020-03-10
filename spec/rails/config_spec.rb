@@ -2,10 +2,10 @@
 
 require "spec_helper"
 
-describe Anyway::Config, type: :config do
+describe Anyway::Config, :rails, type: :config do
   let(:conf) { CoolConfig.new }
 
-  describe "load_from_sources in Rails", :rails do
+  describe "load_from_sources in Rails" do
     it "set defaults" do
       expect(conf.port).to eq 8080
     end
@@ -62,6 +62,13 @@ describe Anyway::Config, type: :config do
         expect(conf.user[:name]).to eq "root"
         expect(conf.user[:password]).to eq "root"
       end
+    end
+  end
+
+  context "validation" do
+    specify do
+      expect { MyAppConfig.new }
+        .to raise_error(Anyway::Config::ValidationError, /missing or empty: name, mode/)
     end
   end
 end
