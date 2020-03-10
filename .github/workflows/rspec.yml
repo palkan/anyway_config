@@ -21,6 +21,8 @@ jobs:
         exclude:
         - ruby: "2.5.x"
           gemfile: "gemfiles/railsmaster.gemfile"
+    env:
+      VERIFY_RESERVED: 1
     steps:
     - uses: actions/checkout@v2
     - uses: actions/cache@v1
