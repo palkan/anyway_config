@@ -1,5 +1,10 @@
 # Change log
 
+- Add Loaders API. ([@palkan][])
+
+All config sources have standardized via _loaders_ API. It's possible to define
+custom loaders or change the sources order.
+
 ## 2.0.0.pre2 (2019-04-26)
 
 - Fix bug with loading from credentials when local credentials are missing. ([@palkan][])
