@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "spec_helper"
+require "json"
 
 describe Anyway::Config do
   describe "#parse_options!" do
