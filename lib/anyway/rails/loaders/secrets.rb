@@ -10,7 +10,7 @@ module Anyway
           # Create a new hash cause secrets are mutable!
           config = {}
 
-          ::Rails.application.secrets.public_send(name).then do |secrets|
+          ::Rails.application.secrets.public_send(name).yield_self do |secrets|
             config.deep_merge!(secrets) if secrets
           end
 

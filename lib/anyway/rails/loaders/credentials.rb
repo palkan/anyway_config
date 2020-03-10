@@ -14,12 +14,12 @@ module Anyway
           # Create a new hash cause credentials are mutable!
           config = {}
 
-          ::Rails.application.credentials.public_send(name).then do |creds|
+          ::Rails.application.credentials.public_send(name).yield_self do |creds|
             config.deep_merge!(creds) if creds
           end
 
           if use_local?
-            local_credentials(name).then { |creds| config.deep_merge!(creds) if creds }
+            local_credentials(name).yield_self { |creds| config.deep_merge!(creds) if creds }
           end
 
           config
