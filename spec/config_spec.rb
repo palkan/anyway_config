@@ -384,4 +384,11 @@ describe Anyway::Config, type: :config do
       expect(new_config.new_param).to eq "a"
     end
   end
+
+  context "reserved names" do
+    specify do
+      expect { Class.new(described_class) { attr_config :values, :load } }
+        .to raise_error(ArgumentError, /reserved names.+: load, values/)
+    end
+  end
 end

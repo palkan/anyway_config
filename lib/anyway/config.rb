@@ -18,6 +18,25 @@ module Anyway # :nodoc:
   # Provides `attr_config` method to describe
   # configuration parameters and set defaults
   class Config
+    # List of names that couldn't be used as config names
+    # (the class instance methods we use)
+    RESERVED_NAMES = %i[
+      config_name
+      env_prefix
+      values
+      class
+      clear
+      initialize
+      load
+      load_from_sources
+      option_parser
+      parse_options!
+      reload
+      resolve_config_path
+      to_h
+      write_config_attr
+    ].freeze
+
     include OptparseConfig
     include DynamicConfig
 
@@ -28,8 +47,14 @@ module Anyway # :nodoc:
 
         defaults.merge! new_defaults
 
-        new_keys = (args + new_defaults.keys) - config_attributes
-        config_attributes.push(*new_keys.map(&:to_sym))
+        new_keys = ((args + new_defaults.keys) - config_attributes).map(&:to_sym)
+
+        unless (reserved_names = (new_keys & RESERVED_NAMES)).empty?
+          raise ArgumentError, "Can not use the following reserved names as config attrubutes: " \
+            "#{reserved_names.sort.map(&:to_s).join(", ")}"
+        end
+
+        config_attributes.push(*new_keys)
 
         define_config_accessor(*new_keys)
       end
