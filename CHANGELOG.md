@@ -1,5 +1,10 @@
 # Change log
 
+- Validate config attribute names. ([@palkan][])
+
+Do not allow using reserved names (`Anyway::Config` method names).
+Allow only alphanumeric names (matching `/^[a-z_]([\w]+)?$/`).
+
 - Add Loaders API. ([@palkan][])
 
 All config sources have standardized via _loaders_ API. It's possible to define
