@@ -70,7 +70,7 @@ module Anyway
     def option_parser
       @option_parser ||= begin
         OptionParserBuilder.call(self.class.option_parser_options) do |key, arg|
-          set_value(key, arg.is_a?(String) ? arg.serialize : arg)
+          write_config_attr(key, arg.is_a?(String) ? arg.serialize : arg)
         end.tap do |parser|
           self.class.option_parser_extensions.map do |extension|
             extension.call(parser, self)
