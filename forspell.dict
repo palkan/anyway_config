@@ -5,8 +5,9 @@
 accessnoyessupport
 Configload
 doesnyesno
-environmentnoyeslocal
+environmentnoyesload
 filesnoyesreturn
+sourcenoyeslocal
 noyesload
 yesyesload
 Influxer

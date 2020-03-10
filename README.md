@@ -4,7 +4,7 @@
 
 # Anyway Config
 
-**NOTE:** this readme shows doc for the upcoming 2.0 version (`2.0.0.pre` is available on RubyGems).
+**NOTE:** this readme shows doc for the upcoming 2.0 version (`2.0.0.pre2` is available on RubyGems).
 For version 1.x see [1-4-stable branch](https://github.com/palkan/anyway_config/tree/1-4-stable).
 
 Rails/Ruby plugin/application configuration tool which allows you to load parameters from different sources: YAML, Rails secrets/credentials, environment.
@@ -31,7 +31,7 @@ Adding to a gem:
 # my-cool-gem.gemspec
 Gem::Specification.new do |spec|
   # ...
-  spec.add_dependency "anyway_config", "2.0.0.pre"
+  spec.add_dependency "anyway_config", "2.0.0.pre2"
   # ...
 end
 ```
@@ -40,23 +40,26 @@ Or adding to your project:
 
 ```ruby
 # Gemfile
-gem "anyway_config", "2.0.0.pre"
+gem "anyway_config", "2.0.0.pre2"
 ```
 
 ## Supported Ruby versions
 
 - Ruby (MRI) >= 2.5.0
 
-- JRuby >= 9.2.7
+- JRuby >= 9.2.9
 
 ## Usage
 
-### Pre-defined configuration
+### Configuration classes
 
-Create configuration class:
+Using configuration classes allows you to make configuration data a bit more than a bag of values:
+you can define a schema for your configuration, provide defaults and add additional helper methods.
+
+Anyway Config provides a base class to inherit from with a few DSL methods:
 
 ```ruby
-require "anyway"
+require "anyway_config"
 
 module MyCoolGem
   class Config < Anyway::Config
@@ -65,13 +68,13 @@ module MyCoolGem
 end
 ```
 
-`attr_config` creates accessors and default values. If you don't need default values just write:
+Here `attr_config` creates accessors and populates the default values. If you don't need default values you can write:
 
 ```ruby
 attr_config :user, :password, host: "localhost", options: {}
 ```
 
-Then create an instance of the config class and use it:
+Then, create an instance of the config class and use it:
 
 ```ruby
 module MyCoolGem
@@ -82,6 +85,21 @@ end
 
 MyCoolGem.config.user #=> "root"
 ```
+
+### How config data is populated
+
+By default, Anyway Config tries to load data from the following orders in the specified order:
+
+1) YAML file (`config/<config-name>.yml`) <sup>1</sup>.
+2) Rails Secrets <sup>2</sup>.
+3) Rails Credentials <sup>2</sup>.
+4) Environment variables.
+
+<sup>1</sup> When using Rails, environment-specific data is loaded.
+
+<sup>2</sup> Only in Rails projects.
+
+You can add custom data sources or update/remove the existing ones. See [Custom Loaders](#custom-loaders).
 
 #### Config name
 
@@ -322,6 +340,7 @@ Rails 4.2 introduced new feature: `Rails.application.config_for`. It looks very 
 | load data from `secrets`      | no       |   yes  |
 | load data from `credentials`  | no       |   yes  |
 | load data from environment    | no       |   yes  |
+| load data from a custom source | no      |   yes  |
 | local config files            | no       |   yes  |
 | return Hash with indifferent access | no | yes  |
 | support ERB within `config/app.yml` | yes | yes* |
@@ -359,6 +378,43 @@ If you want to provide a text-like env variable which contains commas then wrap 
 
 ```ruby
 MYCOOLGEM = "Nif-Nif, Naf-Naf and Nouf-Nouf"
+```
+
+## Custom loaders
+
+You can provide your own data loaders or change the existing ones using the Loaders API (which is very similar to Rack middleware builder):
+
+```ruby
+# remove env loader => do not load params from ENV
+Anyway.loaders.delete :env
+
+# add custom loader before :env (it's better to keep the ENV loader the last one)
+Anyway.loaders.insert_before :env, :my_loader, MyLoader
+```
+
+Loader is a _callable_ Ruby object (module/class responding to `.call` or lambda/proc), which `call` method
+accepts the following keyword arguments:
+
+```ruby
+def call(
+  name:, # config name
+  env_prefix:, # prefix for env vars if any
+  config_path:, # path to YML config
+  local: # true|false, whether to load local configuration
+)
+#=> must return Hash with configuration data
+end
+```
+
+You can use `Anyway::Loaders::Base` as a base class for your loader and define a `#call` method.
+For example, the [Chamber](https://github.com/thekompanee/chamber) loader could be written as follows:
+
+```ruby
+class ChamberConfigLoader < Anyway::Loaders::Base
+  def call(name:, **_opts)
+    Chamber.env.to_h[name] || {}
+  end
+end
 ```
 
 ## Test helpers
