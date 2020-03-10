@@ -31,7 +31,7 @@ if ENV["VERIFY_RESERVED"] == "1"
 
   RSpec.configure do |config|
     config.after(:suite) do
-      called_methods = called_methods.to_a
+      called_methods = called_methods.to_a.select { |mid| mid =~ Anyway::Config::PARAM_NAME }
 
       if (called_methods - Anyway::Config::RESERVED_NAMES).empty?
         next puts "\nAnyway::Config::RESERVED is OK"

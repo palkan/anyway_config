@@ -18,6 +18,8 @@ module Anyway # :nodoc:
   # Provides `attr_config` method to describe
   # configuration parameters and set defaults
   class Config
+    PARAM_NAME = /^[a-z_]([\w]+)?$/
+
     # List of names that couldn't be used as config names
     # (the class instance methods we use)
     RESERVED_NAMES = %i[
@@ -30,7 +32,6 @@ module Anyway # :nodoc:
       load
       load_from_sources
       option_parser
-      parse_options!
       reload
       resolve_config_path
       to_h
@@ -47,7 +48,11 @@ module Anyway # :nodoc:
 
         defaults.merge! new_defaults
 
-        new_keys = ((args + new_defaults.keys) - config_attributes).map(&:to_sym)
+        new_keys = ((args + new_defaults.keys) - config_attributes)
+
+        validate_param_names! new_keys.map(&:to_s)
+
+        new_keys.map!(&:to_sym)
 
         unless (reserved_names = (new_keys & RESERVED_NAMES)).empty?
           raise ArgumentError, "Can not use the following reserved names as config attrubutes: " \
@@ -150,6 +155,14 @@ module Anyway # :nodoc:
         end
 
         Regexp.last_match[1].tap(&:downcase!)
+      end
+
+      def validate_param_names!(names)
+        invalid_names = names.reject { |name| name =~ PARAM_NAME }
+        return if invalid_names.empty?
+
+        raise ArgumentError, "Invalid attr_config name: #{invalid_names.join(",")}.\n" \
+          "Valid names must satisfy /#{PARAM_NAME.source}/."
       end
     end
 

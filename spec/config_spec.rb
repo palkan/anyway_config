@@ -385,10 +385,23 @@ describe Anyway::Config, type: :config do
     end
   end
 
-  context "reserved names" do
-    specify do
+  context "params naming" do
+    it "disallow reserved names" do
       expect { Class.new(described_class) { attr_config :values, :load } }
         .to raise_error(ArgumentError, /reserved names.+: load, values/)
+    end
+
+    it "only allows alphanumerics", :aggregate_failures do
+      expect { Class.new(described_class) { attr_config "1a" } }
+        .to raise_error(ArgumentError, /invalid attr_config name: 1a/i)
+      expect { Class.new(described_class) { attr_config :a? } }
+        .to raise_error(ArgumentError, /invalid attr_config name: a?/i)
+      expect { Class.new(described_class) { attr_config :_d } }
+
+      expect { Class.new(described_class) { attr_config :x } }
+        .not_to raise_error
+      expect { Class.new(described_class) { attr_config "a1" } }
+        .not_to raise_error
     end
   end
 end
