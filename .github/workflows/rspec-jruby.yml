@@ -9,18 +9,24 @@ on:
 jobs:
   rspec-jruby:
     runs-on: ubuntu-latest
-    container:
-      image: jruby:9.2.8
-      env:
-        BUNDLE_GEMFILE: gemfiles/jruby.gemfile
     steps:
-    - uses: actions/checkout@v1
-    - name: Install git
+    - uses: actions/checkout@v2
+    - uses: actions/cache@v1
+      with:
+        path: vendor/bundle
+        key: bundle-jruby--${{ hashFiles('**/Gemfile') }}-${{ hashFiles('**/*.gemspec') }}
+        restore-keys: |
+          bundle-jruby-
+    - uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: jruby
+    - name: Bundle install
       run: |
-        apt-get update
-        apt-get install -y --no-install-recommends git
-    - name: Install deps and run RSpec
-      run: |
-        gem install bundler
+        bundle config --global gemfile gemfiles/jruby.gemfile
         bundle install --jobs 4 --retry 3
-        bundle exec rake spec spec:norails
+    - name: Run RSpec
+      run: |
+        bundle exec rake spec
+    - name: Run RSpec without rails
+      run: |
+        bundle exec rake spec:norails

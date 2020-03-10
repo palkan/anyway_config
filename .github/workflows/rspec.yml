@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ruby: ["2.5.x", "2.6.x", "2.7.x"]
+        ruby: ["2.5", "2.6", "2.7"]
         gemfile: [
           "gemfiles/railsmaster.gemfile",
           "gemfiles/rails6.gemfile",
@@ -22,20 +22,23 @@ jobs:
         - ruby: "2.5.x"
           gemfile: "gemfiles/railsmaster.gemfile"
     steps:
-    - uses: actions/checkout@v1
-    - name: Set up Ruby
-      uses: actions/setup-ruby@v1
+    - uses: actions/checkout@v2
+    - uses: actions/cache@v1
+      with:
+        path: vendor/bundle
+        key: bundle-ruby-${{ matrix.ruby }}-${{ hashFiles('**/Gemfile') }}-${{ hashFiles('**/*.gemspec') }}
+        restore-keys: |
+          bundle-ruby-${{ matrix.ruby }}-
+    - uses: ruby/setup-ruby@v1
       with:
         ruby-version: ${{ matrix.ruby }}
-    - name: Install Bundler
-      run: |
-        gem install bundler
-    - name: Configure Gemfile
+    - name: Bundle install
       run: |
         bundle config --global gemfile ${{ matrix.gemfile }}
-    - name: Install Ruby deps
-      run: |
         bundle install --jobs 4 --retry 3
     - name: Run RSpec
       run: |
-        bundle exec rake spec spec:norails
+        bundle exec rake spec
+    - name: Run RSpec without rails
+      run: |
+        bundle exec rake spec:norails
