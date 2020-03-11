@@ -26,6 +26,7 @@ module Anyway # :nodoc:
       values
       class
       clear
+      dig
       initialize
       load
       load_from_sources
@@ -255,6 +256,10 @@ module Anyway # :nodoc:
         base_config.deep_merge!(loader.call(**options))
       end
       base_config
+    end
+
+    def dig(*keys)
+      values.dig(*keys)
     end
 
     def to_h
