@@ -3,11 +3,9 @@
 require "anyway/option_parser_builder"
 
 require "anyway/ext/deep_dup"
-require "anyway/ext/string_serialize"
 
 module Anyway
   using Anyway::Ext::DeepDup
-  using Anyway::Ext::StringSerialize
 
   # Adds ability to use script options as the source
   # of configuration (via optparse)
@@ -69,8 +67,8 @@ module Anyway
 
     def option_parser
       @option_parser ||= begin
-        OptionParserBuilder.call(self.class.option_parser_options) do |key, arg|
-          write_config_attr(key, arg.is_a?(String) ? arg.serialize : arg)
+        OptionParserBuilder.call(self.class.option_parser_options) do |key, val|
+          write_config_attr(key, val)
         end.tap do |parser|
           self.class.option_parser_extensions.map do |extension|
             extension.call(parser, self)
