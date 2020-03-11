@@ -86,6 +86,31 @@ end
 MyCoolGem.config.user #=> "root"
 ```
 
+**NOTE**: since v2.0 accessors created by `attr_config` are not `attr_accessor`, i.e. they do not populate instance variables.
+If you used instance variables before to override readers, you must switch to using `super` or `values` store:
+
+```ruby
+class MyConfig < Anyway::Config
+  attr_config :host, :port, :url, :meta
+
+  # override writer to handle type coercion
+  def meta=(val)
+    super JSON.parse(val)
+  end
+
+  # or override reader to handle missing values
+  def url
+    values[:url] ||= "#{host}:#{port}"
+  end
+
+  # untill v2.1, it will still be possible to read instance variables,
+  # i.e. the following code would also work
+  def url
+    @url ||= "#{host}:#{port}"
+  end
+end
+```
+
 ### How config data is populated
 
 By default, Anyway Config tries to load data from the following orders in the specified order:

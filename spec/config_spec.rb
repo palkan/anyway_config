@@ -52,6 +52,45 @@ describe Anyway::Config, type: :config do
       end
     end
 
+    context "accessors override" do
+      let(:sub_config) do
+        Class.new(CoolConfig) do
+          attr_config :submeta,
+            port: 3000
+
+          def submeta=(val)
+            super JSON.parse(val)
+          end
+        end
+      end
+
+      it "supports super" do
+        conf = sub_config.new(submeta: '{"a": 1}')
+
+        expect(conf.submeta).to eq("a" => 1)
+      end
+    end
+
+    context "instance variables" do
+      it "populates instance variables in < 2.1.0" do
+        if Gem::Version.new(Anyway::VERSION) >= Gem::Version.new("2.1.0")
+          expect(conf.host).not_to be_nil
+          expect(conf.instance_variable_get(:@host)).to be_nil
+        else
+          expect(conf.instance_variable_get(:@host)).to eq conf.host
+
+          conf.host = "test.v1"
+          expect(conf.instance_variable_get(:@host)).to eq "test.v1"
+        end
+      end
+    end
+
+    describe "#dig" do
+      specify do
+        expect(conf.dig(:user, "name")).to eq "secret man"
+      end
+    end
+
     describe "#to_h" do
       subject(:config) { CoolConfig.new }
 
