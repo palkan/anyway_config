@@ -1,5 +1,16 @@
 # Change log
 
+- Add ability to specify types for OptionParser options. ([@palkan][])
+
+  ```ruby
+  describe_options(
+    concurrency: {
+      desc: "number of threads to use",
+      type: String
+    }
+  )
+  ```
+
 - Add param presence validation. ([@palkan][])
 
   You can specify some params as required, and the validation

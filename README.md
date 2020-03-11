@@ -393,6 +393,18 @@ config.option_parser
 ```
 
 **NOTE:** values are automatically type casted using the same rules as for [environment variables](#environment-variables).
+If you want to specify the type explicitly, you can do that using `describe_options`:
+
+```ruby
+describe_options(
+  # In this case, you should specify a hash with `type`
+  # and (optionally) `desc` keys
+  concurrency: {
+    desc: "number of threads to use",
+    type: String
+  }
+)
+```
 
 ## `Rails.application.config_for` vs `Anyway::Config.for`
 

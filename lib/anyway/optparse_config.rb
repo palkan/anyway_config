@@ -19,7 +19,11 @@ module Anyway
 
       def describe_options(**hargs)
         hargs.each do |name, desc|
-          option_parser_descriptors[name.to_s][:desc] = desc
+          if String === desc
+            option_parser_descriptors[name.to_s][:desc] = desc
+          else
+            option_parser_descriptors[name.to_s].merge!(desc)
+          end
         end
       end
 
