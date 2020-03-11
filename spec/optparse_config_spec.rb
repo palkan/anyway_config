@@ -16,7 +16,7 @@ describe Anyway::Config do
         end
       end
 
-      it "parses ARGC string" do
+      it "parses args" do
         config_instance.parse_options!(%w[--host localhost --port 3333 --log-level debug --debug])
         expect(config_instance.host).to eq("localhost")
         expect(config_instance.port).to eq(3333)
@@ -35,7 +35,7 @@ describe Anyway::Config do
         end
       end
 
-      it "parses ARGC string" do
+      it "parses args" do
         expect do
           config_instance.parse_options!(
             %w[--host localhost --concurrency 10 --log-level debug --server-args SOME_ARGS]
@@ -63,6 +63,27 @@ describe Anyway::Config do
 
       it "contains options description" do
         expect(config_instance.option_parser.help).to include("number of threads to use")
+      end
+
+      context "with types" do
+        let(:config) do
+          Class.new(described_class) do
+            config_name "optparse"
+            attr_config :host, :log_level, :concurrency, server_args: {}
+
+            describe_options(
+              concurrency: {
+                desc: "number of threads to use",
+                type: String
+              }
+            )
+          end
+        end
+
+        it "uses specified type information" do
+          config_instance.parse_options!(%w[--host localhost --concurrency 10])
+          expect(config_instance.concurrency).to eq "10"
+        end
       end
     end
 

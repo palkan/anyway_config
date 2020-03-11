@@ -22,9 +22,9 @@ module Anyway # :nodoc:
 
       private
 
-      def option_parser_on_args(key, flag: false, desc: nil)
+      def option_parser_on_args(key, flag: false, desc: nil, type: AutoCast)
         on_args = ["--#{key.to_s.tr("_", "-")}#{flag ? "" : " VALUE"}"]
-        on_args << AutoCast unless flag
+        on_args << type unless flag
         on_args << desc unless desc.nil?
         on_args
       end
