@@ -44,3 +44,6 @@ jobs:
     - name: Run RSpec without rails
       run: |
         bundle exec rake spec:norails
+    - name: Run Rails secrets tests for uninitialized app
+      run: |
+        bundle exec rake spec:secrets

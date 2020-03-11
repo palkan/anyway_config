@@ -16,5 +16,12 @@ RSpec::Core::RakeTask.new("spec:norails") do |task|
   task.verbose = false
 end
 
+desc "Run Rails secrets tests for uninitialized app"
+RSpec::Core::RakeTask.new("spec:secrets") do |task|
+  ENV["DO_NOT_INITIALIZE_RAILS"] = "1"
+  task.rspec_opts = "--order defined --tag secrets"
+  task.verbose = false
+end
+
 desc "Run the all specs"
-task default: %w[spec:norails spec]
+task default: %w[spec:norails spec spec:secrets]

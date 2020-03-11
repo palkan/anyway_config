@@ -56,7 +56,7 @@ begin
     ENV["RAILS_ENV"] = "test"
 
     require File.expand_path("dummy/config/environment", __dir__)
-    Rails.application.eager_load!
+    Rails.application.eager_load! unless ENV["DO_NOT_INITIALIZE_RAILS"] == "1"
   end
 rescue => err
   $stdout.puts "Failed to load test env: #{err}\n#{err.backtrace.take(5).join("\n")}"

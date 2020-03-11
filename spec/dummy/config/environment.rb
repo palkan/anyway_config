@@ -4,4 +4,4 @@
 require File.expand_path("../application", __FILE__)
 
 # Initialize the Rails application.
-Dummy::Application.initialize!
+Dummy::Application.initialize! unless ENV["DO_NOT_INITIALIZE_RAILS"] == "1"
