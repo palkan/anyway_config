@@ -149,15 +149,24 @@ module Anyway # :nodoc:
 
       def define_config_accessor(*names)
         names.each do |name|
-          class_eval <<~RUBY, __FILE__, __LINE__ + 1
+          accessors_module.module_eval <<~RUBY, __FILE__, __LINE__ + 1
             def #{name}=(val)
-              values[:#{name}] = val
+              # DEPRECATED: intance variable set will be removed in 2.1
+              @#{name} = values[:#{name}] = val
             end
 
             def #{name}
               values[:#{name}]
             end
           RUBY
+        end
+      end
+
+      def accessors_module
+        return @accessors_module if instance_variable_defined?(:@accessors_module)
+
+        @accessors_module = Module.new.tap do |mod|
+          include mod
         end
       end
 
@@ -274,7 +283,7 @@ module Anyway # :nodoc:
       key = key.to_sym
       return unless self.class.config_attributes.include?(key)
 
-      values[key] = val
+      public_send(:"#{key}=", val)
     end
 
     def raise_validation_error(msg)
