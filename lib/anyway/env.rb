@@ -5,19 +5,21 @@ module Anyway
   # method-like access
   class Env
     using Anyway::Ext::DeepDup
-    using Anyway::Ext::StringSerialize
 
-    def initialize
+    attr_reader :data, :type_cast
+
+    def initialize(type_cast: AutoCast)
+      @type_cast = type_cast
       @data = {}
     end
 
     def clear
-      @data.clear
+      data.clear
     end
 
     def fetch(prefix)
-      @data[prefix] ||= parse_env(prefix)
-      @data[prefix].deep_dup
+      data[prefix] ||= parse_env(prefix)
+      data[prefix].deep_dup
     end
 
     private
@@ -28,7 +30,7 @@ module Anyway
         next unless key.start_with?(match_prefix)
 
         path = key.sub(/^#{prefix}_/, "").downcase
-        set_by_path(data, path, val.serialize)
+        set_by_path(data, path, type_cast.call(val))
       end
     end
 

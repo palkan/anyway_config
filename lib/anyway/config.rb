@@ -6,13 +6,11 @@ require "anyway/dynamic_config"
 require "anyway/ext/deep_dup"
 require "anyway/ext/deep_freeze"
 require "anyway/ext/hash"
-require "anyway/ext/string_serialize"
 
 module Anyway # :nodoc:
   using Anyway::Ext::DeepDup
   using Anyway::Ext::DeepFreeze
   using Anyway::Ext::Hash
-  using Anyway::Ext::StringSerialize
 
   # Base config class
   # Provides `attr_config` method to describe

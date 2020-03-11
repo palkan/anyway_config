@@ -35,6 +35,7 @@ module Anyway # :nodoc:
     end
   end
 
+  require "anyway/auto_cast"
   require "anyway/env"
   require "anyway/loaders"
 

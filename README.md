@@ -288,6 +288,36 @@ port: 3000
 
 Environmental variables work the same way as with Rails.
 
+## Environment variables
+
+Environmental variables for your config should start with your config name, upper-cased.
+
+For example, if your config name is "mycoolgem" then the env var "MYCOOLGEM_PASSWORD" is used as `config.password`.
+
+Environment variables are automatically type casted:
+
+- `"True"`, `"t"` and `"yes"` to `true`;
+- `"False"`, `"f"` and `"no"` to `false`;
+- `"nil"` and `"null"` to `nil` (do you really need it?);
+- `"123"` to 123 and `"3.14"` to 3.14.
+
+*Anyway Config* supports nested (_hashed_) env variables. Just separate keys with double-underscore.
+
+For example, "MYCOOLGEM_OPTIONS__VERBOSE" is parsed as `config.options["verbose"]`.
+
+Array values are also supported:
+
+```ruby
+# Suppose ENV["MYCOOLGEM_IDS"] = '1,2,3'
+config.ids #=> [1,2,3]
+```
+
+If you want to provide a text-like env variable which contains commas then wrap it into quotes:
+
+```ruby
+MYCOOLGEM = "Nif-Nif, Naf-Naf and Nouf-Nouf"
+```
+
 ### Local files
 
 It's useful to have personal, user-specific configuration in development, which extends the project-wide one.
@@ -362,6 +392,8 @@ config.log_level # => "debug"
 config.option_parser
 ```
 
+**NOTE:** values are automatically type casted using the same rules as for [environment variables](#environment-variables).
+
 ## `Rails.application.config_for` vs `Anyway::Config.for`
 
 Rails 4.2 introduced new feature: `Rails.application.config_for`. It looks very similar to
@@ -382,36 +414,6 @@ Rails 4.2 introduced new feature: `Rails.application.config_for`. It looks very 
 <sub><sup>*</sup>make sure that ERB is loaded</sub>
 
 But the main advantage of Anyway::Config is that it can be used [without Rails](#using-with-ruby)!)
-
-## How to set env vars
-
-Environmental variables for your config should start with your config name, upper-cased.
-
-For example, if your config name is "mycoolgem" then the env var "MYCOOLGEM_PASSWORD" is used as `config.password`.
-
-Environment variables are automatically serialized:
-
-- `"True"`, `"t"` and `"yes"` to `true`;
-- `"False"`, `"f"` and `"no"` to `false`;
-- `"nil"` and `"null"` to `nil` (do you really need it?);
-- `"123"` to 123 and `"3.14"` to 3.14.
-
-*Anyway Config* supports nested (_hashed_) env variables. Just separate keys with double-underscore.
-
-For example, "MYCOOLGEM_OPTIONS__VERBOSE" is parsed as `config.options["verbose"]`.
-
-Array values are also supported:
-
-```ruby
-# Suppose ENV["MYCOOLGEM_IDS"] = '1,2,3'
-config.ids #=> [1,2,3]
-```
-
-If you want to provide a text-like env variable which contains commas then wrap it into quotes:
-
-```ruby
-MYCOOLGEM = "Nif-Nif, Naf-Naf and Nouf-Nouf"
-```
 
 ## Custom loaders
 
