@@ -9,6 +9,10 @@ on:
 jobs:
   rspec:
     runs-on: ubuntu-latest
+    env:
+      BUNDLE_JOBS: 4
+      BUNDLE_RETRY: 3
+      VERIFY_RESERVED: 1
     strategy:
       fail-fast: false
       matrix:
@@ -21,23 +25,23 @@ jobs:
         exclude:
         - ruby: "2.5.x"
           gemfile: "gemfiles/railsmaster.gemfile"
-    env:
-      VERIFY_RESERVED: 1
     steps:
     - uses: actions/checkout@v2
     - uses: actions/cache@v1
       with:
-        path: vendor/bundle
-        key: bundle-ruby-${{ matrix.ruby }}-${{ hashFiles('**/Gemfile') }}-${{ hashFiles('**/*.gemspec') }}
+        path: /home/runner/bundle
+        key: bundle-${{ matrix.ruby }}-${{ matrix.gemfile }}-${{ hashFiles(matrix.gemfile) }}-${{ hashFiles('**/*.gemspec') }}
         restore-keys: |
-          bundle-ruby-${{ matrix.ruby }}-
+          bundle-${{ matrix.ruby }}-${{ matrix.gemfile }}-
     - uses: ruby/setup-ruby@v1
       with:
         ruby-version: ${{ matrix.ruby }}
     - name: Bundle install
       run: |
+        bundle config path /home/runner/bundle
         bundle config --global gemfile ${{ matrix.gemfile }}
-        bundle install --jobs 4 --retry 3
+        bundle install
+        bundle update
     - name: Run RSpec
       run: |
         bundle exec rake spec
