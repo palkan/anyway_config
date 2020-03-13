@@ -4,23 +4,67 @@
 
 # Anyway Config
 
-**NOTE:** this readme shows doc for the upcoming 2.0 version (`2.0.0.pre2` is available on RubyGems).
+> One configuration to rule all data sources
+
+Anyway Config is a configuration library for Ruby gems and applications.
+
+As a library author, you can benefit from using Anyway Config by providing a better UX for your end-users:
+
+- **Zero-code configuration** — no more boilerplate initializers.
+- **Per-environment and local** settings support out-of-the-box.
+
+For application developers, Anyway Config could be useful to:
+
+- **Keep configuration organized** and use _named configs_ instead of bloated `.env`/`settings.yml`/whatever.
+- **Free code of ENV/credentials/secrets dependency** and use configuration classes instead—your code should not rely on configuration data sources.
+
+**NOTE:** this readme shows documentation for the upcoming 2.0 version (`2.0.0.pre2` is available on RubyGems).
 For version 1.x see [1-4-stable branch](https://github.com/palkan/anyway_config/tree/1-4-stable).
 
-Rails/Ruby plugin/application configuration tool which allows you to load parameters from different sources: YAML, Rails secrets/credentials, environment.
+## Table of contents
 
-Allows you to easily follow the [twelve-factor application](https://12factor.net/config) principles and adds zero complexity to your development process.
+- [Main concepts](#main-concepts)
+- [Installation](#installation)
+- [Usage](#usage)
+  - [Configuration classes](#configuration-classes)
+  - [Dynamic configuration](#dynamic-configuration)
+  - [Validation](#validation)
+- [Using with Rails applications](#using-with-rails)
+  - [Data population](#data-population)
+  - [Organizing configs](#organizing-configs)
+- [Using with Ruby applications](#using-with-ruby)
+- [Environment variables](#environment-variables)
+- [Local configuration](#local-files)
+- [Data loaders](#data-loaders)
+- [Test helpers](#test-helpers)
+- [OptionParser integration](#optionparser-integration)
 
-Libraries using Anyway Config:
+## Main concepts
+
+Anyway Config abstractize the configuration layer by introducing **configuration classes** which describe available parameters and their defaults. For [example](https://github.com/palkan/influxer/blob/master/lib/influxer/config.rb):
+
+```ruby
+module Influxer
+  class Config < Anyway::Config
+    attr_config(
+      host: "localhost",
+      username: "root",
+      password: "root"
+    )
+  end
+end
+```
+
+Using Ruby classes to represent configuration allows you to add helper methods and computed parameters easily, makes the configuration **testable**.
+
+The `anyway_config` gem takes care of loading parameters from **different sources** (YAML, credentials/secrets, environment variables, etc.). Internally, we use a _pipeline pattern_ and provide the [Loaders API](#data-loaders) to manage and [extend](#custom-loaders) its functionality.
+
+Check out the libraries using Anyway Config for more examples:
 
 - [Influxer](https://github.com/palkan/influxer)
-
 - [AnyCable](https://github.com/anycable/anycable)
-
 - [Sniffer](https://github.com/aderyabin/sniffer)
-
 - [Blood Contracts](https://github.com/sclinede/blood_contracts)
-
 - [and others](https://github.com/palkan/anyway_config/network/dependents).
 
 ## Installation
@@ -43,10 +87,9 @@ Or adding to your project:
 gem "anyway_config", "2.0.0.pre2"
 ```
 
-## Supported Ruby versions
+### Supported Ruby versions
 
 - Ruby (MRI) >= 2.5.0
-
 - JRuby >= 9.2.9
 
 ## Usage
@@ -54,7 +97,7 @@ gem "anyway_config", "2.0.0.pre2"
 ### Configuration classes
 
 Using configuration classes allows you to make configuration data a bit more than a bag of values:
-you can define a schema for your configuration, provide defaults and add additional helper methods.
+you can define a schema for your configuration, provide defaults, add validations and additional helper methods.
 
 Anyway Config provides a base class to inherit from with a few DSL methods:
 
@@ -74,20 +117,15 @@ Here `attr_config` creates accessors and populates the default values. If you do
 attr_config :user, :password, host: "localhost", options: {}
 ```
 
+**NOTE**: it's safe to use non-primitive default values (like Hashes or Arrays) without worrying about their mutation: the values would be deeply duplicated for each config instance.
+
 Then, create an instance of the config class and use it:
 
 ```ruby
-module MyCoolGem
-  def self.config
-    @config ||= Config.new
-  end
-end
-
-MyCoolGem.config.user #=> "root"
+MyCoolGem::Config.new.user #=> "root"
 ```
 
-**NOTE**: since v2.0 accessors created by `attr_config` are not `attr_accessor`, i.e. they do not populate instance variables.
-If you used instance variables before to override readers, you must switch to using `super` or `values` store:
+**NOTE**: since v2.0 accessors created by `attr_config` are not `attr_accessor`, i.e. they do not populate instance variables. If you used instance variables before to override readers, you must switch to using `super` or `values` store:
 
 ```ruby
 class MyConfig < Anyway::Config
@@ -111,21 +149,6 @@ class MyConfig < Anyway::Config
 end
 ```
 
-### How config data is populated
-
-By default, Anyway Config tries to load data from the following orders in the specified order:
-
-1) YAML file (`config/<config-name>.yml`) <sup>1</sup>.
-2) Rails Secrets <sup>2</sup>.
-3) Rails Credentials <sup>2</sup>.
-4) Environment variables.
-
-<sup>1</sup> When using Rails, environment-specific data is loaded.
-
-<sup>2</sup> Only in Rails projects.
-
-You can add custom data sources or update/remove the existing ones. See [Custom Loaders](#custom-loaders).
-
 #### Config name
 
 Anyway Config relies on the notion of _config name_ to populate data.
@@ -135,9 +158,9 @@ By default, Anyway Config uses the config class name to infer the config name us
 - if the class name has a form of `<Module>::Config` then use the module name (`SomeModule::Config => "somemodule"`)
 - if the class name has a form of `<Something>Config` then use the class name prefix (`SomeConfig => "some"`)
 
-**NOTE:** in both cases the config name is a **downcased** module/class prefix, not underscored.
+**NOTE:** in both cases, the config name is a **downcased** module/class prefix, not underscored.
 
-You can also specify the config name explicitly (it's required in cases when you class name doesn't match any of the patterns above):
+You can also specify the config name explicitly (it's required in cases when your class name doesn't match any of the patterns above):
 
 ```ruby
 module MyCoolGem
@@ -165,7 +188,7 @@ module MyCoolGem
 end
 ```
 
-#### Provide explicit values
+#### Explicit values
 
 Sometimes it's useful to set some parameters explicitly during config initialization.
 You can do that by passing a Hash into `.new` method:
@@ -176,9 +199,48 @@ config = MyCoolGem::Config.new(
   password: "rubyisnotdead"
 )
 
-# The value would not be overriden from other sources (such as YML file, env)
+# The value would not be overridden from other sources (such as YML file, env)
 config.user == "john"
 ```
+
+#### Reload configuration
+
+There are `#clear` and `#reload` methods that do exactly what they state.
+
+**NOTE**: `#reload` also accepts an optional Hash for [explicit values](#explicit-values).
+
+### Dynamic configuration
+
+You can also fetch configuration without pre-defined schema:
+
+```ruby
+# load data from config/my_app.yml,
+# credentials.my_app, secrets.my_app (if using Rails), ENV["MY_APP_*"]
+#
+# Given MY_APP_VALUE=42
+config = Anyway::Config.for(:my_app)
+config["value"] #=> 42
+
+# you can specify the config file path or env prefix
+config = Anyway::Config.for(:my_app, config_path: "my_config.yml", env_prefix: "MYAPP")
+```
+
+This feature is similar to `Rails.application.config_for` but more powerful:
+
+| Feature | Rails | Anyway Config |
+| ------------- |-------------:| -----:|
+| Load data from `config/app.yml` | ✅ | ✅ |
+| Load data from `secrets` | ❌ | ✅ |
+| Load data from `credentials` | ❌ | ✅ |
+| Load data from environment | ❌ | ✅ |
+| Load data from [custom sources](#data-loaders) | ❌ | ✅ |
+| Local config files | ❌ | ✅ |
+| Return Hash with indifferent access | ❌ | ✅ |
+| Support ERB\* within `config/app.yml` | ✅ | ✅ |
+| Raise if file doesn't exist | ✅ | ❌ |
+| Works without Rails | 😀 | ✅ |
+
+\* Make sure that ERB is loaded
 
 ### Validation
 
@@ -213,25 +275,13 @@ class MyConfig < Anyway::Config
 end
 ```
 
-### Dynamic configuration
-
-You can also create configuration objects without pre-defined schema (just like `Rails.application.config_for` but more [powerful](#railsapplicationconfig_for-vs-anywayconfigfor)):
-
-```ruby
-# load data from config/my_app.yml, secrets.my_app (if using Rails), ENV["MY_APP_*"]
-# MY_APP_VALUE=42
-config = Anyway::Config.for(:my_app)
-config["value"] #=> 42
-
-# you can specify the config file path or env prefix
-config = Anyway::Config.for(:my_app, config_path: "my_config.yml", env_prefix: "MYAPP")
-```
-
-### Using with Rails
+## Using with Rails
 
 **NOTE:** version 2.x supports Rails >= 5.0; for Rails 4.x use version 1.x of the gem.
 
-Your config will be filled up with values from the following sources (ordered by priority from low to high):
+### Data population
+
+Your config is filled up with values from the following sources (ordered by priority from low to high):
 
 - `RAILS_ROOT/config/my_cool_gem.yml` (for the current `RAILS_ENV`, supports `ERB`):
 
@@ -256,7 +306,7 @@ development:
     port: 4444
 ```
 
-- `Rails.application.credentials` (if supported):
+- `Rails.application.credentials.my_cool_gem` (if supported):
 
 ```yml
 my_cool_gem:
@@ -267,14 +317,16 @@ my_cool_gem:
 
 - `ENV['MYCOOLGEM_*']`.
 
-#### `app/configs`
+See [environment variables](#environment-variables).
+
+### Organizing configs
 
 You can store application-level config classes in `app/configs` folder.
 
 Anyway Config automatically adds this folder to Rails autoloading system to make it possible to
 autoload configs even during the configuration phase.
 
-Consider an example: setting the Action Mailer host name for Heroku review apps.
+Consider an example: setting the Action Mailer hostname for Heroku review apps.
 
 We have the following config to fetch the Heroku provided [metadata](https://devcenter.heroku.com/articles/dyno-metadata):
 
@@ -297,36 +349,39 @@ Then in `config/application.rb` you can do the following:
 config.action_mailer.default_url_options = {host: HerokuConfig.new.hostname}
 ```
 
-### Using with Ruby
+## Using with Ruby
 
-When you're using Anyway Config in non-Rails environment, we're looking for a YAML config file
-at `./config/<config-name>.yml`.
+The default data loading mechanism for non-Rails applications is the following (ordered by priority from low to high):
 
-You can override this setting through special environment variable – 'MYCOOLGEM_CONF' – containing the path to the YAML file.
+- `./config/<config-name>.yml` (`ERB` is supported if `erb` is loaded)
 
-**NOTE:** in pure Ruby apps we have no knowledge of _environments_ (`test`, `development`, `production`, etc.); thus we assume that the YAML contains values for a single environment:
+In pure Ruby apps, we do not know about _environments_ (`test`, `development`, `production`, etc.); thus, we assume that the YAML contains values for a single environment:
 
 ```yml
 host: localhost
 port: 3000
 ```
 
-Environmental variables work the same way as with Rails.
+**NOTE:** you can override the default YML lookup path by setting `MYCOOLGEM_CONF` env variable.
+
+- `ENV['MYCOOLGEM_*']`.
+
+See [environment variables](#environment-variables).
 
 ## Environment variables
 
 Environmental variables for your config should start with your config name, upper-cased.
 
-For example, if your config name is "mycoolgem" then the env var "MYCOOLGEM_PASSWORD" is used as `config.password`.
+For example, if your config name is "mycoolgem", then the env var "MYCOOLGEM_PASSWORD" is used as `config.password`.
 
-Environment variables are automatically type casted:
+Environment variables are automatically type cast:
 
 - `"True"`, `"t"` and `"yes"` to `true`;
 - `"False"`, `"f"` and `"no"` to `false`;
 - `"nil"` and `"null"` to `nil` (do you really need it?);
 - `"123"` to 123 and `"3.14"` to 3.14.
 
-*Anyway Config* supports nested (_hashed_) env variables. Just separate keys with double-underscore.
+*Anyway Config* supports nested (_hashed_) env variables—just separate keys with double-underscore.
 
 For example, "MYCOOLGEM_OPTIONS__VERBOSE" is parsed as `config.options["verbose"]`.
 
@@ -343,16 +398,16 @@ If you want to provide a text-like env variable which contains commas then wrap 
 MYCOOLGEM = "Nif-Nif, Naf-Naf and Nouf-Nouf"
 ```
 
-### Local files
+## Local files
 
-It's useful to have personal, user-specific configuration in development, which extends the project-wide one.
+It's useful to have a personal, user-specific configuration in development, which extends the project-wide one.
 
 We support this by looking at _local_ files when loading the configuration data:
 
 - `<config_name>.local.yml` files (next to\* the _global_ `<config_name>.yml`)
 - `config/credentials/local.yml.enc` (for Rails >= 6, generate it via `rails credentials:edit --environment local`).
 
-\* If the YAML config path is not default (i.e. set via `<CONFIG_NAME>_CONF`), we lookup the local
+\* If the YAML config path is not a default one (i.e., set via `<CONFIG_NAME>_CONF`), we look up the local
 config at this location, too.
 
 Local configs are meant for using in development and only loaded if `Anyway::Settings.use_local_files` is `true` (which is true by default if `RACK_ENV` or `RAILS_ENV` env variable is equal to `"development"`).
@@ -361,98 +416,9 @@ Local configs are meant for using in development and only loaded if `Anyway::Set
 
 Don't forget to add `*.local.yml` (and `config/credentials/local.*`) to your `.gitignore`.
 
-**NOTE:** local YAML configs for Rails app must be environment-free (i.e. you shouldn't have top-level `development:` key).
+**NOTE:** local YAML configs for a Rails app must be environment-free (i.e., you shouldn't have top-level `development:` key).
 
-### Reload configuration
-
-There are `#clear` and `#reload` methods which do exactly what they state.
-
-Note: `#reload` also accepts `overrides` key to provide explicit values (see above).
-
-### OptionParser integration
-
-It's possible to use config as option parser (e.g. for CLI apps/libraries). It uses
-[`optparse`](https://ruby-doc.org/stdlib-2.5.1/libdoc/optparse/rdoc/OptionParser.html) under the hood.
-
-Example usage:
-
-```ruby
-class MyConfig < Anyway::Config
-  attr_config :host, :log_level, :concurrency, :debug, server_args: {}
-
-  # specify which options shouldn't be handled by option parser
-  ignore_options :server_args
-
-  # provide description for options
-  describe_options(
-    concurrency: "number of threads to use"
-  )
-
-  # mark some options as flag
-  flag_options :debug
-
-  # extend an option parser object (i.e. add banner or version/help handlers)
-  extend_options do |parser, config|
-    parser.banner = "mycli [options]"
-
-    parser.on("--server-args VALUE") do |value|
-      config.server_args = JSON.parse(value)
-    end
-
-    parser.on_tail "-h", "--help" do
-      puts parser
-    end
-  end
-end
-
-config = MyConfig.new
-
-config.parse_options!(%w[--host localhost --port 3333 --log-level debug])
-
-config.host # => "localhost"
-config.port # => 3333
-config.log_level # => "debug"
-
-# Get the instance of OptionParser
-config.option_parser
-```
-
-**NOTE:** values are automatically type casted using the same rules as for [environment variables](#environment-variables).
-If you want to specify the type explicitly, you can do that using `describe_options`:
-
-```ruby
-describe_options(
-  # In this case, you should specify a hash with `type`
-  # and (optionally) `desc` keys
-  concurrency: {
-    desc: "number of threads to use",
-    type: String
-  }
-)
-```
-
-## `Rails.application.config_for` vs `Anyway::Config.for`
-
-Rails 4.2 introduced new feature: `Rails.application.config_for`. It looks very similar to
-`Anyway::Config.for`, but there are some differences:
-
-| Feature       | Rails         | Anyway Config |
-| ------------- |-------------:| -----:|
-| load data from `config/app.yml`      | yes  | yes  |
-| load data from `secrets`      | no       |   yes  |
-| load data from `credentials`  | no       |   yes  |
-| load data from environment    | no       |   yes  |
-| load data from a custom source | no      |   yes  |
-| local config files            | no       |   yes  |
-| return Hash with indifferent access | no | yes  |
-| support ERB within `config/app.yml` | yes | yes* |
-| raise errors if file doesn't exist | yes | no |
-
-<sub><sup>*</sup>make sure that ERB is loaded</sub>
-
-But the main advantage of Anyway::Config is that it can be used [without Rails](#using-with-ruby)!)
-
-## Custom loaders
+## Data loaders
 
 You can provide your own data loaders or change the existing ones using the Loaders API (which is very similar to Rack middleware builder):
 
@@ -474,7 +440,7 @@ def call(
   config_path:, # path to YML config
   local: # true|false, whether to load local configuration
 )
-#=> must return Hash with configuration data
+  #=> must return Hash with configuration data
 end
 ```
 
@@ -525,6 +491,68 @@ If you want to delete the env var, pass `nil` as the value.
 This helper is automatically included to RSpec if `RAILS_ENV` or `RACK_ENV` env variable is equal to "test". It's only available for the example with the tag `type: :config` or with the path `spec/configs/...`.
 
 You can add it manually by requiring `"anyway/testing/helpers"` and including the `Anyway::Test::Helpers` module (into RSpec configuration or Minitest test class).
+
+## OptionParser integration
+
+It's possible to use config as option parser (e.g., for CLI apps/libraries). It uses
+[`optparse`](https://ruby-doc.org/stdlib-2.5.1/libdoc/optparse/rdoc/OptionParser.html) under the hood.
+
+Example usage:
+
+```ruby
+class MyConfig < Anyway::Config
+  attr_config :host, :log_level, :concurrency, :debug, server_args: {}
+
+  # specify which options shouldn't be handled by option parser
+  ignore_options :server_args
+
+  # provide description for options
+  describe_options(
+    concurrency: "number of threads to use"
+  )
+
+  # mark some options as flag
+  flag_options :debug
+
+  # extend an option parser object (i.e. add banner or version/help handlers)
+  extend_options do |parser, config|
+    parser.banner = "mycli [options]"
+
+    parser.on("--server-args VALUE") do |value|
+      config.server_args = JSON.parse(value)
+    end
+
+    parser.on_tail "-h", "--help" do
+      puts parser
+    end
+  end
+end
+
+config = MyConfig.new
+
+config.parse_options!(%w[--host localhost --port 3333 --log-level debug])
+
+config.host # => "localhost"
+config.port # => 3333
+config.log_level # => "debug"
+
+# Get the instance of OptionParser
+config.option_parser
+```
+
+**NOTE:** values are automatically type cast using the same rules as for [environment variables](#environment-variables).
+If you want to specify the type explicitly, you can do that using `describe_options`:
+
+```ruby
+describe_options(
+  # In this case, you should specify a hash with `type`
+  # and (optionally) `desc` keys
+  concurrency: {
+    desc: "number of threads to use",
+    type: String
+  }
+)
+```
 
 ## Contributing
 
