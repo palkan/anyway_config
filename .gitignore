@@ -38,3 +38,4 @@ Gemfile.local
 *.gem
 
 tmp/
+.rbnext/

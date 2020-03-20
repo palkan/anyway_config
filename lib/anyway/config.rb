@@ -8,6 +8,7 @@ require "anyway/ext/deep_freeze"
 require "anyway/ext/hash"
 
 module Anyway # :nodoc:
+  using RubyNext
   using Anyway::Ext::DeepDup
   using Anyway::Ext::DeepFreeze
   using Anyway::Ext::Hash
@@ -152,7 +153,7 @@ module Anyway # :nodoc:
         names.each do |name|
           accessors_module.module_eval <<~RUBY, __FILE__, __LINE__ + 1
             def #{name}=(val)
-              # DEPRECATED: intance variable set will be removed in 2.1
+              # DEPRECATED: instance variable set will be removed in 2.1
               @#{name} = values[:#{name}] = val
             end
 
@@ -274,7 +275,7 @@ module Anyway # :nodoc:
     def validate!
       self.class.required_attributes.select do |name|
         values[name].nil? || (values[name].is_a?(String) && values[name].empty?)
-      end.yield_self do |missing|
+      end.then do |missing|
         next if missing.empty?
         raise_validation_error "The following config parameters are missing or empty: #{missing.join(", ")}"
       end

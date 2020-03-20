@@ -23,5 +23,10 @@ RSpec::Core::RakeTask.new("spec:secrets") do |task|
   task.verbose = false
 end
 
+desc "Run Ruby Next nextify"
+task :nextify do
+  sh "bundle exec ruby-next nextify ./lib --transpile-mode=rewrite -V"
+end
+
 desc "Run the all specs"
 task default: %w[spec:norails spec spec:secrets]

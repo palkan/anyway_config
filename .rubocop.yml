@@ -1,6 +1,7 @@
 require:
   - standard/cop/semantic_blocks
   - rubocop-md
+  - ruby-next/rubocop
 
 inherit_gem:
   standard: config/base.yml
@@ -12,8 +13,9 @@ AllCops:
     - 'Gemfile'
     - 'vendor/**/*'
     - 'gemfiles/**/*'
+    - 'lib/.rbnext/**/*'
   DisplayCopNames: true
-  TargetRubyVersion: 2.5
+  TargetRubyVersion: 2.7
 
 Standard/SemanticBlocks:
   Enabled: false
@@ -33,7 +35,6 @@ Layout/ParameterAlignment:
 Lint/Void:
   Exclude:
     - '**/*.md'
-
 
 Lint/DuplicateMethods:
   Exclude:

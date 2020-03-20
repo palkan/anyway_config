@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module Anyway
+  using RubyNext
+
   module Rails
     module Loaders
       class Credentials < Anyway::Loaders::Base
@@ -14,12 +16,12 @@ module Anyway
           # Create a new hash cause credentials are mutable!
           config = {}
 
-          ::Rails.application.credentials.public_send(name).yield_self do |creds|
+          ::Rails.application.credentials.public_send(name).then do |creds|
             config.deep_merge!(creds) if creds
           end
 
           if use_local?
-            local_credentials(name).yield_self { |creds| config.deep_merge!(creds) if creds }
+            local_credentials(name).then { |creds| config.deep_merge!(creds) if creds }
           end
 
           config

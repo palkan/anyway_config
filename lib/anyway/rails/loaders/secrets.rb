@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module Anyway
+  using RubyNext
+
   module Rails
     module Loaders
       class Secrets < Anyway::Loaders::Base
@@ -10,7 +12,7 @@ module Anyway
           # Create a new hash cause secrets are mutable!
           config = {}
 
-          secrets.public_send(name).yield_self do |secrets|
+          secrets.public_send(name).then do |secrets|
             config.deep_merge!(secrets) if secrets
           end
 

@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), "..", "lib"))
-$LOAD_PATH.unshift(File.dirname(__FILE__))
-
 begin
   require "pry-byebug"
 rescue LoadError
 end
+
+ENV["RUBY_NEXT_TRANSPILE_MODE"] = "rewrite"
+require "ruby-next/language/runtime" unless ENV["CI"]
 
 NORAILS = ENV["NORAILS"] == "1"
 

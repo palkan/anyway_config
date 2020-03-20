@@ -8,9 +8,7 @@ module Anyway # :nodoc:
     class << self
       def call(options)
         OptionParser.new do |opts|
-          opts.accept(AutoCast) do |val|
-            AutoCast.call(val)
-          end
+          opts.accept(AutoCast) { AutoCast.call(_1) }
 
           options.each do |key, descriptor|
             opts.on(*option_parser_on_args(key, **descriptor)) do |val|
