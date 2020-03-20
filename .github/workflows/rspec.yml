@@ -13,6 +13,7 @@ jobs:
       BUNDLE_JOBS: 4
       BUNDLE_RETRY: 3
       VERIFY_RESERVED: 1
+      CI: true
     strategy:
       fail-fast: false
       matrix:
@@ -42,6 +43,8 @@ jobs:
         bundle config --global gemfile ${{ matrix.gemfile }}
         bundle install
         bundle update
+    - name: Run Ruby Next
+      run: bundle exec rake nextify
     - name: Run RSpec
       run: |
         bundle exec rake spec

@@ -12,7 +12,7 @@ module Anyway
 
       case val
       when ARRAY_RXP
-        val.split(/\s*,\s*/).map { |word| call(word) }
+        val.split(/\s*,\s*/).map { call(_1) }
       when /\A(true|t|yes|y)\z/i
         true
       when /\A(false|f|no|n)\z/i

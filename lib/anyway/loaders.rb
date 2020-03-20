@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module Anyway
+  using RubyNext
+
   module Loaders
     class Registry
       attr_reader :registry
@@ -36,14 +38,14 @@ module Anyway
       end
 
       def override(id, handler)
-        find(id).yield_self do |id_to_handler|
+        find(id).then do |id_to_handler|
           raise ArgumentError, "Loader with ID #{id} hasn't been registered" if id_to_handler.nil?
           id_to_handler[1] = handler
         end
       end
 
       def delete(id)
-        find(id).yield_self do |id_to_handler|
+        find(id).then do |id_to_handler|
           raise ArgumentError, "Loader with ID #{id} hasn't been registered" if id_to_handler.nil?
           registry.delete id_to_handler
         end
