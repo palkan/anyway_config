@@ -1,5 +1,14 @@
 # Change log
 
+- Change the way Rails configs autoloading works. ([@palkan][])
+
+  In Rails 6, autoloading before initialization is [deprecated](https://github.com/rails/rails/commit/3e66ba91d511158e22f90ff96b594d61f40eda01). We can still
+  make it work by using our own autoloading mechanism (custom Zeitwerk loader).
+
+  This forces us to use a custom directory (not `app/`) for configs required at the boot time.
+  By default, we put _static_ configs into `config/configs` but you can still use `app/configs` for
+  _dynamic_ (runtime) configs.
+
 - Add Rails generators. ([@palkan][])
 
   You can create config classes with the predefined attributes like this:

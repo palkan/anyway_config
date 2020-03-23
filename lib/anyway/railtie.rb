@@ -5,8 +5,9 @@ module Anyway # :nodoc:
     # Add settings to Rails config
     config.anyway_config = Anyway::Settings
 
-    # Allow autoloading of app/configs in configuration files
-    ActiveSupport::Dependencies.autoload_paths << "app/configs"
+    ActiveSupport.on_load(:before_configuration) do
+      config.anyway_config.autoload_static_config_path = "config/configs"
+    end
 
     # Make sure loaders are not changed in runtime
     config.after_initialize { Anyway.loaders.freeze }

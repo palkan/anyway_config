@@ -17,7 +17,11 @@ module Dummy
       inflect.acronym "API"
     end
 
+    config.autoloader = :zeitwerk if defined?(::Zeitwerk)
+
     config.anyway_config.use_local_files = false
+
+    config.heroku = HerokuConfig.instance
 
     # Rails 5.2+: generate encrypted credentials from plain yml
     if Rails.application.respond_to?(:credentials)

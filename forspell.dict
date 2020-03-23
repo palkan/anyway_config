@@ -3,6 +3,8 @@
 # where 'example' is existing word with the same possible forms (endings) as your word.
 # Example: deduplicate: duplicate
 abstractize
+autoloader
 Influxer
 mycoolgem
 sources't
+Zeitwerk
