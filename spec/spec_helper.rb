@@ -6,6 +6,7 @@ rescue LoadError
 end
 
 ENV["RUBY_NEXT_TRANSPILE_MODE"] = "rewrite"
+ENV["RUBY_NEXT_WARN"] = "false"
 require "ruby-next/language/runtime" unless ENV["CI"]
 
 NORAILS = ENV["NORAILS"] == "1"

@@ -5,8 +5,7 @@ module Anyway
   end
 end
 
-Anyway::Settings.default_config_path = ->(name) { ::Rails.root.join("config", "#{name}.yml") }
-
+require "anyway/rails/settings"
 require "anyway/rails/config"
 require "anyway/rails/loaders"
 require "anyway/railtie"

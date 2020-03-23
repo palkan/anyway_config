@@ -322,10 +322,12 @@ See [environment variables](#environment-variables).
 
 ### Organizing configs
 
-You can store application-level config classes in `app/configs` folder.
+You can store application-level config classes in `app/configs` folder just like any other Rails entities.
 
-Anyway Config automatically adds this folder to Rails autoloading system to make it possible to
-autoload configs even during the configuration phase.
+However, in that case you won't be able to use them during the application initialization (i.e., in `config/**/*.rb` files).
+
+Since that's a pretty common scenario, we provide a way to do that via a custom autoloader for `config/configs` folder.
+That means, that you can put your configuration classes into `config/configs` folder, use them anywhere in your code without explicitly requiring them.
 
 Consider an example: setting the Action Mailer hostname for Heroku review apps.
 
@@ -350,18 +352,36 @@ Then in `config/application.rb` you can do the following:
 config.action_mailer.default_url_options = {host: HerokuConfig.new.hostname}
 ```
 
+You can configure the configs folder path:
+
+```ruby
+config.anyway_config.autoload_static_config_path = Rails.root.join("path/to/configs")
+```
+
+**NOTE:** Configs loaded from the `autoload_static_config_path` are **not reloaded in development**. We call them _static_. So, it makes sense to keep only configs necessary for initialization in this folder. Other configs, _dynamic_, could be stored in `app/configs`.
+
 ### Generators
 
 Anyway Config provides Rails generators to create new config classes:
 
-- `rails g anyway:install`—creates an `ApplicationConfig` class (the base class for all config classes)
+- `rails g anyway:install`—creates an `ApplicationConfig` class (the base class for all config classes) and updates `.gitignore`
 - `rails g anyway:config <name> param1 param2 ...`—creates a named configuration class and optionally the corresponding YAML file; creates `application_config.rb` is missing.
 
 The generator command for the Heroku example above would be:
 
 ```sh
-rails g anyway:config heroku app_id app_name dyno_id release_version slug_commit
+$ rails g anyway:config heroku app_id app_name dyno_id release_version slug_commit
+
+    generate  anyway:install
+       rails  generate anyway:install
+      create  config/configs/application_config.rb
+      append  .gitignore
+      create  config/configs/heroku_config.rb
+Would you like to generate a heroku.yml file? (Y/n) n
 ```
+
+You can also specify the `--app` option to put the newly created class into `app/configs` folder.
+Alternatively, you can call `rails g anyway:app_config name param1 param2 ...`.
 
 ## Using with Ruby
 
