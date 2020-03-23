@@ -32,6 +32,7 @@ For version 1.x see [1-4-stable branch](https://github.com/palkan/anyway_config/
 - [Using with Rails applications](#using-with-rails)
   - [Data population](#data-population)
   - [Organizing configs](#organizing-configs)
+  - [Generators](#generators)
 - [Using with Ruby applications](#using-with-ruby)
 - [Environment variables](#environment-variables)
 - [Local configuration](#local-files)
@@ -347,6 +348,19 @@ Then in `config/application.rb` you can do the following:
 
 ```ruby
 config.action_mailer.default_url_options = {host: HerokuConfig.new.hostname}
+```
+
+### Generators
+
+Anyway Config provides Rails generators to create new config classes:
+
+- `rails g anyway:install`—creates an `ApplicationConfig` class (the base class for all config classes)
+- `rails g anyway:config <name> param1 param2 ...`—creates a named configuration class and optionally the corresponding YAML file; creates `application_config.rb` is missing.
+
+The generator command for the Heroku example above would be:
+
+```sh
+rails g anyway:config heroku app_id app_name dyno_id release_version slug_commit
 ```
 
 ## Using with Ruby

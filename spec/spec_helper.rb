@@ -55,6 +55,8 @@ begin
   else
     ENV["RAILS_ENV"] = "test"
 
+    require "ammeter"
+
     require File.expand_path("dummy/config/environment", __dir__)
     Rails.application.eager_load! unless ENV["DO_NOT_INITIALIZE_RAILS"] == "1"
   end

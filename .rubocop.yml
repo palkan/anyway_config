@@ -14,6 +14,7 @@ AllCops:
     - 'vendor/**/*'
     - 'gemfiles/**/*'
     - 'lib/.rbnext/**/*'
+    - 'lib/generators/**/templates/*.rb'
   DisplayCopNames: true
   TargetRubyVersion: 2.7
 
