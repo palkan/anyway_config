@@ -5,6 +5,7 @@ module Anyway
   # method-like access
   class Env
     using Anyway::Ext::DeepDup
+    using Anyway::Ext::Hash
 
     attr_reader :data, :type_cast
 
@@ -30,20 +31,9 @@ module Anyway
         next unless key.start_with?(match_prefix)
 
         path = key.sub(/^#{prefix}_/, "").downcase
-        set_by_path(data, path, type_cast.call(val))
+
+        data.bury(type_cast.call(val), *path.split("__"))
       end
-    end
-
-    def set_by_path(to, path, val)
-      parts = path.split("__")
-
-      to = get_hash(to, parts.shift) while parts.length > 1
-
-      to[parts.first] = val
-    end
-
-    def get_hash(from, name)
-      (from[name] ||= {})
     end
   end
 end
