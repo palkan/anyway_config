@@ -9,6 +9,19 @@
   By default, we put _static_ configs into `config/configs` but you can still use `app/configs` for
   _dynamic_ (runtime) configs.
 
+  **NOTE:** if you used `app/configs` with 2.0.0.preX and relied on configs during initialization,
+  you can set static configs path to `app/configs`:
+
+  ```ruby
+  config.anyway_config.autoload_static_config_path = "app/configs"
+  ```
+
+  You can do this by running the generator:
+
+  ```sh
+  rails g anyway:install --configs-path=app/configs
+  ```
+
 - Add Rails generators. ([@palkan][])
 
   You can create config classes with the predefined attributes like this:

@@ -280,6 +280,9 @@ end
 
 **NOTE:** version 2.x supports Rails >= 5.0; for Rails 4.x use version 1.x of the gem.
 
+We recommend going through [Data population](#data-population) and [Organizing configs](#organizing-configs) sections first,
+and then use [Rails generators](#generators) to make your application Anyway Config-ready.
+
 ### Data population
 
 Your config is filled up with values from the following sources (ordered by priority from low to high):
@@ -355,16 +358,28 @@ config.action_mailer.default_url_options = {host: HerokuConfig.new.hostname}
 You can configure the configs folder path:
 
 ```ruby
-config.anyway_config.autoload_static_config_path = Rails.root.join("path/to/configs")
+# The path must be relative to Rails root
+config.anyway_config.autoload_static_config_path = "path/to/configs"
 ```
 
 **NOTE:** Configs loaded from the `autoload_static_config_path` are **not reloaded in development**. We call them _static_. So, it makes sense to keep only configs necessary for initialization in this folder. Other configs, _dynamic_, could be stored in `app/configs`.
+Or you can store everything in `app/configs` by setting `config.anyway_config.autoload_static_config_path = "app/configs"`.
 
 ### Generators
 
 Anyway Config provides Rails generators to create new config classes:
 
 - `rails g anyway:install`—creates an `ApplicationConfig` class (the base class for all config classes) and updates `.gitignore`
+
+You can specify the static configs path via the `--configs-path` option:
+
+```sh
+rails g anyway:install --configs-path=config/settings
+
+# or to keep everything in app/configs
+rails g anyway:install --configs-path=app/configs
+```
+
 - `rails g anyway:config <name> param1 param2 ...`—creates a named configuration class and optionally the corresponding YAML file; creates `application_config.rb` is missing.
 
 The generator command for the Heroku example above would be:
