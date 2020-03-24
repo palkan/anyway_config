@@ -199,7 +199,60 @@ describe Anyway::Config, type: :config do
       end
     end
 
-    describe "clear" do
+    xdescribe "#to_sources_trace" do
+      it "with YML data" do
+        expect(conf.to_sources_trace).to eq(
+          {
+            "host" => {type: :value, value: "test.host", source: {type: :yml, file: "config/cool.yml"}},
+            "user" => {type: :value, value: {"name" => "admin", "password" => "root"}, source: {type: :yml, file: "config/cool.yml"}},
+            "port" => {type: :value, value: 8080, source: {type: :defaults}}
+          }
+        )
+      end
+
+      it "with ENV data" do
+        with_env(
+          "COOL_PORT" => "80",
+          "COOL_USER__NAME" => "john"
+        ) do
+          expect(conf.to_sources_trace).to eq(
+            {
+              "host" => {type: :value, value: "test.host", source: {type: :yml, file: "config/cool.yml"}},
+              "user" => {
+                type: :trace,
+                keys: {
+                  "name" => {type: :value, value: "john", source: {type: :env, key: "COOL_USER__NAME"}},
+                  "password" => {type: :value, value: "root", source: {type: :yml, file: "config/cool.yml"}}
+                }
+              },
+              "port" => {type: :value, value: 80, source: {type: :env, key: "COOL_PORT"}}
+            }
+          )
+        end
+      end
+
+      it "with mixed data" do
+        with_env(
+          "COOL_USER__NAME" => "john"
+        ) do
+          expect(CoolConfig.new({host: "explicit.dev"}).to_sources_trace).to eq(
+            {
+              "host" => {type: :value, value: "explicit.dev", source: {type: :user, called_from: "#{__FILE__}:#{__LINE - 2}"}},
+              "user" => {
+                type: :trace,
+                keys: {
+                  "name" => {type: :value, value: "john", source: {type: :env, key: "COOL_USER__NAME"}},
+                  "password" => {type: :value, value: "root", source: {type: :yml, file: "config/cool.yml"}}
+                }
+              },
+              "port" => {type: :value, value: 8080, source: {type: :defaults}}
+            }
+          )
+        end
+      end
+    end
+
+    describe "#clear" do
       let(:conf_cleared) { conf.clear }
 
       it "nullifies values", :aggregate_failures do
@@ -211,7 +264,7 @@ describe Anyway::Config, type: :config do
       end
     end
 
-    describe "reload" do
+    describe "#reload" do
       it do
         expect(conf.port).to eq 8080
         with_env(
