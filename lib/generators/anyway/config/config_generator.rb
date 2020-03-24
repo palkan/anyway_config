@@ -31,7 +31,7 @@ module Anyway
       private
 
       def static_config_root
-        Anyway::Settings.autoload_static_config_path || "config/configs"
+        Anyway::Settings.autoload_static_config_path || Anyway::DEFAULT_CONFIGS_PATH
       end
 
       def config_root

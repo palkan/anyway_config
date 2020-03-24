@@ -54,3 +54,6 @@ jobs:
     - name: Run Rails secrets tests for uninitialized app
       run: |
         bundle exec rake spec:secrets
+    - name: Run Rails autoload tests
+      run: |
+        bundle exec rake spec:autoload

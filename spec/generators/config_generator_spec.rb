@@ -5,6 +5,7 @@ require "generators/anyway/config/config_generator"
 
 describe Anyway::Generators::ConfigGenerator, :rails, type: :generator do
   before(:all) { destination File.join(__dir__, "../../tmp/basic_rails_app") }
+  let(:configs_root) { Anyway::Settings.autoload_static_config_path }
 
   let(:args) { %w[api_service api_key secret mode --no-yml] }
 
@@ -22,7 +23,7 @@ describe Anyway::Generators::ConfigGenerator, :rails, type: :generator do
   end
 
   describe "config" do
-    let(:target_file) { file("config/configs/api_service_config.rb") }
+    let(:target_file) { file("#{configs_root}/api_service_config.rb") }
 
     specify do
       is_expected.to exist
@@ -37,7 +38,7 @@ describe Anyway::Generators::ConfigGenerator, :rails, type: :generator do
 
       it "creates a .yml file" do
         is_expected.to exist
-        expect(file("config/configs/api_service_config.rb")).to exist
+        expect(file("#{configs_root}/api_service_config.rb")).to exist
       end
 
       it "is a valid YAML with env keys" do

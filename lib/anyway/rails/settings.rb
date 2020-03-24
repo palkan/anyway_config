@@ -32,14 +32,23 @@ module Anyway
             loader.setup
           end
         end
+
+        def cleanup_autoload_paths
+          return unless autoload_static_config_path
+          ActiveSupport::Dependencies.autoload_paths.delete(::Rails.root.join(autoload_static_config_path).to_s)
+        end
       else
         def autoload_static_config_path=(val)
           if autoload_static_config_path
-            ActiveSupport::Dependencies.autoload_paths.delete(::Rails.root.join(autoload_static_config_path))
+            ActiveSupport::Dependencies.autoload_paths.delete(::Rails.root.join(autoload_static_config_path).to_s)
           end
 
           @autoload_static_config_path = val
           ActiveSupport::Dependencies.autoload_paths << ::Rails.root.join(val)
+        end
+
+        def cleanup_autoload_paths
+          :no_op
         end
       end
     end
