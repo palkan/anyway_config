@@ -3,7 +3,7 @@
 require "spec_helper"
 
 describe "Anyway::Rails::Loaders::YAML", :rails do
-  subject { Anyway::Rails::Loaders::YAML.call(options) }
+  subject { Anyway::Rails::Loaders::YAML.call(**options) }
 
   let(:path) { Rails.root.join("config/cool.yml") }
 
