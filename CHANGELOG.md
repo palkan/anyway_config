@@ -1,5 +1,23 @@
 # Change log
 
+- Add source tracing support. ([@palkan][])
+
+  You can get the information on where a particular parameter value came from
+  (which loader) through via `#to_source_trace` method:
+
+  ```ruby
+  conf = MyConfig.new
+  conf.to_source_trace
+  # {
+  #  "host" => {value: "test.host", source: {type: :user, called_from: "/rails/root/config/application.rb:21"}},
+  #  "user" => {
+  #    "name" => {value: "john", source: {type: :env, key: "COOL_USER__NAME"}},
+  #    "password" => {value: "root", source: {type: :yml, path: "config/cool.yml"}}
+  #  },
+  #  "port" => {value: 9292, source: {type: :defaults}}
+  # }
+  ```
+
 - Change the way Rails configs autoloading works. ([@palkan][])
 
   In Rails 6, autoloading before initialization is [deprecated](https://github.com/rails/rails/commit/3e66ba91d511158e22f90ff96b594d61f40eda01). We can still

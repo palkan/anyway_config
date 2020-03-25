@@ -3,6 +3,8 @@
 module Anyway
   module Loaders
     class Base
+      include Tracing
+
       class << self
         def call(local: Anyway::Settings.use_local_files, **opts)
           new(local: local).call(**opts)

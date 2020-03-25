@@ -3,15 +3,19 @@
 require "anyway/optparse_config"
 require "anyway/dynamic_config"
 
-require "anyway/ext/deep_dup"
-require "anyway/ext/deep_freeze"
-require "anyway/ext/hash"
-
 module Anyway # :nodoc:
   using RubyNext
   using Anyway::Ext::DeepDup
   using Anyway::Ext::DeepFreeze
   using Anyway::Ext::Hash
+
+  using(Module.new do
+    refine Thread::Backtrace::Location do
+      def path_lineno
+        "#{path}:#{lineno}"
+      end
+    end
+  end)
 
   # Base config class
   # Provides `attr_config` method to describe
@@ -36,6 +40,7 @@ module Anyway # :nodoc:
       reload
       resolve_config_path
       to_h
+      to_source_trace
       write_config_attr
     ].freeze
 
@@ -153,6 +158,7 @@ module Anyway # :nodoc:
         names.each do |name|
           accessors_module.module_eval <<~RUBY, __FILE__, __LINE__ + 1
             def #{name}=(val)
+              __trace__&.record_value(val, \"#{name}\", type: :accessor, called_from: caller_locations(1, 1).first.path_lineno)
               # DEPRECATED: instance variable set will be removed in 2.1
               @#{name} = values[:#{name}] = val
             end
@@ -228,24 +234,37 @@ module Anyway # :nodoc:
 
     def clear
       values.clear
+      @__trace__ = nil
       self
     end
 
-    def load(overrides = {})
-      base_config = self.class.defaults&.deep_dup || new_empty_config
+    def load(overrides = nil)
+      base_config = self.class.defaults.deep_dup
 
-      load_from_sources(
-        base_config,
-        name: config_name,
-        env_prefix: env_prefix,
-        config_path: resolve_config_path(config_name, env_prefix)
-      )
+      trace = Tracing.capture do
+        Tracing.trace_hash(:defaults) { base_config }
 
-      base_config.merge!(overrides) unless overrides.nil?
+        load_from_sources(
+          base_config,
+          name: config_name,
+          env_prefix: env_prefix,
+          config_path: resolve_config_path(config_name, env_prefix)
+        )
+
+        if overrides
+          Tracing.trace_hash(:load) { overrides }
+
+          base_config.deep_merge!(overrides)
+        end
+      end
 
       base_config.each do |key, val|
         write_config_attr(key.to_sym, val)
       end
+
+      # Set trace after we write all the values to
+      # avoid changing the source to accessor
+      @__trace__ = trace
 
       validate!
 
@@ -281,9 +300,13 @@ module Anyway # :nodoc:
       end
     end
 
+    def to_source_trace
+      __trace__.to_h
+    end
+
     private
 
-    attr_reader :values
+    attr_reader :values, :__trace__
 
     def write_config_attr(key, val)
       key = key.to_sym

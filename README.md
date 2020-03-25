@@ -37,6 +37,7 @@ For version 1.x see [1-4-stable branch](https://github.com/palkan/anyway_config/
 - [Environment variables](#environment-variables)
 - [Local configuration](#local-files)
 - [Data loaders](#data-loaders)
+- [Source tracing](#tracing)
 - [Test helpers](#test-helpers)
 - [OptionParser integration](#optionparser-integration)
 
@@ -236,6 +237,7 @@ This feature is similar to `Rails.application.config_for` but more powerful:
 | Load data from environment | ❌ | ✅ |
 | Load data from [custom sources](#data-loaders) | ❌ | ✅ |
 | Local config files | ❌ | ✅ |
+| [Source tracing](#tracing) | ❌ | ✅ |
 | Return Hash with indifferent access | ❌ | ✅ |
 | Support ERB\* within `config/app.yml` | ✅ | ✅ |
 | Raise if file doesn't exist | ✅ | ❌ |
@@ -502,6 +504,34 @@ class ChamberConfigLoader < Anyway::Loaders::Base
     Chamber.env.to_h[name] || {}
   end
 end
+```
+
+## Tracing
+
+Since Anyway Config loads data from multiple source, it could be useful to know where a particular value came from.
+
+Each `Anyway::Config` instance contains _tracing information_ which you can access via `#to_source_trace` method:
+
+```ruby
+conf = ExampleConfig.new
+conf.to_source_trace
+
+# returns the following hash
+{
+  "host" => {value: "test.host", source: {type: :yml, path: "config/example.yml"}},
+  "user" => {
+    "name" => {value: "john", source: {type: :env, key: "EXAMPLE_USER__NAME"}},
+    "password" => {value: "root", source: {type: :credentials, store: "config/credentials/production.enc.yml"}}
+  },
+  "port" => {value: 9292, source: {type: :defaults}}
+}
+
+# if you change the value manually in your code,
+# that would be reflected in the trace
+
+conf.host = "anyway.host"
+conf.to_source_trace["host"]
+#=> {type: :user, called_from: "/path/to/caller.rb:15"}
 ```
 
 ## Test helpers

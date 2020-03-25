@@ -12,7 +12,9 @@ module Anyway
           # Create a new hash cause secrets are mutable!
           config = {}
 
-          secrets.public_send(name).then do |secrets|
+          trace_hash(:secrets) do
+            secrets.public_send(name)
+          end.then do |secrets|
             config.deep_merge!(secrets) if secrets
           end
 

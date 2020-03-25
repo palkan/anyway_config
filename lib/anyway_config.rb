@@ -6,7 +6,13 @@ require "ruby-next/language/setup"
 RubyNext::Language.setup_gem_load_path
 
 require "anyway/version"
+
+require "anyway/ext/deep_dup"
+require "anyway/ext/deep_freeze"
+require "anyway/ext/hash"
+
 require "anyway/settings"
+require "anyway/tracing"
 require "anyway/config"
 require "anyway/auto_cast"
 require "anyway/env"
