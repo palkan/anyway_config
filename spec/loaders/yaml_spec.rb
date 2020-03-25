@@ -3,7 +3,7 @@
 require "spec_helper"
 
 describe Anyway::Loaders::YAML do
-  subject { described_class.call(options) }
+  subject { described_class.call(**options) }
 
   let(:path) { File.join(__dir__, "../config/cool.yml") }
 

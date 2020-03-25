@@ -5,7 +5,7 @@ require "spec_helper"
 describe Anyway::Loaders::Env do
   include Anyway::Testing::Helpers
 
-  subject { described_class.call(options) }
+  subject { described_class.call(**options) }
 
   let(:options) { {env_prefix: "VNE", some_other: "value"} }
 
