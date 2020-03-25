@@ -7,4 +7,5 @@ autoloader
 Influxer
 mycoolgem
 sources't
+tracing't
 Zeitwerk

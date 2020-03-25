@@ -6,6 +6,8 @@ module Anyway
   module Rails
     module Loaders
       class Credentials < Anyway::Loaders::Base
+        LOCAL_CONTENT_PATH = "config/credentials/local.yml.enc"
+
         def call(name:, **_options)
           return {} unless ::Rails.application.respond_to?(:credentials)
 
@@ -16,12 +18,19 @@ module Anyway
           # Create a new hash cause credentials are mutable!
           config = {}
 
-          ::Rails.application.credentials.public_send(name).then do |creds|
+          trace_hash(
+            :credentials,
+            store: credentials_path
+          ) do
+            ::Rails.application.credentials.public_send(name)
+          end.then do |creds|
             config.deep_merge!(creds) if creds
           end
 
           if use_local?
-            local_credentials(name).then { |creds| config.deep_merge!(creds) if creds }
+            trace_hash(:credentials, store: LOCAL_CONTENT_PATH) do
+              local_credentials(name)
+            end.then { |creds| config.deep_merge!(creds) if creds }
           end
 
           config
@@ -30,7 +39,7 @@ module Anyway
         private
 
         def local_credentials(name)
-          local_creds_path = ::Rails.root.join("config/credentials/local.yml.enc").to_s
+          local_creds_path = ::Rails.root.join(LOCAL_CONTENT_PATH).to_s
 
           return unless File.file?(local_creds_path)
 
@@ -40,6 +49,14 @@ module Anyway
           )
 
           creds.public_send(name)
+        end
+
+        def credentials_path
+          if ::Rails.application.config.respond_to?(:credentials)
+            ::Rails.application.config.credentials.content_path.relative_path_from(::Rails.root).to_s
+          else
+            "config/credentials.yml.enc"
+          end
         end
       end
     end

@@ -50,6 +50,35 @@ describe Anyway::Config, :rails, type: :config do
             expect(conf.user[:password]).to eq "password"
           end
         end
+
+        specify "#to_source_trace" do
+          # Rails 5 doesn't have credentials config
+          credentials_path =
+            if ::Rails.application.config.respond_to?(:credentials)
+              "config/credentials/test.yml.enc"
+            else
+              "config/credentials.yml.enc"
+            end
+
+          with_env(
+            "COOL_USER__PASSWORD" => "secret"
+          ) do
+            expect(conf).to have_valid_trace
+            expect(conf.to_source_trace).to include(
+              {
+                "host" => {value: "test.host", source: {type: :yml, path: "config/cool.yml"}},
+                "user" => {
+                  "name" => {value: "secret man", source: {type: :credentials, store: credentials_path}},
+                  "password" => {value: "secret", source: {type: :env, key: "COOL_USER__PASSWORD"}}
+                },
+                "port" => {value: 8080, source: {type: :defaults}},
+                "meta" => {
+                  "kot" => {value: "leta", source: {type: :secrets}}
+                }
+              }
+            )
+          end
+        end
       else
         it "load config from secrets" do
           expect(conf.user[:name]).to eq "test"

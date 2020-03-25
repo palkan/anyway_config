@@ -199,59 +199,6 @@ describe Anyway::Config, type: :config do
       end
     end
 
-    xdescribe "#to_sources_trace" do
-      it "with YML data" do
-        expect(conf.to_sources_trace).to eq(
-          {
-            "host" => {type: :value, value: "test.host", source: {type: :yml, file: "config/cool.yml"}},
-            "user" => {type: :value, value: {"name" => "admin", "password" => "root"}, source: {type: :yml, file: "config/cool.yml"}},
-            "port" => {type: :value, value: 8080, source: {type: :defaults}}
-          }
-        )
-      end
-
-      it "with ENV data" do
-        with_env(
-          "COOL_PORT" => "80",
-          "COOL_USER__NAME" => "john"
-        ) do
-          expect(conf.to_sources_trace).to eq(
-            {
-              "host" => {type: :value, value: "test.host", source: {type: :yml, file: "config/cool.yml"}},
-              "user" => {
-                type: :trace,
-                keys: {
-                  "name" => {type: :value, value: "john", source: {type: :env, key: "COOL_USER__NAME"}},
-                  "password" => {type: :value, value: "root", source: {type: :yml, file: "config/cool.yml"}}
-                }
-              },
-              "port" => {type: :value, value: 80, source: {type: :env, key: "COOL_PORT"}}
-            }
-          )
-        end
-      end
-
-      it "with mixed data" do
-        with_env(
-          "COOL_USER__NAME" => "john"
-        ) do
-          expect(CoolConfig.new({host: "explicit.dev"}).to_sources_trace).to eq(
-            {
-              "host" => {type: :value, value: "explicit.dev", source: {type: :user, called_from: "#{__FILE__}:#{__LINE - 2}"}},
-              "user" => {
-                type: :trace,
-                keys: {
-                  "name" => {type: :value, value: "john", source: {type: :env, key: "COOL_USER__NAME"}},
-                  "password" => {type: :value, value: "root", source: {type: :yml, file: "config/cool.yml"}}
-                }
-              },
-              "port" => {type: :value, value: 8080, source: {type: :defaults}}
-            }
-          )
-        end
-      end
-    end
-
     describe "#clear" do
       let(:conf_cleared) { conf.clear }
 
@@ -396,6 +343,145 @@ describe Anyway::Config, type: :config do
           expect(conf.user).to eq("name" => "root", "password" => "root")
           expect(conf.host).to eq "local.host"
           expect(conf.port).to eq 9292
+        end
+      end
+    end
+
+    describe "#to_source_trace" do
+      let(:conf) { CoolConfig.new }
+
+      around do |ex|
+        Dir.chdir(File.join(__dir__), &ex)
+      end
+
+      it "with YML data" do
+        expect(conf).to have_valid_trace
+        expect(conf.to_source_trace).to eq(
+          {
+            "host" => {value: "test.host", source: {type: :yml, path: "./config/cool.yml"}},
+            "user" =>
+              {
+                "name" => {value: "root", source: {type: :yml, path: "./config/cool.yml"}},
+                "password" => {value: "root", source: {type: :yml, path: "./config/cool.yml"}}
+              },
+            "port" => {value: 9292, source: {type: :yml, path: "./config/cool.yml"}}
+          }
+        )
+      end
+
+      it "with ENV data" do
+        with_env(
+          "COOL_PORT" => "80",
+          "COOL_USER__NAME" => "john"
+        ) do
+          expect(conf).to have_valid_trace
+          expect(conf.to_source_trace).to eq(
+            {
+              "host" => {value: "test.host", source: {type: :yml, path: "./config/cool.yml"}},
+              "user" => {
+                "name" => {value: "john", source: {type: :env, key: "COOL_USER__NAME"}},
+                "password" => {value: "root", source: {type: :yml, path: "./config/cool.yml"}}
+              },
+              "port" => {value: 80, source: {type: :env, key: "COOL_PORT"}}
+            }
+          )
+        end
+      end
+
+      it "with mixed data" do
+        with_env(
+          "COOL_USER__NAME" => "john"
+        ) do
+          conf = CoolConfig.new({host: "explicit.dev"})
+          expect(conf).to have_valid_trace
+          expect(conf.to_source_trace).to eq(
+            {
+              "host" => {value: "explicit.dev", source: {type: :load}},
+              "user" => {
+                "name" => {value: "john", source: {type: :env, key: "COOL_USER__NAME"}},
+                "password" => {value: "root", source: {type: :yml, path: "./config/cool.yml"}}
+              },
+              "port" => {value: 9292, source: {type: :yml, path: "./config/cool.yml"}}
+            }
+          )
+        end
+      end
+
+      context "accessors" do
+        it "updates source when value changed" do
+          with_env(
+            "COOL_USER__NAME" => "john"
+          ) do
+            expect(conf).to have_valid_trace
+            expect(conf.to_source_trace).to eq(
+              {
+                "host" => {value: "test.host", source: {type: :yml, path: "./config/cool.yml"}},
+                "user" => {
+                  "name" => {value: "john", source: {type: :env, key: "COOL_USER__NAME"}},
+                  "password" => {value: "root", source: {type: :yml, path: "./config/cool.yml"}}
+                },
+                "port" => {value: 9292, source: {type: :yml, path: "./config/cool.yml"}}
+              }
+            )
+
+            conf.host = "another.host"
+            called_from = "#{__FILE__}:#{__LINE__ - 1}"
+
+            expect(conf.to_source_trace["host"]).to eq(
+              {
+                value: "another.host",
+                source: {
+                  type: :accessor,
+                  called_from: called_from
+                }
+              }
+            )
+          end
+        end
+
+        it "creates new value trace if attr wasn't present" do
+          expect(conf.data).to be_nil
+          expect(conf.to_source_trace["data"]).to be_nil
+
+          conf.data = "some data"
+          called_from = "#{__FILE__}:#{__LINE__ - 1}"
+
+          expect(conf.to_source_trace["data"]).to eq(
+            {
+              value: "some data",
+              source: {
+                type: :accessor,
+                called_from: called_from
+              }
+            }
+          )
+        end
+
+        it "creates new hash trace if attr wasn't present" do
+          expect(conf.data).to be_nil
+          expect(conf.to_source_trace["data"]).to be_nil
+
+          conf.data = {a: "1", b: 2}
+          called_from = "#{__FILE__}:#{__LINE__ - 1}"
+
+          expect(conf.to_source_trace["data"]).to eq(
+            {
+              "a" => {
+                value: "1",
+                source: {
+                  type: :accessor,
+                  called_from: called_from
+                }
+              },
+              "b" => {
+                value: 2,
+                source: {
+                  type: :accessor,
+                  called_from: called_from
+                }
+              }
+            }
+          )
         end
       end
     end

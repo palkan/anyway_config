@@ -4,23 +4,39 @@ module Anyway
   # Parses environment variables and provides
   # method-like access
   class Env
+    using RubyNext
     using Anyway::Ext::DeepDup
     using Anyway::Ext::Hash
 
-    attr_reader :data, :type_cast
+    include Tracing
+
+    attr_reader :data, :traces, :type_cast
 
     def initialize(type_cast: AutoCast)
       @type_cast = type_cast
       @data = {}
+      @traces = {}
     end
 
     def clear
       data.clear
+      traces.clear
     end
 
     def fetch(prefix)
-      data[prefix] ||= parse_env(prefix)
+      return data[prefix].deep_dup if data.key?(prefix)
+
+      Tracing.capture do
+        data[prefix] = parse_env(prefix)
+      end.then do |trace|
+        traces[prefix] = trace
+      end
+
       data[prefix].deep_dup
+    end
+
+    def fetch_with_trace(prefix)
+      [fetch(prefix), traces[prefix]]
     end
 
     private
@@ -32,7 +48,8 @@ module Anyway
 
         path = key.sub(/^#{prefix}_/, "").downcase
 
-        data.bury(type_cast.call(val), *path.split("__"))
+        paths = path.split("__")
+        trace_value(:env, *paths, key: key) { data.bury(type_cast.call(val), *paths) }
       end
     end
   end
