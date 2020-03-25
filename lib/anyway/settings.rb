@@ -12,6 +12,9 @@ module Anyway
 
       # Return a path to YML config file given the config name
       attr_accessor :default_config_path
+
+      # Enable source tracing
+      attr_accessor :tracing_enabled
     end
 
     # By default, use local files only in development (that's the purpose if the local files)
@@ -19,5 +22,8 @@ module Anyway
 
     # By default, consider configs are stored in the ./config folder
     self.default_config_path = ->(name) { "./config/#{name}.yml" }
+
+    # Tracing is enabled by default
+    self.tracing_enabled = true
   end
 end
