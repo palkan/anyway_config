@@ -534,6 +534,8 @@ conf.to_source_trace["host"]
 #=> {type: :user, called_from: "/path/to/caller.rb:15"}
 ```
 
+You can disable tracing functionality by setting `Anyway::Settings.tracing_enabled = false` or `config.anyway_config.tracing_enabled = false` in Rails.
+
 ## Test helpers
 
 We provide the `with_env` test helper to test code in the context of the specified environment variables values:

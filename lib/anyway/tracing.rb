@@ -77,6 +77,11 @@ module Anyway
 
     class << self
       def capture
+        unless Settings.tracing_enabled
+          yield
+          return
+        end
+
         trace = Trace.new
         trace_stack.push trace
         yield

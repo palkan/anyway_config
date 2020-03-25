@@ -301,7 +301,7 @@ module Anyway # :nodoc:
     end
 
     def to_source_trace
-      __trace__.to_h
+      __trace__&.to_h
     end
 
     private

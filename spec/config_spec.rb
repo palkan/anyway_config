@@ -407,6 +407,18 @@ describe Anyway::Config, type: :config do
         end
       end
 
+      context "when tracing is disabled" do
+        around do |ex|
+          Anyway::Settings.tracing_enabled = false
+          ex.run
+          Anyway::Settings.tracing_enabled = true
+        end
+
+        it "returns nil" do
+          expect(conf.to_source_trace).to be_nil
+        end
+      end
+
       context "accessors" do
         it "updates source when value changed" do
           with_env(
