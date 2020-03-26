@@ -64,7 +64,7 @@ describe Anyway::Config, :rails, type: :config do
             "COOL_USER__PASSWORD" => "secret"
           ) do
             expect(conf).to have_valid_trace
-            expect(conf.to_source_trace).to include(
+            expect(conf.to_source_trace).to eq(
               {
                 "host" => {value: "test.host", source: {type: :yml, path: "config/cool.yml"}},
                 "user" => {
