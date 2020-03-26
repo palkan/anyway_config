@@ -58,6 +58,11 @@ module Anyway
         end
       end
 
+      def keep_if(...)
+        raise ArgumentError, "You can only filter :trace type, and this is :#{type}" unless trace?
+        value.keep_if(...)
+      end
+
       def clear
         value.clear
       end

@@ -262,6 +262,9 @@ module Anyway # :nodoc:
         write_config_attr(key.to_sym, val)
       end
 
+      # Trace may contain unknown attributes
+      trace&.keep_if { |key| self.class.config_attributes.include?(key.to_sym) }
+
       # Set trace after we write all the values to
       # avoid changing the source to accessor
       @__trace__ = trace
