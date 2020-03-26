@@ -536,6 +536,26 @@ conf.to_source_trace["host"]
 
 You can disable tracing functionality by setting `Anyway::Settings.tracing_enabled = false` or `config.anyway_config.tracing_enabled = false` in Rails.
 
+### Pretty print
+
+You can use `pp` to print a formatted information about the config including the sources trace.
+
+Example:
+
+```ruby
+pp CoolConfig.new
+
+# #<CoolConfig
+#   config_name="cool"
+#   env_prefix="COOL"
+#   values:
+#     port => 3334 (type=load),
+#     host => "test.host" (type=yml path=./config/cool.yml),
+#     user =>
+#       name => "john" (type=env key=COOL_USER__NAME),
+#       password => "root" (type=yml path=./config/cool.yml)>
+```
+
 ## Test helpers
 
 We provide the `with_env` test helper to test code in the context of the specified environment variables values:

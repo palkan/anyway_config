@@ -497,6 +497,36 @@ describe Anyway::Config, type: :config do
         end
       end
     end
+
+    describe "#pretty_print" do
+      let(:overrides) { {} }
+      let(:conf) { CoolConfig.new(overrides) }
+
+      around do |ex|
+        Dir.chdir(File.join(__dir__), &ex)
+      end
+
+      it "contains tracing information", :aggregate_failures do
+        overrides[:port] = 3334
+        with_env(
+          "COOL_USER__NAME" => "john"
+        ) do
+          expect { pp conf }.to output(
+            <<~STR
+              #<CoolConfig
+                config_name="cool"
+                env_prefix="COOL"
+                values:
+                  port => 3334 (type=load),
+                  host => "test.host" (type=yml path=./config/cool.yml),
+                  user =>
+                    name => "john" (type=env key=COOL_USER__NAME),
+                    password => "root" (type=yml path=./config/cool.yml)>
+            STR
+          ).to_stdout
+        end
+      end
+    end
   end
 
   describe ".config_name" do

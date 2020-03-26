@@ -15,6 +15,12 @@ module Anyway # :nodoc:
         "#{path}:#{lineno}"
       end
     end
+
+    refine Object do
+      def vm_object_id
+        (object_id << 1).to_s(16)
+      end
+    end
   end)
 
   # Base config class
@@ -36,6 +42,7 @@ module Anyway # :nodoc:
       load
       load_from_sources
       option_parser
+      pretty_print
       raise_validation_error
       reload
       resolve_config_path
@@ -305,6 +312,25 @@ module Anyway # :nodoc:
 
     def to_source_trace
       __trace__&.to_h
+    end
+
+    def inspect
+      "#<#{self.class}:0x#{vm_object_id.rjust(16, "0")} config_name=\"#{config_name}\" env_prefix=\"#{env_prefix}\" " \
+      "values=#{values.inspect}>"
+    end
+
+    def pretty_print(q)
+      q.object_group self do
+        q.nest(1) do
+          q.breakable
+          q.text "config_name=#{config_name.inspect}"
+          q.breakable
+          q.text "env_prefix=#{env_prefix.inspect}"
+          q.breakable
+          q.text "values:"
+          q.pp __trace__
+        end
+      end
     end
 
     private
