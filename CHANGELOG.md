@@ -1,5 +1,26 @@
 # Change log
 
+- Add pretty_print support. ([@palkamn][])
+
+  Whenever you use `pp`, the output would contain pretty formatted config information
+  including the sources.
+
+  Example:
+
+  ```ruby
+  pp CoolConfig.new
+
+  # #<CoolConfig
+  #   config_name="cool"
+  #   env_prefix="COOL"
+  #   values:
+  #     port => 3334 (type=load),
+  #     host => "test.host" (type=yml path=./config/cool.yml),
+  #     user =>
+  #       name => "john" (type=env key=COOL_USER__NAME),
+  #       password => "root" (type=yml path=./config/cool.yml)>
+  ```
+
 - Add source tracing support. ([@palkan][])
 
   You can get the information on where a particular parameter value came from

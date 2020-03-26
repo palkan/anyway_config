@@ -5,6 +5,14 @@ module Anyway
   module Tracing
     using Anyway::Ext::DeepDup
 
+    using(Module.new do
+      refine Hash do
+        def inspect
+          "{#{map { |k, v| "#{k}: #{v.inspect}" }.join(", ")}}"
+        end
+      end
+    end)
+
     class Trace
       attr_reader :type, :value, :source
 
@@ -76,6 +84,33 @@ module Anyway
           value.transform_values(&:to_h).tap { _1.default_proc = nil }
         else
           {value: value, source: source}
+        end
+      end
+
+      def pretty_print(q)
+        if trace?
+          q.nest(2) do
+            q.breakable ""
+            q.seplist(value, nil, :each) do |k, v|
+              q.group do
+                q.text k
+                q.text " =>"
+                q.breakable " " unless v.trace?
+                q.pp v
+              end
+            end
+          end
+        else
+          q.pp value
+          q.group(0, " (", ")") do
+            q.seplist(source, lambda { q.breakable " " }, :each) do |k, v|
+              q.group do
+                q.text k.to_s
+                q.text "="
+                q.text v.to_s
+              end
+            end
+          end
         end
       end
     end
