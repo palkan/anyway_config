@@ -222,7 +222,7 @@ module Anyway # :nodoc:
     #   # provide some values explicitly
     #   my_config = Anyway::Config.new({some: :value})
     #
-    def initialize(overrides = {})
+    def initialize(overrides = nil)
       @config_name = self.class.config_name
 
       raise ArgumentError, "Config name is missing" unless @config_name
@@ -233,7 +233,7 @@ module Anyway # :nodoc:
       load(overrides)
     end
 
-    def reload(overrides = {})
+    def reload(overrides = nil)
       clear
       load(overrides)
       self
