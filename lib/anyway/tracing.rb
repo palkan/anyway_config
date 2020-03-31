@@ -146,6 +146,8 @@ module Anyway
         trace_stack.last
       end
 
+      alias tracing? current_trace
+
       def source_stack
         (Thread.current[:__anyway__trace_source_stack__] ||= [])
       end
@@ -170,23 +172,16 @@ module Anyway
 
     module_function
 
-    def tracing?
-      Tracing.current_trace
-    end
-
-    def trace_value(type, *path, **opts)
-      return yield unless tracing?
-      Tracing.current_trace.record_value(yield, *path, type: type, **opts)
-    end
-
-    def trace_hash(type, **opts)
-      return yield unless tracing?
-      Tracing.current_trace.merge_values(yield, type: type, **opts)
-    end
-
-    def trace_merge!(another_trace)
-      return unless tracing?
-      Tracing.current_trace.merge!(another_trace)
+    def trace!(type, *path, **opts)
+      return yield unless Tracing.tracing?
+      source = {type: type}.merge(opts)
+      val = yield
+      if val.is_a?(Hash)
+        Tracing.current_trace.merge_values(val, **source)
+      else
+        Tracing.current_trace.record_value(yield, *path, **source)
+      end
+      val
     end
   end
 end

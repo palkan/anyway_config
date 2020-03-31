@@ -7,7 +7,7 @@ module Anyway
     class Env < Base
       def call(env_prefix:, **_options)
         Anyway.env.fetch_with_trace(env_prefix).then do |(conf, trace)|
-          trace_merge!(trace)
+          Tracing.current_trace&.merge!(trace)
           conf
         end
       end

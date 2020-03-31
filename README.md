@@ -506,6 +506,16 @@ class ChamberConfigLoader < Anyway::Loaders::Base
 end
 ```
 
+In order to support [source tracing](#tracing), you need to wrap the resulting Hash via the `#trace!` method with metadata:
+
+```ruby
+def call(name:, **_opts)
+  trace!(source: :chamber) do
+    Chamber.env.to_h[name] || {}
+  end
+end
+```
+
 ## Tracing
 
 Since Anyway Config loads data from multiple source, it could be useful to know where a particular value came from.

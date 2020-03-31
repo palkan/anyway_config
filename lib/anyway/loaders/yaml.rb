@@ -18,7 +18,7 @@ module Anyway
       private
 
       def load_yml(path)
-        trace_hash(:yml, path: relative_config_path(path).to_s) { parse_yml(path) }
+        trace!(:yml, path: relative_config_path(path).to_s) { parse_yml(path) }
       end
 
       def parse_yml(path)

@@ -243,7 +243,7 @@ module Anyway # :nodoc:
       base_config = self.class.defaults.deep_dup
 
       trace = Tracing.capture do
-        Tracing.trace_hash(:defaults) { base_config }
+        Tracing.trace!(:defaults) { base_config }
 
         load_from_sources(
           base_config,
@@ -253,7 +253,7 @@ module Anyway # :nodoc:
         )
 
         if overrides
-          Tracing.trace_hash(:load) { overrides }
+          Tracing.trace!(:load) { overrides }
 
           base_config.deep_merge!(overrides)
         end

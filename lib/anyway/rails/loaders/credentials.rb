@@ -18,7 +18,7 @@ module Anyway
           # Create a new hash cause credentials are mutable!
           config = {}
 
-          trace_hash(
+          trace!(
             :credentials,
             store: credentials_path
           ) do
@@ -28,7 +28,7 @@ module Anyway
           end
 
           if use_local?
-            trace_hash(:credentials, store: LOCAL_CONTENT_PATH) do
+            trace!(:credentials, store: LOCAL_CONTENT_PATH) do
               local_credentials(name)
             end.then { |creds| config.deep_merge!(creds) if creds }
           end
