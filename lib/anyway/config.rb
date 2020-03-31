@@ -31,6 +31,7 @@ module Anyway # :nodoc:
       values
       class
       clear
+      deconstruct_keys
       dig
       initialize
       load
@@ -302,6 +303,10 @@ module Anyway # :nodoc:
         next if missing.empty?
         raise_validation_error "The following config parameters are missing or empty: #{missing.join(", ")}"
       end
+    end
+
+    def deconstruct_keys(keys)
+      values.deconstruct_keys(keys)
     end
 
     def to_source_trace

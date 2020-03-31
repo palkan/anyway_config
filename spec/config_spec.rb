@@ -678,4 +678,29 @@ describe Anyway::Config, type: :config do
       end
     end
   end
+
+  describe "#deconstruct_keys" do
+    let(:config) do
+      Class.new(described_class) do
+        config_name "testo"
+        attr_config :test, :secret, debug: false
+
+        required :test
+      end
+    end
+
+    specify do
+      expect(
+        config.new(test: "kis-kis", secret: "meow-meow")
+          .deconstruct_keys([:test, :secret])
+      ).to eq({test: "kis-kis", secret: "meow-meow", debug: false})
+    end
+
+    specify "when attribute wasn't set" do
+      expect(
+        config.new(test: "as-above-so-below")
+          .deconstruct_keys(nil)
+      ).to eq({test: "as-above-so-below", debug: false})
+    end
+  end
 end

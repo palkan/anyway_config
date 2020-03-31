@@ -1,6 +1,19 @@
 # Change log
 
-- Add pretty_print support. ([@palkamn][])
+- Add `Config#deconstruct_keys`. ([@palkan][])
+
+  Now you can use configs in pattern matching:
+
+  ```ruby
+  case AWSConfig.new
+  in bucket:, region: "eu-west-1"
+    setup_eu_storage(bucket)
+  in bucket:, region: "us-east-1"
+    setup_us_storage(bucket)
+  end
+  ```
+
+- Add pretty_print support. ([@palkan][])
 
   Whenever you use `pp`, the output would contain pretty formatted config information
   including the sources.

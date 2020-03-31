@@ -38,6 +38,7 @@ For version 1.x see [1-4-stable branch](https://github.com/palkan/anyway_config/
 - [Local configuration](#local-files)
 - [Data loaders](#data-loaders)
 - [Source tracing](#tracing)
+- [Pattern matching](#pattern-matching)
 - [Test helpers](#test-helpers)
 - [OptionParser integration](#optionparser-integration)
 
@@ -564,6 +565,31 @@ pp CoolConfig.new
 #     user =>
 #       name => "john" (type=env key=COOL_USER__NAME),
 #       password => "root" (type=yml path=./config/cool.yml)>
+```
+
+## Pattern matching
+
+You can use config instances in Ruby 2.7+ pattern matching:
+
+```ruby
+case AWSConfig.new
+in bucket:, region: "eu-west-1"
+  setup_eu_storage(bucket)
+in bucket:, region: "us-east-1"
+  setup_us_storage(bucket)
+end
+```
+
+If the attribute wasn't populated, the key won't be returned for pattern matching, i.e. you can do something line:
+
+```ruby
+aws_configured =
+  case AWSConfig.new
+  in access_key_id:, secret_access_key:
+    true
+  else
+    false
+  end
 ```
 
 ## Test helpers
