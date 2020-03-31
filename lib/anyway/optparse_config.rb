@@ -82,7 +82,9 @@ module Anyway
     end
 
     def parse_options!(options)
-      option_parser.parse!(options)
+      Tracing.with_trace_source(type: :options) do
+        option_parser.parse!(options)
+      end
     end
 
     def self.included(base)

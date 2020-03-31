@@ -11,6 +11,12 @@ module Anyway
           "{#{map { |k, v| "#{k}: #{v.inspect}" }.join(", ")}}"
         end
       end
+
+      refine Thread::Backtrace::Location do
+        def path_lineno
+          "#{path}:#{lineno}"
+        end
+      end
     end)
 
     class Trace
@@ -138,6 +144,27 @@ module Anyway
 
       def current_trace
         trace_stack.last
+      end
+
+      def source_stack
+        (Thread.current[:__anyway__trace_source_stack__] ||= [])
+      end
+
+      def current_trace_source
+        source_stack.last || accessor_source(caller_locations(2, 1).first)
+      end
+
+      def with_trace_source(src)
+        source_stack << src
+        yield
+      ensure
+        source_stack.pop
+      end
+
+      private
+
+      def accessor_source(location)
+        {type: :accessor, called_from: location.path_lineno}
       end
     end
 

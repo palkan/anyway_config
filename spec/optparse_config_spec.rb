@@ -152,4 +152,36 @@ describe Anyway::Config do
       end
     end
   end
+
+  describe "#to_source_trace" do
+    let(:config) do
+      Class.new(described_class) do
+        config_name "optparse"
+        attr_config :host, :port, verbose: false, log_level: :info, debug: false
+        flag_options :debug
+
+        extend_options do |parser, config|
+          parser.on("-V") do |value|
+            config.verbose = value
+          end
+        end
+      end
+    end
+
+    let(:conf) { config.new }
+
+    it "contains optparse info" do
+      conf.parse_options!(%w[--host localhost --port 3333 -V])
+      expect(conf).to have_valid_trace
+      expect(conf.to_source_trace).to eq(
+        {
+          "host" => {value: "localhost", source: {type: :options}},
+          "port" => {value: 3333, source: {type: :options}},
+          "log_level" => {value: :info, source: {type: :defaults}},
+          "debug" => {value: false, source: {type: :defaults}},
+          "verbose" => {value: true, source: {type: :options}}
+        }
+      )
+    end
+  end
 end

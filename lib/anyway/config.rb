@@ -10,12 +10,6 @@ module Anyway # :nodoc:
   using Anyway::Ext::Hash
 
   using(Module.new do
-    refine Thread::Backtrace::Location do
-      def path_lineno
-        "#{path}:#{lineno}"
-      end
-    end
-
     refine Object do
       def vm_object_id
         (object_id << 1).to_s(16)
@@ -165,7 +159,7 @@ module Anyway # :nodoc:
         names.each do |name|
           accessors_module.module_eval <<~RUBY, __FILE__, __LINE__ + 1
             def #{name}=(val)
-              __trace__&.record_value(val, \"#{name}\", type: :accessor, called_from: caller_locations(1, 1).first.path_lineno)
+              __trace__&.record_value(val, \"#{name}\", Tracing.current_trace_source)
               # DEPRECATED: instance variable set will be removed in 2.1
               @#{name} = values[:#{name}] = val
             end
