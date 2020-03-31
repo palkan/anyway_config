@@ -18,7 +18,7 @@ For application developers, Anyway Config could be useful to:
 - **Keep configuration organized** and use _named configs_ instead of bloated `.env`/`settings.yml`/whatever.
 - **Free code of ENV/credentials/secrets dependency** and use configuration classes instead—your code should not rely on configuration data sources.
 
-**NOTE:** this readme shows documentation for the upcoming 2.0 version (`2.0.0.pre2` is available on RubyGems).
+**NOTE:** this readme shows documentation for the upcoming 2.0 version (`2.0.0.rc1` is available on RubyGems).
 For version 1.x see [1-4-stable branch](https://github.com/palkan/anyway_config/tree/1-4-stable).
 
 ## Table of contents
@@ -78,7 +78,7 @@ Adding to a gem:
 # my-cool-gem.gemspec
 Gem::Specification.new do |spec|
   # ...
-  spec.add_dependency "anyway_config", "2.0.0.pre2"
+  spec.add_dependency "anyway_config", "2.0.0.rc1"
   # ...
 end
 ```
@@ -87,7 +87,7 @@ Or adding to your project:
 
 ```ruby
 # Gemfile
-gem "anyway_config", "2.0.0.pre2"
+gem "anyway_config", "2.0.0.rc1"
 ```
 
 ### Supported Ruby versions

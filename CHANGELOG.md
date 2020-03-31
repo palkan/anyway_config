@@ -1,5 +1,9 @@
 # Change log
 
+## master
+
+## 2.0.0.rc1 (2020-03-31)
+
 - Add predicate methods for attributes with boolean defaults. ([@palkan][])
 
   For example:
