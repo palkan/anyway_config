@@ -150,11 +150,26 @@ class MyConfig < Anyway::Config
 
   # or override reader to handle missing values
   def url
-    values[:url] ||= "#{host}:#{port}"
+    super || (self.url = "#{host}:#{port}")
   end
 
   # untill v2.1, it will still be possible to read instance variables,
   # i.e. the following code would also work
+  def url
+    @url ||= "#{host}:#{port}"
+  end
+end
+```
+
+We recommend to add a feature check and support both v1.x and v2.0 in gems for the time being:
+
+```ruby
+# Check for the class method added in 2.0, e.g., `.on_load`
+if respond_to?(:on_load)
+  def url
+    super || (self.url = "#{host}:#{port}")
+  end
+else
   def url
     @url ||= "#{host}:#{port}"
   end
