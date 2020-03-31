@@ -73,6 +73,13 @@ module Anyway # :nodoc:
         config_attributes.push(*new_keys)
 
         define_config_accessor(*new_keys)
+
+        # Define predicate methods ("param?") for attributes
+        # having `true` or `false` as default values
+        new_defaults.each do |key, val|
+          next unless val.is_a?(TrueClass) || val.is_a?(FalseClass)
+          alias_method :"#{key}?", :"#{key}"
+        end
       end
 
       def defaults

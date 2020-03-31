@@ -128,6 +128,15 @@ Then, create an instance of the config class and use it:
 MyCoolGem::Config.new.user #=> "root"
 ```
 
+**Bonus:**: if you define attributes with boolean default values (`false` or `true`), Anyway Config would automatically add a corresponding predicate method. For example:
+
+```ruby
+attr_config :user, :password, debug: false
+
+MyCoolGem::Config.new.debug? #=> false
+MyCoolGem::Config.new(debug: true).debug? #=> true
+```
+
 **NOTE**: since v2.0 accessors created by `attr_config` are not `attr_accessor`, i.e. they do not populate instance variables. If you used instance variables before to override readers, you must switch to using `super` or `values` store:
 
 ```ruby

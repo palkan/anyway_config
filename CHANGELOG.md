@@ -1,5 +1,18 @@
 # Change log
 
+- Add predicate methods for attributes with boolean defaults. ([@palkan][])
+
+  For example:
+
+  ```ruby
+  class MyConfig < Anyway::Config
+    attr_config :key, :secret, debug: false
+  end
+
+  MyConfig.new.debug? #=> false
+  MyConfig.new(debug: true).debug? #=> true
+  ```
+
 - Add `Config#deconstruct_keys`. ([@palkan][])
 
   Now you can use configs in pattern matching:
