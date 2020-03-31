@@ -625,7 +625,7 @@ describe Anyway::Config, type: :config do
     end
   end
 
-  context "required parameters" do
+  describe ".required" do
     let(:config) do
       Class.new(described_class) do
         config_name "testo"
@@ -656,24 +656,46 @@ describe Anyway::Config, type: :config do
       expect { subconfig.new }
         .to raise_error(Anyway::Config::ValidationError, /missing or empty: test, secret/)
     end
+  end
 
-    context "with custom validation method" do
-      let(:config) do
-        Class.new(described_class) do
-          config_name "testo"
-          attr_config :test, debug: false
+  describe ".on_load" do
+    let(:config) do
+      Class.new(described_class) do
+        config_name "testo"
+        attr_config :test, debug: false
 
-          required :test
+        on_load do
+          raise_validation_error("test must be a number") unless test.is_a?(Numeric)
+        end
+      end
+    end
 
-          def validate!
-            super
-            raise_validation_error("test must be a number") unless test.is_a?(Numeric)
+    it "accepts blocks" do
+      expect { config.new(test: "nan") }
+        .to raise_error(Anyway::Config::ValidationError, /test must be a number/i)
+      expect { config.new(test: 12) }
+        .not_to raise_error
+    end
+
+    context "inheritance" do
+      let(:subconfig) do
+        Class.new(config) do
+          on_load :calibrate_debug
+
+          private
+
+          def calibrate_debug
+            self.debug = false if test > 0
           end
         end
       end
 
-      it "calls #validate! method" do
-        expect { config.new(test: "nan") }
+      specify do
+        expect(subconfig.new(test: 12, debug: true)).not_to be_debug
+      end
+
+      specify do
+        expect { subconfig.new(test: "nan") }
           .to raise_error(Anyway::Config::ValidationError, /test must be a number/i)
       end
     end

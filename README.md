@@ -28,7 +28,7 @@ For version 1.x see [1-4-stable branch](https://github.com/palkan/anyway_config/
 - [Usage](#usage)
   - [Configuration classes](#configuration-classes)
   - [Dynamic configuration](#dynamic-configuration)
-  - [Validation](#validation)
+  - [Validation & Callbacks](#validation-and-callbacks)
 - [Using with Rails applications](#using-with-rails)
   - [Data population](#data-population)
   - [Organizing configs](#organizing-configs)
@@ -255,7 +255,7 @@ This feature is similar to `Rails.application.config_for` but more powerful:
 
 \* Make sure that ERB is loaded
 
-### Validation
+### Validation and callbacks
 
 Anyway Config provides basic ways of ensuring that the configuration is valid.
 
@@ -272,15 +272,23 @@ end
 MyConfig.new(api_secret: "") #=> raises Anyway::Config::ValidationError
 ```
 
-If you need more flexibility, you can override the `#validate!` method in your configuration class:
+If you need more complex validation or need to manipulate with config state right after it has been loaded, you can use _on load callbacks_ and `#raise_validation_error` method:
 
 ```ruby
 class MyConfig < Anyway::Config
   attr_config :api_key, :api_secret, :mode
 
-  def validate!
-    # don't forget to call super if you're using `required`
-    super
+  # on_load macro accepts symbol method names
+  on_load :ensure_mode_is_valid
+
+  # or block
+  on_load do
+    # the block is evaluated in the context of the config
+    raise_validation_error("API key and/or secret could be blank") if
+      api_key.blank? || api_secret.blank?
+  end
+
+  def ensure_mode_is_valid
     unless %w[production test].include?(mode)
       raise_validation_error "Unknown mode; #{mode}"
     end

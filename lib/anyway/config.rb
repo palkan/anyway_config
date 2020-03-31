@@ -52,6 +52,30 @@ module Anyway # :nodoc:
     include OptparseConfig
     include DynamicConfig
 
+    class BlockCallback
+      attr_reader :block
+
+      def initialize(block)
+        @block = block
+      end
+
+      def apply_to(config)
+        config.instance_exec(&block)
+      end
+    end
+
+    class NamedCallback
+      attr_reader :name
+
+      def initialize(name)
+        @name = name
+      end
+
+      def apply_to(config)
+        config.send(name)
+      end
+    end
+
     class << self
       def attr_config(*args, **hargs)
         new_defaults = hargs.deep_dup
@@ -118,6 +142,27 @@ module Anyway # :nodoc:
         @required_attributes =
           if superclass < Anyway::Config
             superclass.required_attributes.dup
+          else
+            []
+          end
+      end
+
+      def on_load(*names, &block)
+        raise ArgumentError, "Either methods or block should be specified, not both" if block_given? && !names.empty?
+
+        if block_given?
+          load_callbacks << BlockCallback.new(block)
+        else
+          load_callbacks.push(*names.map { NamedCallback.new(_1) })
+        end
+      end
+
+      def load_callbacks
+        return @load_callbacks if instance_variable_defined?(:@load_callbacks)
+
+        @load_callbacks =
+          if superclass <= Anyway::Config
+            superclass.load_callbacks.dup
           else
             []
           end
@@ -213,6 +258,8 @@ module Anyway # :nodoc:
       end
     end
 
+    on_load :validate_required_attributes!
+
     attr_reader :config_name, :env_prefix
 
     # Instantiate config instance.
@@ -274,11 +321,12 @@ module Anyway # :nodoc:
       # Trace may contain unknown attributes
       trace&.keep_if { |key| self.class.config_attributes.include?(key.to_sym) }
 
+      # Run on_load callbacks
+      self.class.load_callbacks.each { _1.apply_to(self) }
+
       # Set trace after we write all the values to
       # avoid changing the source to accessor
       @__trace__ = trace
-
-      validate!
 
       self
     end
@@ -300,16 +348,6 @@ module Anyway # :nodoc:
 
     def resolve_config_path(name, env_prefix)
       Anyway.env.fetch(env_prefix).delete("conf") || Settings.default_config_path.call(name)
-    end
-
-    # Default validation only checks for required params
-    def validate!
-      self.class.required_attributes.select do |name|
-        values[name].nil? || (values[name].is_a?(String) && values[name].empty?)
-      end.then do |missing|
-        next if missing.empty?
-        raise_validation_error "The following config parameters are missing or empty: #{missing.join(", ")}"
-      end
     end
 
     def deconstruct_keys(keys)
@@ -342,6 +380,15 @@ module Anyway # :nodoc:
     private
 
     attr_reader :values, :__trace__
+
+    def validate_required_attributes!
+      self.class.required_attributes.select do |name|
+        values[name].nil? || (values[name].is_a?(String) && values[name].empty?)
+      end.then do |missing|
+        next if missing.empty?
+        raise_validation_error "The following config parameters are missing or empty: #{missing.join(", ")}"
+      end
+    end
 
     def write_config_attr(key, val)
       key = key.to_sym
