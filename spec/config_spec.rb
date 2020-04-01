@@ -725,4 +725,24 @@ describe Anyway::Config, type: :config do
       ).to eq({test: "as-above-so-below", debug: false})
     end
   end
+
+  describe "#dup" do
+    let(:conf) { CoolConfig.new }
+
+    it "deeply copies values and trace" do
+      duped = conf.dup
+
+      expect(duped.class).to eq conf.class
+      expect(duped.config_name).to eq conf.config_name
+      expect(duped.env_prefix).to eq conf.env_prefix
+      expect(duped.to_h).to eq(conf.to_h)
+      expect(duped.to_source_trace).to eq(conf.to_source_trace)
+
+      duped.user["password"] = "new_password"
+      expect(conf.user["password"]).not_to eq "new_password"
+
+      duped.port = 8089
+      expect(conf.to_source_trace["port"][:value]).to eq 8080
+    end
+  end
 end

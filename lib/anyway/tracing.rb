@@ -95,6 +95,10 @@ module Anyway
         end
       end
 
+      def dup
+        self.class.new(type, value.dup, source)
+      end
+
       def pretty_print(q)
         if trace?
           q.nest(2) do

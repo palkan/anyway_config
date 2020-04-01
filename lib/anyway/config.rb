@@ -33,6 +33,7 @@ module Anyway # :nodoc:
       clear
       deconstruct_keys
       dig
+      dup
       initialize
       load
       load_from_sources
@@ -344,6 +345,15 @@ module Anyway # :nodoc:
 
     def to_h
       values.deep_dup.deep_freeze
+    end
+
+    def dup
+      self.class.allocate.tap do |new_config|
+        %i[config_name env_prefix __trace__].each do |ivar|
+          new_config.instance_variable_set(:"@#{ivar}", send(ivar).dup)
+        end
+        new_config.instance_variable_set(:@values, values.deep_dup)
+      end
     end
 
     def resolve_config_path(name, env_prefix)
