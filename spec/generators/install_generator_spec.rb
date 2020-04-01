@@ -36,7 +36,7 @@ describe Anyway::Generators::InstallGenerator, :rails, type: :generator do
 
       it "contains autoload_static_config_path" do
         is_expected.to exist
-        is_expected.to contain("    # config.anyway_config.autoload_static_config_path = \"#{configs_root}\"")
+        is_expected.to contain("    # config.anyway_config.autoload_static_config_path = \"#{configs_root}\"\n    #\n")
       end
 
       context "with --configs-path" do
@@ -44,7 +44,7 @@ describe Anyway::Generators::InstallGenerator, :rails, type: :generator do
 
         it "configures autoload_static_config_path" do
           is_expected.to exist
-          is_expected.to contain("    config.anyway_config.autoload_static_config_path = \"config/settings\"")
+          is_expected.to contain("    config.anyway_config.autoload_static_config_path = \"config/settings\"\n\n")
 
           expect(file("config/settings/application_config.rb")).to exist
         end
