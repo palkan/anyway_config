@@ -20,4 +20,20 @@ describe "Anyway::Rails::Loaders::YAML", :rails do
       }
     )
   end
+
+  context "when local is enabled" do
+    let(:options) { {config_path: path, local: true, some_other: "value"} }
+
+    specify do
+      expect(subject).to eq(
+        {
+          "host" => "local.host",
+          "user" => {
+            "name" => "root",
+            "password" => "root"
+          }
+        }
+      )
+    end
+  end
 end

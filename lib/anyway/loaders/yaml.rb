@@ -10,16 +10,17 @@ module Anyway
   module Loaders
     class YAML < Base
       def call(config_path:, **_options)
-        load_yml(config_path).tap do |config|
-          config.deep_merge!(load_yml(local_config_path(config_path))) if use_local?
-        end
+        base_config = trace!(:yml, path: relative_config_path(config_path).to_s) { load_base_yml(config_path) }
+
+        return base_config unless use_local?
+
+        local_path = local_config_path(config_path)
+        local_config = trace!(:yml, path: relative_config_path(local_path).to_s) { load_local_yml(local_path) }
+
+        base_config.deep_merge!(local_config)
       end
 
       private
-
-      def load_yml(path)
-        trace!(:yml, path: relative_config_path(path).to_s) { parse_yml(path) }
-      end
 
       def parse_yml(path)
         return {} unless File.file?(path)
@@ -30,6 +31,9 @@ module Anyway
           ::YAML.load_file(path)
         end
       end
+
+      alias load_base_yml parse_yml
+      alias load_local_yml parse_yml
 
       def local_config_path(path)
         path.sub(/\.yml/, ".local.yml")

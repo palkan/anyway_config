@@ -4,7 +4,7 @@ module Anyway
   module Rails
     module Loaders
       class YAML < Anyway::Loaders::YAML
-        def parse_yml(*)
+        def load_base_yml(*)
           super[::Rails.env] || {}
         end
 
