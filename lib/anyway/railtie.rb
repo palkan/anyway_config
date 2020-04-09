@@ -8,6 +8,7 @@ module Anyway # :nodoc:
     config.anyway_config = Anyway::Settings
 
     ActiveSupport.on_load(:before_configuration) do
+      next if ::Rails.application.initialized?
       config.anyway_config.autoload_static_config_path = DEFAULT_CONFIGS_PATH
     end
 
