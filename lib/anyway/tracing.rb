@@ -183,7 +183,7 @@ module Anyway
       if val.is_a?(Hash)
         Tracing.current_trace.merge_values(val, **source)
       else
-        Tracing.current_trace.record_value(yield, *path, **source)
+        Tracing.current_trace.record_value(val, *path, **source)
       end
       val
     end
