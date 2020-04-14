@@ -2,6 +2,8 @@
 
 ## master
 
+- Fix double `yield` in tracing for ENV loader. ([@Envek][])
+
 ## 2.0.0.rc1 (2020-03-31)
 
 - Add predicate methods for attributes with boolean defaults. ([@palkan][])
@@ -348,3 +350,4 @@ Now works on JRuby 9.1+.
 [@dsalahutdinov]: https://github.com/dsalahutdinov
 [@charlie-wasp]: https://github.com/charlie-wasp
 [@jastkand]: https://github.com/jastkand
+[@Envek]: https://github.com/Envek
