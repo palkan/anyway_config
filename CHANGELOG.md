@@ -1,6 +1,6 @@
 # Change log
 
-## master
+## 2.0.0 (2020-04-14)
 
 - Fix double `yield` in tracing for ENV loader. ([@Envek][])
 
