@@ -24,7 +24,8 @@ Gem::Specification.new do |s|
 
   s.license = "MIT"
 
-  s.files = Dir.glob("lib/**/*") + Dir.glob("lib/.rbnext/**/*") + Dir.glob("bin/**/*") + %w[README.md LICENSE.txt CHANGELOG.md]
+  s.files = Dir.glob("lib/**/*") + Dir.glob("lib/.rbnext/**/*") + Dir.glob("bin/**/*") + Dir.glob("ext/**/*") + %w[README.md LICENSE.txt CHANGELOG.md]
+  s.extensions << "ext/extconf.rb"
   s.require_paths = ["lib"]
   s.required_ruby_version = ">= 2.5"
 
