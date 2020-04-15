@@ -1,5 +1,11 @@
 # Change log
 
+## 2.0.1 (2020-04-15)
+
+- Fix loading Railtie when application has been already initialized. ([@palkan][])
+
+  Fixes [#56](https://github.com/palkan/anyway_config/issues/56).
+
 ## 2.0.0 (2020-04-14)
 
 - Fix double `yield` in tracing for ENV loader. ([@Envek][])
