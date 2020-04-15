@@ -21,6 +21,14 @@ For application developers, Anyway Config could be useful to:
 **NOTE:** this readme shows documentation for 2.x version.
 For version 1.x see the [1-4-stable branch](https://github.com/palkan/anyway_config/tree/1-4-stable).
 
+
+<a href="https://evilmartians.com/?utm_source=anyway_config">
+<img src="https://evilmartians.com/badges/sponsored-by-evil-martians.svg" alt="Sponsored by Evil Martians" width="236" height="54"></a>
+
+## Links
+
+- [Anyway Config: Keep your Ruby configuration sane](https://evilmartians.com/chronicles/anyway-config-keep-your-ruby-configuration-sane?utm_source=anyway_config)
+
 ## Table of contents
 
 - [Main concepts](#main-concepts)
