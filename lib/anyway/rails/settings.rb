@@ -10,11 +10,9 @@ end
 module Anyway
   class Settings
     class << self
-      attr_reader :autoload_static_config_path
+      attr_reader :autoload_static_config_path, :autoloader
 
       if defined?(::Zeitwerk)
-        attr_reader :autoloader
-
         def autoload_static_config_path=(val)
           raise "Cannot setup autoloader after application has been initialized" if ::Rails.application.initialized?
 
@@ -40,11 +38,15 @@ module Anyway
       else
         def autoload_static_config_path=(val)
           if autoload_static_config_path
-            ActiveSupport::Dependencies.autoload_paths.delete(::Rails.root.join(autoload_static_config_path).to_s)
+            old_path = ::Rails.root.join(autoload_static_config_path).to_s
+            ActiveSupport::Dependencies.autoload_paths.delete(old_path)
+            ::Rails.application.config.eager_load_paths.delete(old_path)
           end
 
           @autoload_static_config_path = val
-          ActiveSupport::Dependencies.autoload_paths << ::Rails.root.join(val)
+          new_path = ::Rails.root.join(val).to_s
+          ActiveSupport::Dependencies.autoload_paths << new_path
+          ::Rails.application.config.eager_load_paths << new_path
         end
 
         def cleanup_autoload_paths
