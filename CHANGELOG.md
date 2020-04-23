@@ -1,5 +1,9 @@
 # Change log
 
+- Make sure configs are eager loaded in Rails when `config.eager_load = true`. ([@palkan][])
+
+  Fixes [#58](https://github.com/palkan/anyway_config/issues/58).
+
 ## 2.0.1 (2020-04-15)
 
 - Fix loading Railtie when application has been already initialized. ([@palkan][])

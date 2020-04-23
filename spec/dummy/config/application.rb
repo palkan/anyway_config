@@ -11,7 +11,7 @@ Bundler.require(*Rails.groups)
 module Dummy
   class Application < Rails::Application
     config.logger = Logger.new("/dev/null")
-    config.eager_load = false
+    config.eager_load = ENV["DO_NOT_INITIALIZE_RAILS"] != "1"
 
     ActiveSupport::Inflector.inflections do |inflect|
       inflect.acronym "API"
