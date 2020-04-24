@@ -1,5 +1,7 @@
 # Change log
 
+## 2.0.2 (2020-04-24)
+
 - Make sure configs are eager loaded in Rails when `config.eager_load = true`. ([@palkan][])
 
   Fixes [#58](https://github.com/palkan/anyway_config/issues/58).
