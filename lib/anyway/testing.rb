@@ -2,7 +2,7 @@
 
 require "anyway/testing/helpers"
 
-if defined?(RSpec)
+if defined?(RSpec) && defined?(RSpec.configure)
   RSpec.configure do |config|
     config.include(
       Anyway::Testing::Helpers,
