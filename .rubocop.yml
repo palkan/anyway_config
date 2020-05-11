@@ -16,7 +16,7 @@ AllCops:
     - 'lib/.rbnext/**/*'
     - 'lib/generators/**/templates/*.rb'
   DisplayCopNames: true
-  TargetRubyVersion: 2.7
+  TargetRubyVersion: next
 
 Standard/SemanticBlocks:
   Enabled: false
