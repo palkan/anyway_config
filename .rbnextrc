@@ -1,0 +1,3 @@
+nextify: |
+  ./lib
+  --transpile-mode=rewrite

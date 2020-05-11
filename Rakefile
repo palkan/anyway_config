@@ -39,7 +39,7 @@ end
 
 desc "Run Ruby Next nextify"
 task :nextify do
-  sh "bundle exec ruby-next nextify ./lib --transpile-mode=rewrite -V"
+  sh "bundle exec ruby-next nextify -V"
 end
 
 desc "Run the all specs"

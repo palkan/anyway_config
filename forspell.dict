@@ -4,6 +4,7 @@
 # Example: deduplicate: duplicate
 abstractize
 autoloader
+auto-transpiling
 Influxer
 mycoolgem
 sources't

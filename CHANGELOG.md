@@ -1,5 +1,7 @@
 # Change log
 
+- Enable [auto-transpiling](https://github.com/ruby-next/ruby-next#transpiled-files-vs-vcs-vs-installing-from-source) to allow installing from source. ([@palkan][])
+
 ## 2.0.2 (2020-04-24)
 
 - Make sure configs are eager loaded in Rails when `config.eager_load = true`. ([@palkan][])
