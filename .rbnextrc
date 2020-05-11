@@ -1,3 +1,4 @@
 nextify: |
   ./lib
   --transpile-mode=rewrite
+  --edge
