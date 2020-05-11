@@ -143,8 +143,7 @@ describe Anyway::Config do
 
         it "passes config to extension" do
           config_instance.parse_options!(
-            ["--server-args", '{"host":"0.0.0.0"}',
-             "--testo", "1"]
+            ["--server-args", '{"host":"0.0.0.0"}', "--testo", "1"]
           )
           expect(config_instance.server_args["host"]).to eq "0.0.0.0"
           expect(config_instance.test).to eq true
