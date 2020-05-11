@@ -1,5 +1,7 @@
 # Change log
 
+## 2.0.3 (2020-05-12)
+
 - Enable [auto-transpiling](https://github.com/ruby-next/ruby-next#transpiled-files-vs-vcs-vs-installing-from-source) to allow installing from source. ([@palkan][])
 
 ## 2.0.2 (2020-04-24)
