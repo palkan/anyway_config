@@ -15,9 +15,7 @@ module Anyway
         @local = local
       end
 
-      def use_local?
-        @local == true
-      end
+      def use_local?() = @local == true
     end
   end
 end

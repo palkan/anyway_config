@@ -33,12 +33,12 @@ Gem::Specification.new do |s|
   if File.directory?(File.join(__dir__, ".git"))
     s.add_runtime_dependency "ruby-next", ">= 0.7.0"
   else
-    s.add_runtime_dependency "ruby-next-core", ">= 0.7.0"
+    s.add_runtime_dependency "ruby-next-core", ">= 0.8.0"
   end
 
   s.add_development_dependency "ammeter", "~> 1.1.3"
   s.add_development_dependency "bundler", ">= 1.15"
   s.add_development_dependency "rake", ">= 13.0"
   s.add_development_dependency "rspec", "~> 3.8"
-  s.add_development_dependency "ruby-next", ">= 0.7"
+  s.add_development_dependency "ruby-next", ">= 0.8"
 end

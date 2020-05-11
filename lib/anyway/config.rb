@@ -11,9 +11,7 @@ module Anyway # :nodoc:
 
   using(Module.new do
     refine Object do
-      def vm_object_id
-        (object_id << 1).to_s(16)
-      end
+      def vm_object_id() = (object_id << 1).to_s(16)
     end
   end)
 
@@ -72,9 +70,7 @@ module Anyway # :nodoc:
         @name = name
       end
 
-      def apply_to(config)
-        config.send(name)
-      end
+      def apply_to(config) = config.send(name)
     end
 
     class << self
@@ -110,23 +106,21 @@ module Anyway # :nodoc:
       def defaults
         return @defaults if instance_variable_defined?(:@defaults)
 
-        @defaults =
-          if superclass < Anyway::Config
-            superclass.defaults.deep_dup
-          else
-            new_empty_config
-          end
+        if superclass < Anyway::Config
+          superclass.defaults.deep_dup
+        else
+          new_empty_config
+        end => @defaults
       end
 
       def config_attributes
         return @config_attributes if instance_variable_defined?(:@config_attributes)
 
-        @config_attributes =
-          if superclass < Anyway::Config
-            superclass.config_attributes.dup
-          else
-            []
-          end
+        if superclass < Anyway::Config
+          superclass.config_attributes.dup
+        else
+          []
+        end => @config_attributes
       end
 
       def required(*names)
@@ -140,12 +134,11 @@ module Anyway # :nodoc:
       def required_attributes
         return @required_attributes if instance_variable_defined?(:@required_attributes)
 
-        @required_attributes =
-          if superclass < Anyway::Config
-            superclass.required_attributes.dup
-          else
-            []
-          end
+        if superclass < Anyway::Config
+          superclass.required_attributes.dup
+        else
+          []
+        end => @required_attributes
       end
 
       def on_load(*names, &block)
@@ -161,12 +154,11 @@ module Anyway # :nodoc:
       def load_callbacks
         return @load_callbacks if instance_variable_defined?(:@load_callbacks)
 
-        @load_callbacks =
-          if superclass <= Anyway::Config
-            superclass.load_callbacks.dup
-          else
-            []
-          end
+        if superclass <= Anyway::Config
+          superclass.load_callbacks.dup
+        else
+          []
+        end => @load_callbacks
       end
 
       def config_name(val = nil)
@@ -186,26 +178,21 @@ module Anyway # :nodoc:
           end
       end
 
-      def explicit_config_name?
-        !explicit_config_name.nil?
-      end
+      def explicit_config_name?() = !explicit_config_name.nil?
 
       def env_prefix(val = nil)
         return (@env_prefix = val.to_s.upcase) unless val.nil?
 
         return @env_prefix if instance_variable_defined?(:@env_prefix)
 
-        @env_prefix =
-          if superclass < Anyway::Config && superclass.explicit_config_name?
-            superclass.env_prefix
-          else
-            config_name.upcase
-          end
+        if superclass < Anyway::Config && superclass.explicit_config_name?
+          superclass.env_prefix
+        else
+          config_name.upcase
+        end => @env_prefix
       end
 
-      def new_empty_config
-        {}
-      end
+      def new_empty_config() = {}
 
       private
 
@@ -228,9 +215,9 @@ module Anyway # :nodoc:
       def accessors_module
         return @accessors_module if instance_variable_defined?(:@accessors_module)
 
-        @accessors_module = Module.new.tap do |mod|
+        Module.new.tap do |mod|
           include mod
-        end
+        end => @accessors_module
       end
 
       def build_config_name
@@ -298,7 +285,7 @@ module Anyway # :nodoc:
     def load(overrides = nil)
       base_config = self.class.defaults.deep_dup
 
-      trace = Tracing.capture do
+      Tracing.capture do
         Tracing.trace!(:defaults) { base_config }
 
         load_from_sources(
@@ -313,7 +300,7 @@ module Anyway # :nodoc:
 
           base_config.deep_merge!(overrides)
         end
-      end
+      end => trace
 
       base_config.each do |key, val|
         write_config_attr(key.to_sym, val)
@@ -339,13 +326,9 @@ module Anyway # :nodoc:
       base_config
     end
 
-    def dig(*keys)
-      values.dig(*keys)
-    end
+    def dig(*keys) = values.dig(*keys)
 
-    def to_h
-      values.deep_dup.deep_freeze
-    end
+    def to_h() = values.deep_dup.deep_freeze
 
     def dup
       self.class.allocate.tap do |new_config|
@@ -360,13 +343,9 @@ module Anyway # :nodoc:
       Anyway.env.fetch(env_prefix).delete("conf") || Settings.default_config_path.call(name)
     end
 
-    def deconstruct_keys(keys)
-      values.deconstruct_keys(keys)
-    end
+    def deconstruct_keys(keys) = values.deconstruct_keys(keys)
 
-    def to_source_trace
-      __trace__&.to_h
-    end
+    def to_source_trace() = __trace__&.to_h
 
     def inspect
       "#<#{self.class}:0x#{vm_object_id.rjust(16, "0")} config_name=\"#{config_name}\" env_prefix=\"#{env_prefix}\" " \
