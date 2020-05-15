@@ -12,6 +12,6 @@ lint:
 
 release: test lint
 	git status
-	gem release -t
+	RELEASING_ANYWAY=true gem release -t
 	git push
 	git push --tags
