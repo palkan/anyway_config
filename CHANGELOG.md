@@ -1,5 +1,7 @@
 # Change log
 
+## 2.0.5 (2020-05-15)
+
 - Use `YAML.load` instead of `YAML.safe_laad`. ([@palkan][])
 
 ## 2.0.4 (2020-05-15)
