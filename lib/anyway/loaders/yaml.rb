@@ -26,7 +26,7 @@ module Anyway
         return {} unless File.file?(path)
         require "yaml" unless defined?(::YAML)
         if defined?(ERB)
-          ::YAML.safe_load(ERB.new(File.read(path)).result, [], [], true)
+          ::YAML.load(ERB.new(File.read(path)).result) # rubocop:disable Security/YAMLLoad
         else
           ::YAML.load_file(path)
         end

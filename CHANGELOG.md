@@ -1,5 +1,7 @@
 # Change log
 
+- Use `YAML.load` instead of `YAML.safe_laad`. ([@palkan][])
+
 ## 2.0.4 (2020-05-15)
 
 - Fix regression with adding `ruby-next` as a runtime dependency even for RubyGems release. ([@palkan][])
