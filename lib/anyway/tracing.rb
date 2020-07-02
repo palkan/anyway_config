@@ -32,7 +32,8 @@ module Anyway
         value.dig(...)
       end
 
-      def record_value(val, *path, key, **opts)
+      def record_value(val, *path, **opts)
+        key = path.pop
         if val.is_a?(Hash)
           Trace.new.tap { _1.merge_values(val, **opts) }
         else
@@ -89,7 +90,7 @@ module Anyway
         end
       end
 
-      def dup() = self.class.new(type, value.dup, source)
+      def dup() = self.class.new(type, value.dup, **source)
 
       def pretty_print(q)
         if trace?
@@ -168,12 +169,11 @@ module Anyway
 
     def trace!(type, *path, **opts)
       return yield unless Tracing.tracing?
-      source = {type: type}.merge(opts)
       val = yield
       if val.is_a?(Hash)
-        Tracing.current_trace.merge_values(val, **source)
+        Tracing.current_trace.merge_values(val, type: type, **opts)
       else
-        Tracing.current_trace.record_value(val, *path, **source)
+        Tracing.current_trace.record_value(val, *path, type: type, **opts)
       end
       val
     end
