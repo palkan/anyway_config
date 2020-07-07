@@ -1,5 +1,9 @@
 # Change log
 
+## 2.0.6 (2020-07-7)
+
+- Fix Ruby 2.7 warnings. ([@palkan][])
+
 ## 2.0.5 (2020-05-15)
 
 - Use `YAML.load` instead of `YAML.safe_laad`. ([@palkan][])
