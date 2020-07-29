@@ -1,5 +1,16 @@
 # Change log
 
+## master
+
+- Make it possible to specify default YML configs directory. ([@palkan][])
+
+  ```ruby
+  Anyway::Settings.default_config_path = "path/to/configs"
+
+  # or in Rails
+  config.anyway_config.default_config_path = Rails.root.join("my/configs")
+  ```
+
 ## 2.0.6 (2020-07-7)
 
 - Fix Ruby 2.7 warnings. ([@palkan][])
