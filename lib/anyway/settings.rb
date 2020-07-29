@@ -10,8 +10,19 @@ module Anyway
       # *.yml.local (or credentials/local.yml.enc)
       attr_accessor :use_local_files
 
-      # Return a path to YML config file given the config name
-      attr_accessor :default_config_path
+      # A proc returning a path to YML config file given the config name
+      attr_reader :default_config_path
+
+      def default_config_path=(val)
+        if val.is_a?(Proc)
+          @default_config_path = val
+          return
+        end
+
+        val = val.to_s
+
+        @default_config_path = ->(name) { File.join(val, "#{name}.yml") }
+      end
 
       # Enable source tracing
       attr_accessor :tracing_enabled
