@@ -1,6 +1,5 @@
 require:
   - standard/cop/semantic_blocks
-  - rubocop-md
   - ruby-next/rubocop
 
 inherit_gem:
@@ -33,18 +32,3 @@ Style/TrailingCommaInHashLiteral:
 Layout/ParameterAlignment:
   EnforcedStyle: with_first_parameter
 
-Lint/Void:
-  Exclude:
-    - '**/*.md'
-
-Lint/DuplicateMethods:
-  Exclude:
-    - '**/*.md'
-
-Naming/FileName:
-  Exclude:
-   - '**/*.md'
-
-Layout/InitialIndentation:
-  Exclude:
-    - 'CHANGELOG.md'
