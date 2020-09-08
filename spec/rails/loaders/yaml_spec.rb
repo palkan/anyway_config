@@ -21,6 +21,22 @@ describe "Anyway::Rails::Loaders::YAML", :rails do
     )
   end
 
+  context "when no top environmental keys present" do
+    let(:options) { {config_path: Rails.root.join("config/cool_no_environments.yml"), some_other: "value"} }
+
+    it "still loads settings" do
+      expect(subject).to eq(
+        {
+          "host" => "test.host",
+          "user" => {
+            "name" => "root",
+            "password" => "root"
+          }
+        }
+      )
+    end
+  end
+
   context "when local is enabled" do
     let(:options) { {config_path: path, local: true, some_other: "value"} }
 
