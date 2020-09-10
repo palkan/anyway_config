@@ -16,7 +16,6 @@ module Anyway
         def environmental?(parsed_yml)
           # likely
           return true if parsed_yml.key?(::Rails.env)
-          
           # less likely
           ::Rails.application.config.anyway_config.known_environments.any? { parsed_yml.key?(_1) }
         end
