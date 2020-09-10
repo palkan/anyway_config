@@ -261,19 +261,19 @@ config = Anyway::Config.for(:my_app, config_path: "my_config.yml", env_prefix: "
 
 This feature is similar to `Rails.application.config_for` but more powerful:
 
-| Feature | Rails | Anyway Config |
-| ------------- |-------------:| -----:|
-| Load data from `config/app.yml` | ✅ | ✅ |
-| Load data from `secrets` | ❌ | ✅ |
-| Load data from `credentials` | ❌ | ✅ |
-| Load data from environment | ❌ | ✅ |
-| Load data from [custom sources](#data-loaders) | ❌ | ✅ |
-| Local config files | ❌ | ✅ |
-| [Source tracing](#tracing) | ❌ | ✅ |
-| Return Hash with indifferent access | ❌ | ✅ |
-| Support ERB\* within `config/app.yml` | ✅ | ✅ |
-| Raise if file doesn't exist | ✅ | ❌ |
-| Works without Rails | 😀 | ✅ |
+| Feature                                        | Rails | Anyway Config |
+| ---------------------------------------------- | ----: | ------------: |
+| Load data from `config/app.yml`                |    ✅ |            ✅ |
+| Load data from `secrets`                       |    ❌ |            ✅ |
+| Load data from `credentials`                   |    ❌ |            ✅ |
+| Load data from environment                     |    ❌ |            ✅ |
+| Load data from [custom sources](#data-loaders) |    ❌ |            ✅ |
+| Local config files                             |    ❌ |            ✅ |
+| [Source tracing](#tracing)                     |    ❌ |            ✅ |
+| Return Hash with indifferent access            |    ❌ |            ✅ |
+| Support ERB\* within `config/app.yml`          |    ✅ |            ✅ |
+| Raise if file doesn't exist                    |    ✅ |            ❌ |
+| Works without Rails                            |    😀 |            ✅ |
 
 \* Make sure that ERB is loaded
 
@@ -329,7 +329,7 @@ and then use [Rails generators](#generators) to make your application Anyway Con
 
 Your config is filled up with values from the following sources (ordered by priority from low to high):
 
-1) **YAML configuration files**: `RAILS_ROOT/config/my_cool_gem.yml`.
+1. **YAML configuration files**: `RAILS_ROOT/config/my_cool_gem.yml`.
 
 Recognizes Rails environment, supports `ERB`:
 
@@ -341,6 +341,29 @@ test:
 development:
   host: localhost
   port: 3000
+```
+
+If the YML does not have keys that are one of the "known" Rails environments (development, production, test)—the same configuration will be available in all environments, similar to non-Rails behavior:
+
+```yml
+host: localhost
+port: 3002
+# These values will be active in all environments
+```
+
+To extend the list of known environments, use the setting in the relevant part of your Rails code:
+
+```ruby
+Rails.application.config.anyway_config.known_environments << "staging"
+```
+
+If your YML defines at least a single "environmental" top-level, you _have_ to separate all your settings per-environment. You can't mix and match:
+
+```yml
+staging:
+  host: localhost # This value will be loaded when Rails.env.staging? is true
+
+port: 3002 # This value will not be loaded at all
 ```
 
 You can specify the lookup path for YAML files in one of the following ways:
@@ -360,7 +383,7 @@ config.anyway_config.default_config_path = ->(name) { Rails.root.join("data", "c
 
 - By overriding a specific config YML file path via the `<NAME>_CONF` env variable, e.g., `MYCOOLGEM_CONF=path/to/cool.yml`
 
-2) **Rails secrets**: `Rails.application.secrets.my_cool_gem` (if `secrets.yml` present).
+2. **Rails secrets**: `Rails.application.secrets.my_cool_gem` (if `secrets.yml` present).
 
 ```yml
 # config/secrets.yml
@@ -369,7 +392,7 @@ development:
     port: 4444
 ```
 
-3) **Rails credentials**: `Rails.application.credentials.my_cool_gem` (if supported):
+3. **Rails credentials**: `Rails.application.credentials.my_cool_gem` (if supported):
 
 ```yml
 my_cool_gem:
@@ -378,7 +401,7 @@ my_cool_gem:
 
 **NOTE:** You can backport Rails 6 per-environment credentials to Rails 5.2 app using [this patch](https://gist.github.com/palkan/e27e4885535ff25753aefce45378e0cb).
 
-4) **Environment variables**: `ENV['MYCOOLGEM_*']`.
+4. **Environment variables**: `ENV['MYCOOLGEM_*']`.
 
 See [environment variables](#environment-variables).
 
@@ -461,7 +484,7 @@ Alternatively, you can call `rails g anyway:app_config name param1 param2 ...`.
 
 The default data loading mechanism for non-Rails applications is the following (ordered by priority from low to high):
 
-1) **YAML configuration files**: `./config/<config-name>.yml`.
+1. **YAML configuration files**: `./config/<config-name>.yml`.
 
 In pure Ruby apps, we do not know about _environments_ (`test`, `development`, `production`, etc.); thus, we assume that the YAML contains values for a single environment:
 
@@ -488,7 +511,7 @@ Anyway::Settings.default_config_path = ->(name) { Rails.root.join("data", "confi
 
 - By overriding a specific config YML file path via the `<NAME>_CONF` env variable, e.g., `MYCOOLGEM_CONF=path/to/cool.yml`
 
-2) **Environment variables**: `ENV['MYCOOLGEM_*']`.
+2. **Environment variables**: `ENV['MYCOOLGEM_*']`.
 
 See [environment variables](#environment-variables).
 
@@ -505,9 +528,9 @@ Environment variables are automatically type cast:
 - `"nil"` and `"null"` to `nil` (do you really need it?);
 - `"123"` to 123 and `"3.14"` to 3.14.
 
-*Anyway Config* supports nested (_hashed_) env variables—just separate keys with double-underscore.
+_Anyway Config_ supports nested (_hashed_) env variables—just separate keys with double-underscore.
 
-For example, "MYCOOLGEM_OPTIONS__VERBOSE" is parsed as `config.options["verbose"]`.
+For example, "MYCOOLGEM_OPTIONS\_\_VERBOSE" is parsed as `config.options["verbose"]`.
 
 Array values are also supported:
 
