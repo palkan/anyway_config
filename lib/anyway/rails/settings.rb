@@ -11,6 +11,7 @@ module Anyway
   class Settings
     class << self
       attr_reader :autoload_static_config_path, :autoloader
+      attr_accessor :known_environments
 
       if defined?(::Zeitwerk)
         def autoload_static_config_path=(val)
@@ -56,5 +57,6 @@ module Anyway
     end
 
     self.default_config_path = ->(name) { ::Rails.root.join("config", "#{name}.yml") }
+    self.known_environments = %w[test development production]
   end
 end
