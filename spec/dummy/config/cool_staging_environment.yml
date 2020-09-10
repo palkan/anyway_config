@@ -1,0 +1,5 @@
+staging:
+  host: "test.host"
+  user:
+    name: "root"
+    password: <%= ENV['ANY_SECRET_PASSWORD'] || "root" %>

@@ -2,6 +2,9 @@
 
 ## master
 
+- Allow to skip environment keys completely (e.g., `development:`, `test:`) in a config YML when used with Rails. In that case same config is loaded in all known environments (same mechanism as for non-Rails applications)
+- Add the `known_environments` property to Anyway::Settings under Rails. Use `config.anyway_config.known_environments << "staging"` to make the gem aware of custom environments. ([@progapandist][])
+
 - Make it possible to specify default YML configs directory. ([@palkan][])
 
 For example:
@@ -376,4 +379,5 @@ No we're dependency-free!
 [@dsalahutdinov]: https://github.com/dsalahutdinov
 [@charlie-wasp]: https://github.com/charlie-wasp
 [@jastkand]: https://github.com/jastkand
-[@Envek]: https://github.com/Envek
+[@envek]: https://github.com/Envek
+[@progapandist]: https://github.com/progapandist

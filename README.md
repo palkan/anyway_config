@@ -343,6 +343,29 @@ development:
   port: 3000
 ```
 
+If the YML does not have keys that are one of the "known" Rails environments (development, production, test)—the same configuration will be available in all environments, similar to non-Rails behavior:
+
+```yml
+host: localhost
+port: 3002
+# These values will be active in all environments
+```
+
+To extend the list of known environments, use the setting in the relevant part of your Rails code:
+
+```ruby
+Rails.application.config.anyway_config.known_environments << "staging"
+```
+
+If your YML defines at least a single "environmental" top-level, you _have_ to separate all your settings per-environment. You can't mix and match:
+
+```yml
+staging:
+  host: localhost # This value will be loaded when Rails.env.staging? is true
+
+port: 3002 # This value will not be loaded at all
+```
+
 You can specify the lookup path for YAML files in one of the following ways:
 
 - By setting `config.anyway_config.default_config_path` to a target directory path:
