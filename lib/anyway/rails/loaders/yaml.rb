@@ -14,7 +14,10 @@ module Anyway
         private
 
         def environmental?(parsed_yml)
-          parsed_yml.keys.any? { |key| ["test", "development", "production", ::Rails.env].include?(key) }
+          parsed_yml.keys.any? do |key|
+            envs = ::Rails.application.config.anyway_config.known_environments.dup
+            envs.concat([::Rails.env]).include?(key)
+          end
         end
 
         def relative_config_path(path)
