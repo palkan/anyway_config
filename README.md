@@ -722,7 +722,7 @@ If you want to delete the env var, pass `nil` as the value.
 
 This helper is automatically included to RSpec if `RAILS_ENV` or `RACK_ENV` env variable is equal to "test". It's only available for the example with the tag `type: :config` or with the path `spec/configs/...`.
 
-You can add it manually by requiring `"anyway/testing/helpers"` and including the `Anyway::Test::Helpers` module (into RSpec configuration or Minitest test class).
+You can add it manually by requiring `"anyway/testing/helpers"` and including the `Anyway::Testing::Helpers` module (into RSpec configuration or Minitest test class).
 
 ## OptionParser integration
 
