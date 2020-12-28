@@ -2,6 +2,8 @@
 
 ## master
 
+## 2.1.0 (2020-12-29)
+
 - Drop deprecated `attr_config` instance variables support.
 
 Config setters no longer write instance variables.
@@ -9,7 +11,7 @@ Config setters no longer write instance variables.
 - Add `config.anyway_config.future` to allow enabling upcoming features. ([@palkan][])
 
 For smoother upgrades, we provide a mechanism to opt-out to the new defaults beforehand.
-Currently, only `:unwrap_known_environments` feature could be enabled:
+Currently, only `:unwrap_known_environments` feature could be enabled (see below):
 
 ```ruby
 config.anyway_config.future.use :unwrap_known_environments
