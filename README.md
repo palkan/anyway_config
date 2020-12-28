@@ -343,6 +343,10 @@ development:
   port: 3000
 ```
 
+### Multi-env configuration
+
+_⚡️ This feature will be turned on by default in the future releases. You can turn it on now via `config.anyway_config.future.use :unwrap_known_environments`._
+
 If the YML does not have keys that are one of the "known" Rails environments (development, production, test)—the same configuration will be available in all environments, similar to non-Rails behavior:
 
 ```yml

@@ -19,7 +19,7 @@ module Anyway # :nodoc:
   # Provides `attr_config` method to describe
   # configuration parameters and set defaults
   class Config
-    PARAM_NAME = /^[a-z_]([\w]+)?$/
+    PARAM_NAME = /^[a-z_](\w+)?$/
 
     # List of names that couldn't be used as config names
     # (the class instance methods we use)
@@ -46,6 +46,7 @@ module Anyway # :nodoc:
     ].freeze
 
     class Error < StandardError; end
+
     class ValidationError < Error; end
 
     include OptparseConfig
@@ -106,21 +107,21 @@ module Anyway # :nodoc:
       def defaults
         return @defaults if instance_variable_defined?(:@defaults)
 
-        if superclass < Anyway::Config
+        @defaults = if superclass < Anyway::Config
           superclass.defaults.deep_dup
         else
           new_empty_config
-        end => @defaults
+        end
       end
 
       def config_attributes
         return @config_attributes if instance_variable_defined?(:@config_attributes)
 
-        if superclass < Anyway::Config
+        @config_attributes = if superclass < Anyway::Config
           superclass.config_attributes.dup
         else
           []
-        end => @config_attributes
+        end
       end
 
       def required(*names)
@@ -134,17 +135,17 @@ module Anyway # :nodoc:
       def required_attributes
         return @required_attributes if instance_variable_defined?(:@required_attributes)
 
-        if superclass < Anyway::Config
+        @required_attributes = if superclass < Anyway::Config
           superclass.required_attributes.dup
         else
           []
-        end => @required_attributes
+        end
       end
 
       def on_load(*names, &block)
-        raise ArgumentError, "Either methods or block should be specified, not both" if block_given? && !names.empty?
+        raise ArgumentError, "Either methods or block should be specified, not both" if block && !names.empty?
 
-        if block_given?
+        if block
           load_callbacks << BlockCallback.new(block)
         else
           load_callbacks.push(*names.map { NamedCallback.new(_1) })
@@ -154,11 +155,11 @@ module Anyway # :nodoc:
       def load_callbacks
         return @load_callbacks if instance_variable_defined?(:@load_callbacks)
 
-        if superclass <= Anyway::Config
+        @load_callbacks = if superclass <= Anyway::Config
           superclass.load_callbacks.dup
         else
           []
-        end => @load_callbacks
+        end
       end
 
       def config_name(val = nil)
@@ -185,11 +186,11 @@ module Anyway # :nodoc:
 
         return @env_prefix if instance_variable_defined?(:@env_prefix)
 
-        if superclass < Anyway::Config && superclass.explicit_config_name?
+        @env_prefix = if superclass < Anyway::Config && superclass.explicit_config_name?
           superclass.env_prefix
         else
           config_name.upcase
-        end => @env_prefix
+        end
       end
 
       def new_empty_config() = {}
@@ -215,9 +216,9 @@ module Anyway # :nodoc:
       def accessors_module
         return @accessors_module if instance_variable_defined?(:@accessors_module)
 
-        Module.new.tap do |mod|
+        @accessors_module = Module.new.tap do |mod|
           include mod
-        end => @accessors_module
+        end
       end
 
       def build_config_name
@@ -229,7 +230,7 @@ module Anyway # :nodoc:
         # handle two cases:
         # - SomeModule::Config => "some_module"
         # - SomeConfig => "some"
-        unless name =~ /^(\w+)(\:\:)?Config$/
+        unless name =~ /^(\w+)(::)?Config$/
           raise "Couldn't infer config name, please, specify it explicitly" \
             "via `config_name :my_config`"
         end
@@ -285,22 +286,19 @@ module Anyway # :nodoc:
     def load(overrides = nil)
       base_config = self.class.defaults.deep_dup
 
-      Tracing.capture do
+      trace = Tracing.capture do
         Tracing.trace!(:defaults) { base_config }
 
-        load_from_sources(
-          base_config,
-          name: config_name,
-          env_prefix: env_prefix,
-          config_path: resolve_config_path(config_name, env_prefix)
-        )
+        config_path = resolve_config_path(config_name, env_prefix)
+
+        load_from_sources(base_config, name: config_name, env_prefix:, config_path:)
 
         if overrides
           Tracing.trace!(:load) { overrides }
 
           base_config.deep_merge!(overrides)
         end
-      end => trace
+      end
 
       base_config.each do |key, val|
         write_config_attr(key.to_sym, val)

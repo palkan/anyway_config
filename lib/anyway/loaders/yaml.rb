@@ -32,8 +32,8 @@ module Anyway
         end
       end
 
-      alias load_base_yml parse_yml
-      alias load_local_yml parse_yml
+      alias_method :load_base_yml, :parse_yml
+      alias_method :load_local_yml, :parse_yml
 
       def local_config_path(path)
         path.sub(/\.yml/, ".local.yml")

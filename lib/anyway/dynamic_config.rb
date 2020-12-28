@@ -16,7 +16,7 @@ module Anyway
         config = allocate
         options[:env_prefix] ||= name.to_s.upcase
         options[:config_path] ||= config.resolve_config_path(name, options[:env_prefix])
-        config.load_from_sources(new_empty_config, name: name, **options)
+        config.load_from_sources(new_empty_config, name:, **options)
       end
     end
 

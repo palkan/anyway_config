@@ -86,7 +86,7 @@ module Anyway
         if trace?
           value.transform_values(&:to_h).tap { _1.default_proc = nil }
         else
-          {value: value, source: source}
+          {value, source}
         end
       end
 
@@ -141,7 +141,7 @@ module Anyway
 
       def current_trace() = trace_stack.last
 
-      alias tracing? current_trace
+      alias_method :tracing?, :current_trace
 
       def source_stack
         (Thread.current[:__anyway__trace_source_stack__] ||= [])
@@ -171,9 +171,9 @@ module Anyway
       return yield unless Tracing.tracing?
       val = yield
       if val.is_a?(Hash)
-        Tracing.current_trace.merge_values(val, type: type, **opts)
+        Tracing.current_trace.merge_values(val, type:, **opts)
       else
-        Tracing.current_trace.record_value(val, *path, type: type, **opts)
+        Tracing.current_trace.record_value(val, *path, type:, **opts)
       end
       val
     end

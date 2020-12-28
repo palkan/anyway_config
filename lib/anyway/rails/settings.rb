@@ -9,6 +9,10 @@ end
 
 module Anyway
   class Settings
+    class Future
+      setting :unwrap_known_environments, true
+    end
+
     class << self
       attr_reader :autoload_static_config_path, :autoloader
       attr_accessor :known_environments

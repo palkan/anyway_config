@@ -5,6 +5,41 @@ module Anyway
   #
   # Settings contain the library-wide configuration.
   class Settings
+    # Future encapsulates settings that will be introduced in the upcoming version
+    # with the default values, which could break compatibility
+    class Future
+      class << self
+        def setting(name, default_value)
+          settings[name] = default_value
+
+          define_method(name) do
+            store[name]
+          end
+
+          define_method(:"#{name}=") do |val|
+            store[name] = val
+          end
+        end
+
+        def settings
+          @settings ||= {}
+        end
+      end
+
+      def initialize
+        @store = {}
+      end
+
+      def use(*names)
+        store.clear
+        names.each { store[_1] = self.class.settings[_1] }
+      end
+
+      private
+
+      attr_reader :store
+    end
+
     class << self
       # Define whether to load data from
       # *.yml.local (or credentials/local.yml.enc)
@@ -26,6 +61,10 @@ module Anyway
 
       # Enable source tracing
       attr_accessor :tracing_enabled
+
+      def future
+        @future ||= Future.new
+      end
     end
 
     # By default, use local files only in development (that's the purpose if the local files)

@@ -14,6 +14,7 @@ module Anyway
         private
 
         def environmental?(parsed_yml)
+          return true unless Settings.future.unwrap_known_environments
           # likely
           return true if parsed_yml.key?(::Rails.env)
           # less likely

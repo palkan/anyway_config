@@ -2,7 +2,17 @@
 
 ## master
 
+- Add `config.anyway_config.future` to allow enabling upcoming features. ([@palkan][])
+
+For smoother upgrades, we provide a mechanism to opt-out to the new defaults beforehand.
+Currently, only `:unwrap_known_environments` feature could be enabled:
+
+```ruby
+config.anyway_config.future.use :unwrap_known_environments
+```
+
 - Allow to skip environment keys completely (e.g., `development:`, `test:`) in a config YML when used with Rails. In that case same config is loaded in all known environments (same mechanism as for non-Rails applications)
+
 - Add the `known_environments` property to Anyway::Settings under Rails. Use `config.anyway_config.known_environments << "staging"` to make the gem aware of custom environments. ([@progapandist][])
 
 - Make it possible to specify default YML configs directory. ([@palkan][])
