@@ -2,6 +2,10 @@
 
 ## master
 
+- Drop deprecated `attr_config` instance variables support.
+
+Config setters no longer write instance variables.
+
 - Add `config.anyway_config.future` to allow enabling upcoming features. ([@palkan][])
 
 For smoother upgrades, we provide a mechanism to opt-out to the new defaults beforehand.

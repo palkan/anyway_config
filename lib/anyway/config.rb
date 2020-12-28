@@ -203,8 +203,7 @@ module Anyway # :nodoc:
           accessors_module.module_eval <<~RUBY, __FILE__, __LINE__ + 1
             def #{name}=(val)
               __trace__&.record_value(val, \"#{name}\", **Tracing.current_trace_source)
-              # DEPRECATED: instance variable set will be removed in 2.1
-              @#{name} = values[:#{name}] = val
+              values[:#{name}] = val
             end
 
             def #{name}
