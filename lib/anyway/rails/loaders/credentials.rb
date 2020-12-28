@@ -24,13 +24,13 @@ module Anyway
           ) do
             ::Rails.application.credentials.public_send(name)
           end.then do |creds|
-            config.deep_merge!(creds) if creds
+            Utils.deep_merge!(config, creds) if creds
           end
 
           if use_local?
             trace!(:credentials, store: LOCAL_CONTENT_PATH) do
               local_credentials(name)
-            end.then { |creds| config.deep_merge!(creds) if creds }
+            end.then { |creds| Utils.deep_merge!(config, creds) if creds }
           end
 
           config

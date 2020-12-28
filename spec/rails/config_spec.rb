@@ -27,6 +27,12 @@ describe Anyway::Config, :rails, type: :config do
           expect(conf.user[:password]).to eq "root"
         end
 
+        it "sets overrides after loading secrets" do
+          config = CoolConfig.new(user: {"password" => "override"})
+          expect(config.user[:name]).to eq "secret man"
+          expect(config.user[:password]).to eq "override"
+        end
+
         context "with env" do
           specify "env overrides credentials" do
             with_env("COOL_META__KOT" => "zhmot") do
@@ -84,6 +90,12 @@ describe Anyway::Config, :rails, type: :config do
           expect(conf.user[:name]).to eq "test"
           expect(conf.meta).to eq("kot" => "leta")
           expect(conf.user[:password]).to eq "root"
+        end
+
+        it "sets overrides after loading secrets" do
+          config = CoolConfig.new(user: {"password" => "override"})
+          expect(config.user[:name]).to eq "root"
+          expect(config.user[:password]).to eq "override"
         end
       end
     else

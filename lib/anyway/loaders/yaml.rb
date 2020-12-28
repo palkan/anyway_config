@@ -17,7 +17,7 @@ module Anyway
         local_path = local_config_path(config_path)
         local_config = trace!(:yml, path: relative_config_path(local_path).to_s) { load_local_yml(local_path) }
 
-        base_config.deep_merge!(local_config)
+        Utils.deep_merge!(base_config, local_config)
       end
 
       private

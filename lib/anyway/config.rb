@@ -40,6 +40,7 @@ module Anyway # :nodoc:
       raise_validation_error
       reload
       resolve_config_path
+      tap
       to_h
       to_source_trace
       write_config_attr
@@ -296,7 +297,7 @@ module Anyway # :nodoc:
         if overrides
           Tracing.trace!(:load) { overrides }
 
-          base_config.deep_merge!(overrides)
+          Utils.deep_merge!(base_config, overrides)
         end
       end
 
@@ -319,7 +320,7 @@ module Anyway # :nodoc:
 
     def load_from_sources(base_config, **options)
       Anyway.loaders.each do |(_id, loader)|
-        base_config.deep_merge!(loader.call(**options))
+        Utils.deep_merge!(base_config, loader.call(**options))
       end
       base_config
     end

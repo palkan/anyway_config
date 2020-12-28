@@ -11,6 +11,8 @@ require "anyway/ext/deep_dup"
 require "anyway/ext/deep_freeze"
 require "anyway/ext/hash"
 
+require "anyway/utils/deep_merge"
+
 require "anyway/settings"
 require "anyway/tracing"
 require "anyway/config"

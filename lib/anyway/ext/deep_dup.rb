@@ -30,6 +30,12 @@ module Anyway
         end
       end
 
+      refine ::Object do
+        def deep_dup
+          dup
+        end
+      end
+
       using self
     end
   end
