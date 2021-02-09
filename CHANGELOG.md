@@ -2,6 +2,8 @@
 
 ## master
 
+- Do not dup modules/classes passed as configuration values. ([@palkan][])
+
 ## 2.1.0 (2020-12-29)
 
 - Drop deprecated `attr_config` instance variables support.

@@ -35,4 +35,21 @@ describe Anyway::Ext::DeepDup do
     expect(dup[:d].first).not_to be_equal(source[:d].first)
     expect(dup[:d].last).not_to be_equal(source[:d].last)
   end
+
+  it "returns self for modules" do
+    klass = Class.new do
+      def self.lazy_name
+        "#{name}Lazy"
+      end
+    end
+
+    Anyway::Ext::DeepDup::TestClass = klass # rubocop:disable Naming/ConstantName
+
+    expect(klass.deep_dup.lazy_name).to eq(klass.lazy_name)
+  end
+
+  it "returns #dup for other objects" do
+    str = "a"
+    expect(str.deep_dup).not_to be_equal(str)
+  end
 end
