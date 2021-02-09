@@ -13,6 +13,8 @@ require "ruby-next/language/runtime" unless ENV["CI"]
 NORAILS = ENV["NORAILS"] == "1"
 
 if ENV["VERIFY_RESERVED"] == "1"
+  require "set"
+
   called_methods = Set.new
   lib_path = File.realpath(File.join(File.dirname(__FILE__), "..", "lib"))
 
