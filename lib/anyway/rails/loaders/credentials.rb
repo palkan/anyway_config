@@ -22,7 +22,7 @@ module Anyway
             :credentials,
             store: credentials_path
           ) do
-            ::Rails.application.credentials.public_send(name)
+            ::Rails.application.credentials.config[name.to_sym]
           end.then do |creds|
             Utils.deep_merge!(config, creds) if creds
           end
@@ -48,7 +48,7 @@ module Anyway
             key_path: ::Rails.root.join("config/credentials/local.key")
           )
 
-          creds.public_send(name)
+          creds.config[name.to_sym]
         end
 
         def credentials_path
