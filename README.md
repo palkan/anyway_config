@@ -331,7 +331,7 @@ Your config is filled up with values from the following sources (ordered by prio
 
 1) **YAML configuration files**: `RAILS_ROOT/config/my_cool_gem.yml`.
 
-Recognizes Rails environment, supports `ERB`:
+Rails environment is used as the namespace (required); supports `ERB`:
 
 ```yml
 test:
