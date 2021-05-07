@@ -94,7 +94,7 @@ Or adding to your project:
 
 ```ruby
 # Gemfile
-gem "anyway_config", "~> 2.0.0"
+gem "anyway_config", "~> 2.0"
 ```
 
 ### Supported Ruby versions
