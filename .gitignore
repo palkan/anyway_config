@@ -39,3 +39,4 @@ Gemfile.local
 
 tmp/
 .rbnext/
+gemfiles/*.lock
