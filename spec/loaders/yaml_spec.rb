@@ -60,4 +60,12 @@ describe Anyway::Loaders::YAML do
       expect(subject).to eq({})
     end
   end
+
+  context "when file is empty" do
+    let(:options) { {config_path: File.join(__dir__, "../config/empty.yml")} }
+
+    it "returns empty hash" do
+      expect(subject).to eq({})
+    end
+  end
 end
