@@ -451,6 +451,22 @@ config.anyway_config.autoload_static_config_path = "path/to/configs"
 **NOTE:** Configs loaded from the `autoload_static_config_path` are **not reloaded in development**. We call them _static_. So, it makes sense to keep only configs necessary for initialization in this folder. Other configs, _dynamic_, could be stored in `app/configs`.
 Or you can store everything in `app/configs` by setting `config.anyway_config.autoload_static_config_path = "app/configs"`.
 
+**NOTE 2**: Since _static_ configs are loaded before initializers, it's not possible to use custom inflection Rules (usually defined in `config/initializers/inflections.rb`) to resolve constant names from files. If you rely on custom inflection rules (see, for example, [#81](https://github.com/palkan/anyway_config/issues/81)), we recommend configuration Rails inflector before initialization as well:
+
+```ruby
+# config/application.rb
+
+# ...
+
+require_relative "initializers/inflections"
+
+module SomeApp
+  class Application < Rails::Application
+    # ...
+  end
+end
+```
+
 ### Generators
 
 Anyway Config provides Rails generators to create new config classes:
