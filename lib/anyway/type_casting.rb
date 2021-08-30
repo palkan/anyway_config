@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
 module Anyway
-  class TypeCasting
+  # Contains a mapping between type IDs/names and deserializers
+  class TypeRegistry
     class << self
       def default
-        @default ||= TypeCasting.new
+        @default ||= TypeRegistry.new
       end
     end
 
@@ -13,15 +14,21 @@ module Anyway
     end
 
     def accept(name_or_object, &block)
-      if !block && !name_or_object.respond_to?(:deserialize)
-        raise ArgumentError, "Please, provide a type casting block or an object implementing #deserialize(val) method"
+      if !block && !name_or_object.respond_to?(:call)
+        raise ArgumentError, "Please, provide a type casting block or an object implementing #call(val) method"
       end
 
-      registry[name_or_object] = block || ->(val) { name_or_object.deserialize(val) }
+      registry[name_or_object] = block || name_or_object
     end
 
     def deserialize(raw, type_id, array: false)
-      caster = registry.fetch(type_id) { raise ArgumentError, "Unknown type: #{type_id}" }
+      caster =
+        if type_id.is_a?(Symbol)
+          registry.fetch(type_id) { raise ArgumentError, "Unknown type: #{type_id}" }
+        else
+          raise ArgumentError, "Type must implement #call(val): #{type_id}" unless type_id.respond_to?(:call)
+          type_id
+        end
 
       if array
         raw.split(/\s*,\s*/).map { caster.call(_1) }
@@ -41,8 +48,8 @@ module Anyway
     attr_reader :registry
   end
 
-  TypeCasting.default.tap do |obj|
-    obj.accept(:string) { _1 }
+  TypeRegistry.default.tap do |obj|
+    obj.accept(:string) { _1.to_s }
     obj.accept(:integer) { _1.to_i }
     obj.accept(:float) { _1.to_f }
 
@@ -61,5 +68,47 @@ module Anyway
     obj.accept(:boolean) do
       _1.match?(/\A(true|t|yes|y|1)\z/i)
     end
+  end
+
+  # TypeCaster is an object responsible for type-casting.
+  # It uses a provided types registry and mapping, and also
+  # accepts a fallback typecaster.
+  class TypeCaster
+    using Ext::DeepDup
+    using Ext::Hash
+
+    def initialize(mapping, registry: TypeRegistry.default, fallback: ::Anyway::AutoCast)
+      @mapping = mapping.deep_dup
+      @registry = registry
+      @fallback = fallback
+    end
+
+    def coerce(key, val, config: mapping)
+      caster_config = config[key.to_sym]
+
+      return fallback.coerce(key, val) unless caster_config
+
+      case caster_config
+      in array:, type:, **nil
+        registry.deserialize(val, type, array: array)
+      in Hash
+        return val unless val.is_a?(Hash)
+
+        caster_config.each do |k, v|
+          ks = k.to_s
+          next unless val.key?(ks)
+
+          val[ks] = coerce(k, val[ks], config: caster_config)
+        end
+
+        val
+      else
+        registry.deserialize(val, caster_config)
+      end
+    end
+
+    private
+
+    attr_reader :mapping, :registry, :fallback
   end
 end

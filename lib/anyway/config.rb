@@ -43,8 +43,8 @@ module Anyway # :nodoc:
       tap
       to_h
       to_source_trace
-      type_caster
       write_config_attr
+      __type_caster__
     ].freeze
 
     class Error < StandardError; end
@@ -197,6 +197,47 @@ module Anyway # :nodoc:
 
       def new_empty_config() = {}
 
+      def coerce_types(mapping)
+        coercion_mapping.deep_merge!(mapping)
+      end
+
+      def coercion_mapping
+        return @coercion_mapping if instance_variable_defined?(:@coercion_mapping)
+
+        @coercion_mapping = if superclass < Anyway::Config
+          superclass.coercion_mapping.deep_dup
+        else
+          {}
+        end
+      end
+
+      def type_caster(val = nil)
+        return @type_caster unless val.nil?
+
+        @type_caster ||=
+          if coercion_mapping.empty?
+            fallback_type_caster
+          else
+            ::Anyway::TypeCaster.new(coercion_mapping, fallback: fallback_type_caster)
+          end
+      end
+
+      def fallback_type_caster(val = nil)
+        return (@fallback_type_caster = val) unless val.nil?
+
+        return @fallback_type_caster if instance_variable_defined?(:@fallback_type_caster)
+
+        @fallback_type_caster = if superclass < Anyway::Config
+          superclass.fallback_type_caster.deep_dup
+        else
+          ::Anyway::AutoCast
+        end
+      end
+
+      def disable_auto_cast!
+        @fallback_type_caster = ::Anyway::NoCast
+      end
+
       private
 
       def define_config_accessor(*names)
@@ -292,7 +333,7 @@ module Anyway # :nodoc:
 
         config_path = resolve_config_path(config_name, env_prefix)
 
-        load_from_sources(base_config, name: config_name, env_prefix:, config_path:, type_caster:)
+        load_from_sources(base_config, name: config_name, env_prefix:, config_path:)
 
         if overrides
           Tracing.trace!(:load) { overrides }
@@ -382,6 +423,7 @@ module Anyway # :nodoc:
       key = key.to_sym
       return unless self.class.config_attributes.include?(key)
 
+      val = __type_caster__.coerce(key, val)
       public_send(:"#{key}=", val)
     end
 
@@ -389,8 +431,8 @@ module Anyway # :nodoc:
       raise ValidationError, msg
     end
 
-    def type_caster
-      ::Anyway::AutoCast
+    def __type_caster__
+      self.class.type_caster
     end
   end
 end

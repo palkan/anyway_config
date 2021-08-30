@@ -541,12 +541,14 @@ Environmental variables for your config should start with your config name, uppe
 
 For example, if your config name is "mycoolgem", then the env var "MYCOOLGEM_PASSWORD" is used as `config.password`.
 
-Environment variables are automatically type cast:
+By default, environment variables are automatically type cast\*:
 
 - `"True"`, `"t"` and `"yes"` to `true`;
 - `"False"`, `"f"` and `"no"` to `false`;
 - `"nil"` and `"null"` to `nil` (do you really need it?);
 - `"123"` to 123 and `"3.14"` to 3.14.
+
+\* See below for coercion customization.
 
 *Anyway Config* supports nested (_hashed_) env variables—just separate keys with double-underscore.
 
@@ -564,6 +566,62 @@ If you want to provide a text-like env variable which contains commas then wrap 
 ```ruby
 MYCOOLGEM = "Nif-Nif, Naf-Naf and Nouf-Nouf"
 ```
+
+## Type coercion
+
+> 🆕 v2.2.0
+
+You can define custom type coercion rules to convert string data to config values. To do that, use `.coerce_types` method:
+
+```ruby
+class CoolConfig < Anyway::Config
+  config_name :cool
+  attr_config port: 8080,
+              host: "localhost",
+              user: {name: "admin", password: "admin"}
+
+  coerce_types port: :string, user: {dob: :date}
+end
+
+ENV["COOL_USER__DOB"] = "1989-07-01"
+
+config = CoolConfig.new
+config.port == "8080" # Even though we defined the default value as int, it's converted into a string
+config.user["dob"] == Date.new(1989, 7, 1) #=> true
+```
+
+Type coercion is especially useful to deal with array values:
+
+```ruby
+# To define an array type, provide a hash with two keys:
+#  - type — elements type
+#  - array: true — mark the parameter as array
+coerce_types list: {type: :string, array: true}
+```
+
+It's also could be useful to explicitly define non-array types (to avoid confusion):
+
+```ruby
+coerce_types non_list: :string
+```
+
+Finally, it's possible to disable auto-casting for a particular config completely:
+
+```ruby
+class CoolConfig < Anyway::Config
+  attr_config port: 8080,
+              host: "localhost",
+              user: {name: "admin", password: "admin"}
+
+  disable_auto_cast!
+end
+
+ENV["COOL_PORT"] = "443"
+
+CoolConfig.new.port == "443" #=> true
+```
+
+**IMPORTANT**: Values provided explicitly (via attribute writers) are not coerced. Coercion is only happening during load phase.
 
 ## Local files
 

@@ -9,9 +9,11 @@ module Anyway
 
     class << self
       def call(val)
-        return val unless String === val
+        return val unless val.is_a?(::Hash) || val.is_a?(::String)
 
         case val
+        when Hash
+          val.transform_values { call(_1) }
         when ARRAY_RXP
           val.split(/\s*,\s*/).map { call(_1) }
         when /\A(true|t|yes|y)\z/i
@@ -31,9 +33,21 @@ module Anyway
         end
       end
 
-      def type_cast(_path, val)
+      def cast_hash(obj)
+        obj.transform_values do |val|
+          val.is_a?(::Hash) ? cast_hash(val) : call(val)
+        end
+      end
+
+      def coerce(_key, val)
         call(val)
       end
     end
+  end
+
+  module NoCast
+    def self.call(val) = val
+
+    def self.coerce(_key, val) = val
   end
 end

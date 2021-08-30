@@ -56,37 +56,4 @@ describe Anyway::Env, type: :config do
       expect(new_config["conf"]).to eq "path/to/conf.yml"
     end
   end
-
-  context "with custom cast" do
-    specify do
-      with_env(
-        "TESTO_DATA__IDS" => "1,2, 3",
-        "TESTO_DATA__META__NAMES" => "meta, kotleta",
-        "TESTO_DATA__META__SIZE" => "2",
-        "TESTO_DATA__TEXT" => '"C\'mon, everybody"'
-      ) do
-        caster = Object.new
-
-        caster.define_singleton_method(:type_cast) do |path, raw|
-          if path == %w[data meta names]
-            return raw
-          end
-
-          if path == %w[data ids]
-            return raw.split(/\s*,\s*/)
-          end
-
-          Anyway::AutoCast.call(raw)
-        end
-
-        custom_env = ::Anyway::Env.new(type_caster: caster)
-
-        casted = custom_env.fetch("TESTO")
-        expect(casted["data"]["ids"]).to eq(%w[1 2 3])
-        expect(casted["data"]["meta"]["names"]).to eq("meta, kotleta")
-        expect(casted["data"]["meta"]["size"]).to eq 2
-        expect(casted["data"]["text"]).to eq "C'mon, everybody"
-      end
-    end
-  end
 end
