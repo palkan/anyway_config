@@ -43,6 +43,7 @@ module Anyway # :nodoc:
       tap
       to_h
       to_source_trace
+      type_caster
       write_config_attr
     ].freeze
 
@@ -291,7 +292,7 @@ module Anyway # :nodoc:
 
         config_path = resolve_config_path(config_name, env_prefix)
 
-        load_from_sources(base_config, name: config_name, env_prefix:, config_path:)
+        load_from_sources(base_config, name: config_name, env_prefix:, config_path:, type_caster:)
 
         if overrides
           Tracing.trace!(:load) { overrides }
@@ -386,6 +387,10 @@ module Anyway # :nodoc:
 
     def raise_validation_error(msg)
       raise ValidationError, msg
+    end
+
+    def type_caster
+      ::Anyway::AutoCast
     end
   end
 end
