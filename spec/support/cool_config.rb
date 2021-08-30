@@ -7,4 +7,6 @@ class CoolConfig < Anyway::Config # :nodoc:
     port: 8080,
     host: "localhost",
     user: {name: "admin", password: "admin"}
+
+  coerce_types host: :string, user: {dob: :date}
 end

@@ -8,8 +8,6 @@ module Anyway # :nodoc:
     class << self
       def call(options)
         OptionParser.new do |opts|
-          opts.accept(AutoCast) { AutoCast.call(_1) }
-
           options.each do |key, descriptor|
             opts.on(*option_parser_on_args(key, **descriptor)) do |val|
               yield [key, val]
@@ -20,7 +18,7 @@ module Anyway # :nodoc:
 
       private
 
-      def option_parser_on_args(key, flag: false, desc: nil, type: AutoCast)
+      def option_parser_on_args(key, flag: false, desc: nil, type: ::String)
         on_args = ["--#{key.to_s.tr("_", "-")}#{flag ? "" : " VALUE"}"]
         on_args << type unless flag
         on_args << desc unless desc.nil?

@@ -17,7 +17,7 @@ describe Anyway::Loaders::Env do
     ) do
       expect(subject).to eq(
         {
-          "sebya" => true,
+          "sebya" => "y",
           "hare" => {
             "egg" => "needle"
           }

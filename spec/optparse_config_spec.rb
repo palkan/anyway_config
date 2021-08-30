@@ -13,13 +13,15 @@ describe Anyway::Config do
           config_name "optparse"
           attr_config :host, :port, :log_level, :debug
           flag_options :debug
+
+          coerce_types port: :string
         end
       end
 
       it "parses args" do
         config_instance.parse_options!(%w[--host localhost --port 3333 --log-level debug --debug])
         expect(config_instance.host).to eq("localhost")
-        expect(config_instance.port).to eq(3333)
+        expect(config_instance.port).to eq("3333")
         expect(config_instance.log_level).to eq("debug")
         expect(config_instance.debug).to eq(true)
       end
@@ -71,6 +73,9 @@ describe Anyway::Config do
             config_name "optparse"
             attr_config :host, :log_level, :concurrency, server_args: {}
 
+            # Coercion overrides options types
+            coerce_types concurrency: :float
+
             describe_options(
               concurrency: {
                 desc: "number of threads to use",
@@ -82,7 +87,7 @@ describe Anyway::Config do
 
         it "uses specified type information" do
           config_instance.parse_options!(%w[--host localhost --concurrency 10])
-          expect(config_instance.concurrency).to eq "10"
+          expect(config_instance.concurrency).to eq 10
         end
       end
     end

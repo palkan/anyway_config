@@ -10,10 +10,10 @@ module Anyway
 
     include Tracing
 
-    attr_reader :data, :traces, :type_caster
+    attr_reader :data, :traces, :type_cast
 
-    def initialize(type_caster: AutoCast)
-      @type_caster = type_caster
+    def initialize(type_cast: AutoCast)
+      @type_cast = type_cast
       @data = {}
       @traces = {}
     end
@@ -49,7 +49,7 @@ module Anyway
         path = key.sub(/^#{prefix}_/, "").downcase
 
         paths = path.split("__")
-        trace!(:env, *paths, key:) { data.bury(type_caster.type_cast(paths, val), *paths) }
+        trace!(:env, *paths, key:) { data.bury(type_cast.call(val), *paths) }
       end
     end
   end

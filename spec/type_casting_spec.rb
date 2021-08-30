@@ -2,8 +2,8 @@
 
 require "spec_helper"
 
-describe Anyway::TypeCasting do
-  let(:casting) { Anyway::TypeCasting.default.dup }
+describe Anyway::TypeRegistry do
+  let(:casting) { Anyway::TypeRegistry.default.dup }
 
   specify "default types" do
     expect(casting.deserialize("12", :string)).to eq("12")
@@ -24,7 +24,7 @@ describe Anyway::TypeCasting do
 
   specify ".accept without block" do
     klass = Class.new do
-      def self.deserialize(val)
+      def self.call(val)
         val.downcase
       end
     end
@@ -32,5 +32,43 @@ describe Anyway::TypeCasting do
     casting.accept(klass)
 
     expect(casting.deserialize("TEST", klass)).to eq("test")
+  end
+
+  describe Anyway::TypeCaster do
+    let(:colorName) do
+      lambda do |raw|
+        case raw
+        when "red"
+          "#ff0000"
+        when "green"
+          "#00ff00"
+        when "blue"
+          "#0000ff"
+        end
+      end
+    end
+
+    let(:type_caster) do
+      described_class.new({
+        non_list: :string,
+        hare: {
+          legs: {
+            type: :string,
+            array: true
+          },
+          age: :float
+        },
+        color: colorName
+      },
+        fallback: ::Anyway::AutoCast)
+    end
+
+    it "uses mapping", :aggregate_failures do
+      expect(type_caster.coerce("non_list", "1, 2")).to eq("1, 2")
+      expect(type_caster.coerce("list", "1, 2")).to eq([1, 2])
+      expect(type_caster.coerce("hare", {"legs" => "1, 4", "age" => "3.25", "name" => "Zai"}))
+        .to eq({"legs" => ["1", "4"], "age" => 3.25, "name" => "Zai"})
+      expect(type_caster.coerce("color", "blue")).to eq("#0000ff")
+    end
   end
 end

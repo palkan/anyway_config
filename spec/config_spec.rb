@@ -145,10 +145,12 @@ describe Anyway::Config, type: :config do
         it "uses config_name as a prefix to load variables" do
           with_env(
             "COOL_PORT" => "80",
-            "COOL_USER__NAME" => "john"
+            "COOL_USER__NAME" => "Misha",
+            "COOL_USER__DOB" => "2019-06-26"
           ) do
             expect(conf.port).to eq 80
-            expect(conf.user[:name]).to eq "john"
+            expect(conf.user[:name]).to eq "Misha"
+            expect(conf.user[:dob]).to eq(Date.new(2019, 6, 26))
           end
         end
       end
@@ -165,8 +167,10 @@ describe Anyway::Config, type: :config do
             "COOL_PORT" => "80",
             "COOL_ENV_PORT" => "8888",
             "COOL_USER__NAME" => "john",
-            "COOL_ENV_USER__NAME" => "bill"
+            "COOL_ENV_USER__NAME" => "bill",
+            "COOL_ENV_HOST" => "2021"
           ) do
+            expect(conf.host).to eq "2021"
             expect(conf.port).to eq 8888
             expect(conf.user[:name]).to eq "bill"
           end
@@ -194,6 +198,32 @@ describe Anyway::Config, type: :config do
 
           it "doesn't print deprecation warning" do
             expect { conf }.not_to print_warning
+          end
+        end
+      end
+
+      context "with types" do
+        let(:conf) do
+          klass = Class.new(CoolConfig)
+          klass.coerce_types(port: :string)
+          klass.new
+        end
+
+        specify { expect(conf.port).to eq "8080" }
+      end
+
+      context "when auto cast is disabled" do
+        let(:conf) do
+          klass = Class.new(CoolConfig)
+          klass.disable_auto_cast!
+          klass.new
+        end
+
+        it "doesn't coerce env values" do
+          with_env(
+            "COOL_PORT" => "80"
+          ) do
+            expect(conf.port).to eq "80"
           end
         end
       end
@@ -371,18 +401,18 @@ describe Anyway::Config, type: :config do
 
       it "with ENV data" do
         with_env(
-          "COOL_PORT" => "80",
+          "COOL_HOST" => "not_cool.dev",
           "COOL_USER__NAME" => "john"
         ) do
           expect(conf).to have_valid_trace
           expect(conf.to_source_trace).to eq(
             {
-              "host" => {value: "test.host", source: {type: :yml, path: "./config/cool.yml"}},
+              "host" => {value: "not_cool.dev", source: {type: :env, key: "COOL_HOST"}},
               "user" => {
                 "name" => {value: "john", source: {type: :env, key: "COOL_USER__NAME"}},
                 "password" => {value: "root", source: {type: :yml, path: "./config/cool.yml"}}
               },
-              "port" => {value: 80, source: {type: :env, key: "COOL_PORT"}}
+              "port" => {value: 9292, source: {type: :yml, path: "./config/cool.yml"}}
             }
           )
         end
