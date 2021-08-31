@@ -17,7 +17,7 @@ describe Anyway::TypeRegistry do
   end
 
   specify ".accept with block" do
-    casting.accept(:string) { _1.capitalize }
+    casting.accept(:string, &:capitalize)
 
     expect(casting.deserialize("test", :string)).to eq("Test")
   end
