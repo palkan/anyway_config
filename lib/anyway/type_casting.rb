@@ -49,19 +49,25 @@ module Anyway
   end
 
   TypeRegistry.default.tap do |obj|
-    obj.accept(:string) { _1.to_s }
-    obj.accept(:integer) { _1.to_i }
-    obj.accept(:float) { _1.to_f }
+    obj.accept(:string, &:to_s)
+    obj.accept(:integer, &:to_i)
+    obj.accept(:float, &:to_f)
 
     obj.accept(:date) do
+      require "date" unless defined?(::Date)
+
       Date.parse(_1)
     end
 
     obj.accept(:datetime) do
+      require "date" unless defined?(::Date)
+
       DateTime.parse(_1)
     end
 
     obj.accept(:uri) do
+      require "uri" unless defined?(::URI)
+
       URI.parse(_1)
     end
 
