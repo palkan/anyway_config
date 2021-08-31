@@ -42,6 +42,7 @@ For version 1.x see the [1-4-stable branch](https://github.com/palkan/anyway_con
   - [Generators](#generators)
 - [Using with Ruby applications](#using-with-ruby)
 - [Environment variables](#environment-variables)
+- [Type coercion](#type-coercion)
 - [Local configuration](#local-files)
 - [Data loaders](#data-loaders)
 - [Source tracing](#tracing)
@@ -269,6 +270,7 @@ This feature is similar to `Rails.application.config_for` but more powerful:
 | Load data from environment | ❌ | ✅ |
 | Load data from [custom sources](#data-loaders) | ❌ | ✅ |
 | Local config files | ❌ | ✅ |
+| Type coercion | ❌ | ✅ |
 | [Source tracing](#tracing) | ❌ | ✅ |
 | Return Hash with indifferent access | ❌ | ✅ |
 | Support ERB\* within `config/app.yml` | ✅ | ✅ |
@@ -621,7 +623,32 @@ ENV["COOL_PORT"] = "443"
 CoolConfig.new.port == "443" #=> true
 ```
 
-**IMPORTANT**: Values provided explicitly (via attribute writers) are not coerced. Coercion is only happening during load phase.
+**IMPORTANT**: Values provided explicitly (via attribute writers) are not coerced. Coercion is only happening during the load phase.
+
+The following types are supported out-of-the-box: `:string`, `:integer`, `:float`, `:date`, `:datetime`, `:uri`, `:boolean`.
+
+You can use custom deserializers by passing a callable object instead of a type name:
+
+```ruby
+COLOR_TO_HEX = lambda do |raw|
+  case raw
+  when "red"
+    "#ff0000"
+  when "green"
+    "#00ff00"
+  when "blue"
+    "#0000ff"
+  end
+end
+
+class CoolConfig < Anyway::Config
+  attr_config :color
+
+  coerce_types color: COLOR_TO_HEX
+end
+
+CoolConfig.new({color: "red"}).color #=> "#ff0000"
+```
 
 ## Local files
 
