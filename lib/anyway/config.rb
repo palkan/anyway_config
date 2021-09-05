@@ -373,7 +373,7 @@ module Anyway # :nodoc:
         values[name].nil? || (values[name].is_a?(String) && values[name].empty?)
       end.then do |missing|
         next if missing.empty?
-        raise_validation_error "The following config parameters are missing or empty: #{missing.join(", ")}"
+        raise_validation_error "The following config parameters for `#{self.class.name}` are missing or empty: #{missing.join(", ")}"
       end
     end
 
