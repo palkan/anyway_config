@@ -70,13 +70,11 @@ module Anyway
     end
 
     def option_parser
-      @option_parser ||= begin
-        OptionParserBuilder.call(self.class.option_parser_options) do |key, val|
-          write_config_attr(key, val)
-        end.tap do |parser|
-          self.class.option_parser_extensions.map do |extension|
-            extension.call(parser, self)
-          end
+      @option_parser ||= OptionParserBuilder.call(self.class.option_parser_options) do |key, val|
+                           write_config_attr(key, val)
+                         end.tap do |parser|
+        self.class.option_parser_extensions.map do |extension|
+          extension.call(parser, self)
         end
       end
     end

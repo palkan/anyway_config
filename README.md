@@ -579,8 +579,8 @@ You can define custom type coercion rules to convert string data to config value
 class CoolConfig < Anyway::Config
   config_name :cool
   attr_config port: 8080,
-              host: "localhost",
-              user: {name: "admin", password: "admin"}
+    host: "localhost",
+    user: {name: "admin", password: "admin"}
 
   coerce_types port: :string, user: {dob: :date}
 end
@@ -612,8 +612,8 @@ Finally, it's possible to disable auto-casting for a particular config completel
 ```ruby
 class CoolConfig < Anyway::Config
   attr_config port: 8080,
-              host: "localhost",
-              user: {name: "admin", password: "admin"}
+    host: "localhost",
+    user: {name: "admin", password: "admin"}
 
   disable_auto_cast!
 end
