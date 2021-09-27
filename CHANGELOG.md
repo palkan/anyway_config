@@ -2,6 +2,8 @@
 
 ## master
 
+## 2.2.0 ⛓
+
 - Add RBS signatures and generator. ([@palkan][])
 
 Anyway Config now ships with the basic RBS support. To use config types with Steep, add `library "anyway_config"` to your Steepfile.
