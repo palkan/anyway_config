@@ -54,5 +54,35 @@ rescue LoadError
   task("rubocop:md") {}
 end
 
+namespace :rbs do
+  desc "Generate an RBS file from config class"
+  task generate: :nextify do
+    require "anyway_config"
+    require_relative "./sig/types/config"
+
+    File.write("./sig/types/config.rbs", RBS::Config.to_rbs)
+
+    Bundler.with_unbundled_env do
+      sh "rbs validate sig/types/config.rbs"
+    end
+  end
+
+  desc "Typeprof"
+  task typeprof: :nextify do
+    Bundler.with_unbundled_env do
+      sh "typeprof -I./lib -I./lib/.rbnext/1995.next sig/types/*.rb"
+    end
+  end
+end
+
+task :steep do
+  # Steep doesn't provide Rake integration yet,
+  # but can do that ourselves
+  require "steep"
+  require "steep/cli"
+
+  Steep::CLI.new(argv: ["check"], stdout: $stdout, stderr: $stderr, stdin: $stdin).run
+end
+
 desc "Run the all specs"
-task default: %w[rubocop rubocop:md spec:norails spec spec:secrets spec:autoload]
+task default: %w[rubocop rubocop:md steep spec:norails spec spec:secrets spec:autoload]

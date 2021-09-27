@@ -49,6 +49,7 @@ For version 1.x see the [1-4-stable branch](https://github.com/palkan/anyway_con
 - [Pattern matching](#pattern-matching)
 - [Test helpers](#test-helpers)
 - [OptionParser integration](#optionparser-integration)
+- [RBS support](#rbs-support)
 
 ## Main concepts
 
@@ -711,7 +712,7 @@ In order to support [source tracing](#tracing), you need to wrap the resulting H
 
 ```ruby
 def call(name:, **_opts)
-  trace!(source: :chamber) do
+  trace!(:chamber) do
     Chamber.env.to_h[name] || {}
   end
 end
@@ -890,6 +891,62 @@ describe_options(
   }
 )
 ```
+
+## RBS support
+
+Anyway Config comes with Ruby type signatures (RBS).
+
+To use them with Steep, add `library "anyway_config"` to your Steepfile.
+
+We also provide an API to generate a type signature for your config class:
+
+```ruby
+class MyGem::Config < Anyway::Config
+  attr_config :host, port: 8080, tags: [], debug: false
+
+  coerce_types host: :string, port: :integer,
+    tags: {type: :string, array: true}
+
+  required :host
+end
+```
+
+Then calling `MyGem::Config.to_rbs` will return the following signature:
+
+```rbs
+module MyGem
+  interface _Config
+    def host: () -> String
+    def host=: (String) -> void
+    def port: () -> String?
+    def port=: (String) -> void
+    def tags: () -> Array[String]?
+    def tags=: (Array[String]) -> void
+    def debug: () -> bool
+    def debug?: () -> bool
+    def debug=: (bool) -> void
+  end
+
+  class Config < Anyway::Config
+    include _Config
+  end
+end
+```
+
+### Handling `on_load`
+
+When we use `on_load` callback with a block, we switch the context (via `instance_eval`), and we need to provide type hints for the type checker. Here is an example:
+
+```ruby
+class MyConfig < Anyway::Config
+  on_load do
+    # @type self : MyConfig
+    raise_validation_error("host is invalid") if host.start_with?("localhost")
+  end
+end
+```
+
+Yeah, a lot of annotations 😞 Welcome to the type-safe world!
 
 ## Contributing
 

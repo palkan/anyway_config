@@ -1,0 +1,25 @@
+module RBS
+  interface _Config
+    def version: () -> String
+    def version=: (String) -> void
+    def revision: () -> untyped?
+    def revision=: (untyped) -> void
+    def checker: () -> String
+    def checker=: (String) -> void
+    def strictness: () -> untyped?
+    def strictness=: (untyped) -> void
+    def logger: () -> untyped?
+    def logger=: (untyped) -> void
+    def log_params: () -> Hash[string,untyped]?
+    def log_params=: (Hash[string,untyped]) -> void
+    def tags: () -> Array[String]?
+    def tags=: (Array[String]) -> void
+    def debug: () -> bool?
+    def debug=: (bool) -> void
+    def debug?: () -> bool?
+  end
+
+  class Config < Anyway::Config
+    include _Config
+  end
+end

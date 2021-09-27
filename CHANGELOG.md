@@ -2,6 +2,12 @@
 
 ## master
 
+- Add RBS signatures and generator. ([@palkan][])
+
+Anyway Config now ships with the basic RBS support. To use config types with Steep, add `library "anyway_config"` to your Steepfile.
+
+We also provide an API to generate a signature for you config class: `MyConfig.to_rbs`. You can use this method to generate a scaffold for your config class.
+
 - Add type coercion support. ([@palkan][])
 
 Example:

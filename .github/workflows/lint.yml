@@ -1,0 +1,44 @@
+name: Lint Ruby
+
+on:
+  push:
+    branches:
+    - master
+  pull_request:
+
+jobs:
+  rubocop:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 2.7
+    - name: Lint Ruby code with RuboCop
+      run: |
+        gem install bundler
+        bundle install --gemfile gemfiles/rubocop.gemfile --jobs 4 --retry 3
+        bundle exec --gemfile gemfiles/rubocop.gemfile rubocop
+  steep:
+    runs-on: ubuntu-latest
+    env:
+      BUNDLE_JOBS: 4
+      BUNDLE_RETRY: 3
+      BUNDLE_FORCE_RUBY_PLATFORM: 1
+      CI: true
+    strategy:
+      matrix:
+        ruby: ["2.7"]
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{ matrix.ruby }}
+        bundler-cache: true
+        bundler: 2.2.15
+    - name: Generate RBS for test config
+      run: |
+        bundle exec rake rbs:generate
+    - name: Run Steep
+      run: |
+        bundle exec rake steep

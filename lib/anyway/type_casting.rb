@@ -31,7 +31,8 @@ module Anyway
         end
 
       if array
-        raw.split(/\s*,\s*/).map { caster.call(_1) }
+        raw_arr = raw.is_a?(Array) ? raw : raw.split(/\s*,\s*/)
+        raw_arr.map { caster.call(_1) }
       else
         caster.call(raw)
       end

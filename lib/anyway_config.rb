@@ -20,6 +20,7 @@ require "anyway/auto_cast"
 require "anyway/type_casting"
 require "anyway/env"
 require "anyway/loaders"
+require "anyway/rbs"
 
 module Anyway # :nodoc:
   class << self

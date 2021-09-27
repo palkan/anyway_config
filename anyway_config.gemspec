@@ -24,7 +24,9 @@ Gem::Specification.new do |s|
 
   s.license = "MIT"
 
-  s.files = Dir.glob("lib/**/*") + Dir.glob("lib/.rbnext/**/*") + Dir.glob("bin/**/*") + %w[README.md LICENSE.txt CHANGELOG.md]
+  s.files = Dir.glob("lib/**/*") + Dir.glob("lib/.rbnext/**/*") +
+    Dir.glob("bin/**/*") + %w[sig/anyway_config.rbs] +
+    %w[README.md LICENSE.txt CHANGELOG.md]
   s.require_paths = ["lib"]
   s.required_ruby_version = ">= 2.5"
 
@@ -41,4 +43,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency "rake", ">= 13.0"
   s.add_development_dependency "rspec", ">= 3.8"
   s.add_development_dependency "ruby-next", ">= 0.8"
+  s.add_development_dependency "steep"
 end
