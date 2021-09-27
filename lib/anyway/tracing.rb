@@ -34,11 +34,11 @@ module Anyway
 
       def record_value(val, *path, **opts)
         key = path.pop
-        if val.is_a?(Hash)
+        trace = if val.is_a?(Hash)
           Trace.new.tap { _1.merge_values(val, **opts) }
         else
           Trace.new(:value, val, **opts)
-        end => trace
+        end
 
         target_trace = path.empty? ? self : value.dig(*path)
         target_trace.value[key.to_s] = trace

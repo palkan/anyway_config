@@ -38,6 +38,7 @@ jobs:
         bundler: 2.2.15
     - name: Generate RBS for test config
       run: |
+        gem install rbs
         bundle exec rake rbs:generate
     - name: Run Steep
       run: |
