@@ -2,7 +2,11 @@
 
 ## master
 
-## 2.2.0 ⛓
+## 2.2.1 (2020-09-28)
+
+- Minor fixes to the prev release.
+
+## 2.2.0 ⛓ (2020-09-28)
 
 - Add RBS signatures and generator. ([@palkan][])
 
