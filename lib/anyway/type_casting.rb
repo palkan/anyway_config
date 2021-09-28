@@ -1,6 +1,13 @@
 # frozen_string_literal: true
 
 module Anyway
+  using(Module.new do
+    # Null object pattern == passthrough type
+    refine NilClass do
+      def call(val) = val
+    end
+  end)
+
   # Contains a mapping between type IDs/names and deserializers
   class TypeRegistry
     class << self

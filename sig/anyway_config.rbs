@@ -51,6 +51,12 @@ module Anyway
     end
   end
 
+  type valueType = Symbol | nil
+  type arrayType = {array: bool, type: valueType}
+  type hashType = Hash[Symbol, valueType | arrayType | hashType]
+
+  type mappingType = valueType | arrayType | hashType
+
   class Config
     extend RBSGenerator
     extend DynamicConfig::ClassMethods
@@ -66,7 +72,7 @@ module Anyway
     def self.on_load: (*Symbol callbacks) ?{ () -> void } -> void
     def self.config_name: (?(Symbol | String) val) -> String?
     def self.env_prefix: (?(Symbol | String) val) -> String
-    def self.coerce_types: (untyped mapping) -> untyped
+    def self.coerce_types: (**mappingType) -> void
     def self.coercion_mapping: -> Hash[untyped, untyped]?
     def self.disable_auto_cast!: -> void
 

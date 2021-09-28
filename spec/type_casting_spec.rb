@@ -15,6 +15,7 @@ describe Anyway::TypeRegistry do
     expect(casting.deserialize("f", :boolean)).to eq(false)
     expect(casting.deserialize("1,2, 3", :integer, array: true)).to eq([1, 2, 3])
     expect(casting.deserialize(nil, :integer, array: true)).to eq([])
+    expect(casting.deserialize([1], nil, array: true)).to eq([1])
   end
 
   specify ".accept with block" do

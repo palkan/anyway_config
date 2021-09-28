@@ -602,6 +602,13 @@ Type coercion is especially useful to deal with array values:
 coerce_types list: {type: :string, array: true}
 ```
 
+You can use `type: nil` in case you don't want to coerce values, just convert a value into an array:
+
+```ruby
+# From AnyCable config (sentinels could be represented via strings or hashes)
+coerce_types redis_sentinels: {type: nil, array: true}
+```
+
 It's also could be useful to explicitly define non-array types (to avoid confusion):
 
 ```ruby

@@ -20,6 +20,7 @@ class RBS::Config < Anyway::Config
 
   # type coercion
   coerce_types version: :string, log_params: {level: :integer}, tags: {type: :string, array: true}
+  coerce_types tags: {type: nil, array: true}
 
   disable_auto_cast!
 
