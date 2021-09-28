@@ -10,11 +10,14 @@ describe Anyway::TypeRegistry do
     expect(casting.deserialize("12.3", :integer)).to eq(12)
     expect(casting.deserialize("12.3", :float)).to eq(12.3)
     expect(casting.deserialize("2020-08-30 17:01:03", :date)).to eq(Date.parse("2020-08-30"))
+    expect(casting.deserialize(Time.local(2020, 8, 30, 11, 44, 22), :date)).to eq(Date.parse("2020-08-30"))
     expect(casting.deserialize("2020-08-30 17:01:03", :datetime)).to eq(DateTime.parse("2020-08-30 17:01:03"))
     expect(casting.deserialize("https://github.com/palkan/anyway_config", :uri)).to eq(URI.parse("https://github.com/palkan/anyway_config"))
     expect(casting.deserialize("f", :boolean)).to eq(false)
+    expect(casting.deserialize(1, :boolean)).to eq(true)
     expect(casting.deserialize("1,2, 3", :integer, array: true)).to eq([1, 2, 3])
-    expect(casting.deserialize(nil, :integer, array: true)).to eq([])
+    expect(casting.deserialize(nil, :integer, array: true)).to eq(nil)
+    expect(casting.deserialize(1, nil, array: true)).to eq([1])
     expect(casting.deserialize([1], nil, array: true)).to eq([1])
   end
 

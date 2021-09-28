@@ -29,6 +29,8 @@ module Anyway
     end
 
     def deserialize(raw, type_id, array: false)
+      return if raw.nil?
+
       caster =
         if type_id.is_a?(Symbol)
           registry.fetch(type_id) { raise ArgumentError, "Unknown type: #{type_id}" }
@@ -38,7 +40,7 @@ module Anyway
         end
 
       if array
-        raw_arr = raw.is_a?(String) ? raw.split(/\s*,\s*/) : raw.to_a
+        raw_arr = raw.is_a?(String) ? raw.split(/\s*,\s*/) : Array(raw)
         raw_arr.map { caster.call(_1) }
       else
         caster.call(raw)
@@ -64,23 +66,33 @@ module Anyway
     obj.accept(:date) do
       require "date" unless defined?(::Date)
 
-      Date.parse(_1)
+      next _1 if _1.is_a?(::Date)
+
+      next _1.to_date if _1.respond_to?(:to_date)
+
+      ::Date.parse(_1)
     end
 
     obj.accept(:datetime) do
       require "date" unless defined?(::Date)
 
-      DateTime.parse(_1)
+      next _1 if _1.is_a?(::DateTime)
+
+      next _1.to_datetime if _1.respond_to?(:to_datetime)
+
+      ::DateTime.parse(_1)
     end
 
     obj.accept(:uri) do
       require "uri" unless defined?(::URI)
 
-      URI.parse(_1)
+      next _1 if _1.is_a?(::URI)
+
+      ::URI.parse(_1)
     end
 
     obj.accept(:boolean) do
-      _1.match?(/\A(true|t|yes|y|1)\z/i)
+      _1.to_s.match?(/\A(true|t|yes|y|1)\z/i)
     end
   end
 
