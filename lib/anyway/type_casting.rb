@@ -1,13 +1,6 @@
 # frozen_string_literal: true
 
 module Anyway
-  using(Module.new do
-    # Null object pattern == passthrough type
-    refine NilClass do
-      def call(val) = val
-    end
-  end)
-
   # Contains a mapping between type IDs/names and deserializers
   class TypeRegistry
     class << self
@@ -32,7 +25,7 @@ module Anyway
       return if raw.nil?
 
       caster =
-        if type_id.is_a?(Symbol)
+        if type_id.is_a?(Symbol) || type_id.nil?
           registry.fetch(type_id) { raise ArgumentError, "Unknown type: #{type_id}" }
         else
           raise ArgumentError, "Type must implement #call(val): #{type_id}" unless type_id.respond_to?(:call)
@@ -59,6 +52,7 @@ module Anyway
   end
 
   TypeRegistry.default.tap do |obj|
+    obj.accept(nil, &:itself)
     obj.accept(:string, &:to_s)
     obj.accept(:integer, &:to_i)
     obj.accept(:float, &:to_f)
