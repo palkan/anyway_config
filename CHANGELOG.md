@@ -2,6 +2,10 @@
 
 ## master
 
+## 2.2.2 (2020-10-26)
+
+- Fixed regression introduced by the `#deep_merge!` refinement.
+
 ## 2.2.1 (2020-09-28)
 
 - Minor fixes to the prev release.
