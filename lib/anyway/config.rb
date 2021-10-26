@@ -198,7 +198,7 @@ module Anyway # :nodoc:
       def new_empty_config() = {}
 
       def coerce_types(mapping)
-        coercion_mapping.deep_merge!(mapping)
+        Utils.deep_merge!(coercion_mapping, mapping)
       end
 
       def coercion_mapping

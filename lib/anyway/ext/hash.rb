@@ -26,16 +26,6 @@ module Anyway
           end
           hash[last_key] = val
         end
-
-        def deep_merge!(other)
-          other.each do |k, v|
-            if key?(k) && self[k].is_a?(::Hash) && v.is_a?(::Hash)
-              self[k].deep_merge!(v)
-            else
-              self[k] = v
-            end
-          end
-        end
       end
 
       using self
