@@ -4,6 +4,7 @@ require "spec_helper"
 
 describe Anyway::AutoCast do
   it "serializes a string", :aggregate_failures do
+    expect(described_class.call("{\"baz\":\"fizz\",\"baz2\":\"fizz2\"}")).to be_a String
     expect(described_class.call("1,2, 3")).to eq [1, 2, 3]
 
     expect(described_class.call("t")).to eq true

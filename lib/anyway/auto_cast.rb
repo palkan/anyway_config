@@ -4,8 +4,8 @@ module Anyway
   module AutoCast
     # Regexp to detect array values
     # Array value is a values that contains at least one comma
-    # and doesn't start/end with quote
-    ARRAY_RXP = /\A[^'"].*\s*,\s*.*[^'"]\z/
+    # and doesn't start/end with quote or curly braces
+    ARRAY_RXP = /\A[^'"{].*\s*,\s*.*[^'"}]\z/
 
     class << self
       def call(val)
