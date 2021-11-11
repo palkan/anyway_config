@@ -4,7 +4,7 @@
 class ApplicationConfig < Anyway::Config
   class << self
     # Make it possible to access a singleton config instance
-    # via class methods (i.e., without explictly calling `instance`)
+    # via class methods (i.e., without explicitly calling `instance`)
     delegate_missing_to :instance
 
     private
