@@ -1,0 +1,9 @@
+defaults:
+  host: "default.host"
+  user:
+    name: "root"
+
+production:
+  host: "test.host"
+  user:
+    password: <%= ENV['ANY_SECRET_PASSWORD'] || "root" %>

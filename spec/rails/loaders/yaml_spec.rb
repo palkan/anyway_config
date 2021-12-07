@@ -112,6 +112,96 @@ describe "Anyway::Rails::Loaders::YAML", :rails do
     end
   end
 
+  context "default environmental key is set" do
+    around do |ex|
+      Anyway::Settings.default_environmental_key = "defaults"
+      ex.run
+      Rails.env = "test"
+      Anyway::Settings.default_environmental_key = nil
+    end
+
+    context "when only default key is presented" do
+      let(:options) { {config_path: Rails.root.join("config/cool_only_default_environment.yml"), some_other: "value"} }
+
+      it "loads defaults" do
+        expect(subject).to eq(
+          {
+            "host" => "test.host",
+            "user" => {
+              "name" => "root",
+              "password" => "root"
+            }
+          }
+        )
+      end
+
+      context "when known environments enabled" do
+        around do |ex|
+          Anyway::Settings.future.use :unwrap_known_environments
+          ex.run
+          Anyway::Settings.future.use []
+        end
+
+        it "loads defaults" do
+          expect(subject).to eq(
+            {
+              "host" => "test.host",
+              "user" => {
+                "name" => "root",
+                "password" => "root"
+              }
+            }
+          )
+        end
+      end
+    end
+
+    context "when only default environmental key is one of environments" do
+      let(:options) { {config_path: Rails.root.join("config/cool_unmatched_environment.yml"), some_other: "value"} }
+      before { Anyway::Settings.default_environmental_key = "production" }
+
+      it "loads production as default" do
+        expect(subject).to eq(
+          {
+            "host" => "test.host",
+            "user" => {
+              "name" => "root",
+              "password" => "root"
+            }
+          }
+        )
+      end
+    end
+
+    context "when the environmental key doesn't match the current environment" do
+      let(:options) { {config_path: Rails.root.join("config/cool_unmatched_default_environment.yml"), some_other: "value"} }
+
+      it "loads defaults" do
+        expect(subject).to eq(
+          {
+            "host" => "default.host",
+            "user" => {
+              "name" => "root"
+            }
+          }
+        )
+      end
+
+      it "loads correct settings if the environment is switched" do
+        Rails.env = "production"
+        expect(subject).to eq(
+          {
+            "host" => "test.host",
+            "user" => {
+              "name" => "root",
+              "password" => "root"
+            }
+          }
+        )
+      end
+    end
+  end
+
   context "when local is enabled" do
     let(:options) { {config_path: path, local: true, some_other: "value"} }
 

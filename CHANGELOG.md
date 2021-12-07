@@ -2,6 +2,11 @@
 
 ## master
 
+- Add ability to set default key for environmental YAML files. ([@skryukov])
+
+Define a key for environmental yaml files to read default values from with `config.anyway_config.default_environmental_key = "default"`.
+This way Anyway Config will try to read settings under the `"default"` key and then merge environmental settings into them.
+
 ## 2.2.2 (2020-10-26)
 
 - Fixed regression introduced by the `#deep_merge!` refinement.
@@ -439,3 +444,4 @@ No we're dependency-free!
 [@jastkand]: https://github.com/jastkand
 [@envek]: https://github.com/Envek
 [@progapandist]: https://github.com/progapandist
+[@skryukov]: https://github.com/skryukov

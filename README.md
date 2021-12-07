@@ -373,6 +373,26 @@ staging:
 port: 3002 # This value will not be loaded at all
 ```
 
+To provide default values you can use YAML anchors, but they do not deep-merge settings, so Anyway Config provides a way to define a special top-level key for default values like this:
+
+```ruby
+config.anyway_config.default_environmental_key = "default"
+```
+
+After that, Anyway Config will start reading settings under the `"default"` key and then merge environmental settings into them.
+
+```yml
+default:
+  server: # This values will be loaded in all environments by default
+    host: localhost
+    port: 3002
+
+staging:
+  server:
+    host: staging.example.com # This value will override the defaults when Rails.env.staging? is true
+    # port will be set to the value from the defaults — 3002
+```
+
 You can specify the lookup path for YAML files in one of the following ways:
 
 - By setting `config.anyway_config.default_config_path` to a target directory path:
