@@ -17,6 +17,9 @@ module Anyway
       attr_reader :autoload_static_config_path, :autoloader
       attr_accessor :known_environments
 
+      # Define a key for environmental yaml files to read default values from
+      attr_accessor :default_environmental_key
+
       if defined?(::Zeitwerk)
         def autoload_static_config_path=(val)
           raise "Cannot setup autoloader after application has been initialized" if ::Rails.application.initialized?
@@ -63,5 +66,7 @@ module Anyway
 
     self.default_config_path = ->(name) { ::Rails.root.join("config", "#{name}.yml") }
     self.known_environments = %w[test development production]
+    # Don't try read defaults when no key defined
+    self.default_environmental_key = nil
   end
 end

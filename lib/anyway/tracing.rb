@@ -86,7 +86,7 @@ module Anyway
         if trace?
           value.transform_values(&:to_h).tap { _1.default_proc = nil }
         else
-          {value, source}
+          {value:, source:}
         end
       end
 
