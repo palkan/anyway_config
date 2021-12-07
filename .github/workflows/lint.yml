@@ -42,4 +42,5 @@ jobs:
         bundle exec rake rbs:generate
     - name: Run Steep
       run: |
-        bundle exec rake steep
+        gem install steep
+        rake steep
