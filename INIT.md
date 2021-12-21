@@ -8,4 +8,4 @@
 
 ### Time
 Work time: 7 hours  
-Delivery date: 27.12.21
+Release date: 27.12.21
