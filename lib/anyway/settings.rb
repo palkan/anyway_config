@@ -43,7 +43,7 @@ module Anyway
     class << self
       # Define whether to load data from
       # *.yml.local (or credentials/local.yml.enc)
-      attr_accessor :use_local_files
+      attr_accessor :use_local_files, :current_environment
 
       # A proc returning a path to YML config file given the config name
       attr_reader :default_config_path
@@ -64,6 +64,10 @@ module Anyway
 
       def future
         @future ||= Future.new
+      end
+
+      def current_environment
+        ENV["RAILS_ENV"].present? ? ::Rails.env : nil
       end
     end
 
