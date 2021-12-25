@@ -67,8 +67,8 @@ module Anyway
     def self.attr_config: (*Symbol args, **untyped) -> void
     def self.defaults: -> Hash[String, untyped]
     def self.config_attributes: -> Array[Symbol]?
-    def self.required: (*Symbol names) -> void
-    def self.required_attributes: -> Array[Symbol]
+    def self.required: (*Symbol names, {env: String | Symbol | Array[String | Symbol] | {except: String | Symbol | Array[String | Symbol]}}?) -> void
+    def self.required_attributes: -> Array[Symbol|({env: Symbol|String|Array[String|Symbol]|{except: untyped}})?]
     def self.on_load: (*Symbol callbacks) ?{ () -> void } -> void
     def self.config_name: (?(Symbol | String) val) -> String?
     def self.env_prefix: (?(Symbol | String) val) -> String
