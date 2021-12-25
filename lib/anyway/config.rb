@@ -127,11 +127,28 @@ module Anyway # :nodoc:
       end
 
       def required(*names)
-        unless (unknown_names = (names - config_attributes)).empty?
-          raise ArgumentError, "Unknown config param: #{unknown_names.join(",")}"
-        end
+        unknown_names = (names - config_attributes)
+        env_option = unknown_names.find { |name| env_attr?(name) }
+        raise ArgumentError, "Unknown config param: #{unknown_names.join(",")}" if unknown_names.any? && env_option.nil?
 
-        required_attributes.push(*names)
+        attrs = names - env_option.to_a
+        attrs.each { |attr| attributes_with_environments[attr] = env_option.values } if env_option
+
+        required_attributes.push(*attrs)
+      end
+
+      def env_attr?(attr)
+        attr.is_a?(Hash) && attr.size == 1 && attr.has_key?(:env)
+      end
+
+      def attributes_with_environments
+        return @attributes_with_environments if instance_variable_defined?(:@attributes_with_environments)
+
+        @attributes_with_environments = if superclass < Anyway::Config
+                                          superclass.attributes_with_environments.dup
+                                        else
+                                          {}
+                                        end
       end
 
       def required_attributes
@@ -412,11 +429,24 @@ module Anyway # :nodoc:
 
     def validate_required_attributes!
       self.class.required_attributes.select do |name|
-        values[name].nil? || (values[name].is_a?(String) && values[name].empty?)
+        env_validation_failed?(name) || values[name].nil? || (values[name].is_a?(String) && values[name].empty?)
       end.then do |missing|
         next if missing.empty?
         raise_validation_error "The following config parameters for `#{self.class.name}(config_name: #{self.class.config_name})` are missing or empty: #{missing.join(", ")}"
       end
+    end
+
+    def env_validation_failed?(attr)
+      return false unless attributes_with_environments.has_key?(attr)
+
+      envs = attributes_with_environments[attr]
+      return false unless envs.include?(Anyway::Settings.current_environment)
+
+      values[attr].nil?
+    end
+
+    def attributes_with_environments
+      self.class.send(__method__)
     end
 
     def write_config_attr(key, val)
