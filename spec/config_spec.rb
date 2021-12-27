@@ -709,7 +709,7 @@ describe Anyway::Config, type: :config do
           .to_not raise_error(Anyway::Config::ValidationError, /missing or empty: redis_host/)
       end
 
-      it "raises ValidationError when env value under except key matched" do
+      it "raises ValidationError when env value under except key mismatched" do
         allow(Anyway::Settings).to receive(:current_environment).and_return("demo")
         expect { demo_config.new }
           .to raise_error(Anyway::Config::ValidationError, /missing or empty: sentry_api_key/)

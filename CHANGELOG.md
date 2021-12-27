@@ -1,5 +1,21 @@
 # Change log
 
+## 2.2.3 (2021-12-27)
+
+- Add ability to load configurations under specific environments in pure Ruby apps. ([@fargelus])  
+Before loading environment configurations you need to specify variable `Anyway::Settings.current_environment`. By default this variable is set with current `Rails.env` value. 
+After adding yaml loader will try to load params under this environment.  
+Also required env option was added to `Anyway::Config`.  
+__Usage example__:  
+  - `required :api_key, env: "production"`
+  - `required :api_key, env: :production`
+  - `required :api_key, env: %i[production development]`
+  - `required :api_key, env: %w[production development]`
+  - `required :api_key, env: {except: :test}`
+  - `required :api_key, env: {except: 'test'}`
+  - `required :api_key, env: {except: %i[test development]}`
+  - `required :api_key, env: {except: %w[test development]}`
+
 ## master
 
 ## 2.2.3 (2022-01-21)

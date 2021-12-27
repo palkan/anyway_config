@@ -529,8 +529,15 @@ The default data loading mechanism for non-Rails applications is the following (
 
 1) **YAML configuration files**: `./config/<config-name>.yml`.
 
-In pure Ruby apps, we do not know about _environments_ (`test`, `development`, `production`, etc.); thus, we assume that the YAML contains values for a single environment:
+In pure Ruby apps, we also can load data under specific _environments_ (`test`, `development`, `production`, etc.).
+If you want to enable this feature you must specify `Anyway::Settings.current_environment` variable for load config under specific environment:
+```yml
+development:
+  host: localhost
+  port: 3000
+```
 
+Behavior for load all data under single environment enable by default:
 ```yml
 host: localhost
 port: 3000
