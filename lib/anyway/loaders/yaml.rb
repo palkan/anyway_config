@@ -10,8 +10,11 @@ module Anyway
   module Loaders
     class YAML < Base
       def call(config_path:, **_options)
-        config = trace!(:yml, path: relative_config_path(config_path).to_s) { load_base_yml(config_path) }
-        return config_with_env(config, config_path) if environmental?(config)
+        rel_config_path = relative_config_path(config_path).to_s
+        config = trace!(:yml, path: rel_config_path) { load_base_yml(config_path) }
+        if environmental?(config)
+          return trace!(:yml, path: rel_config_path) { config_with_env(config, config_path) }
+        end
 
         mix_local!(config, config_path) if use_local?
         config
