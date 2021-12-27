@@ -5,6 +5,7 @@ module Anyway
   class Settings
     def self.default_config_path=: (^(untyped) -> String val) -> ^(untyped) -> String?
     def self.future: -> Future
+    def self.current_environment: -> String?
 
     class Future
       def self.setting: (untyped name, untyped default_value) -> untyped

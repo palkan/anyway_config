@@ -47,6 +47,9 @@ module Anyway # :nodoc:
       __type_caster__
     ].freeze
 
+    ENV_OPTION = :env
+    ENV_OPTION_EXCLUDE = :except
+
     class Error < StandardError; end
 
     class ValidationError < Error; end
@@ -127,28 +130,41 @@ module Anyway # :nodoc:
       end
 
       def required(*names)
-        unknown_names = (names - config_attributes)
+        unknown_names = names - config_attributes
         env_option = unknown_names.find { |name| env_attr?(name) }
         raise ArgumentError, "Unknown config param: #{unknown_names.join(",")}" if unknown_names.any? && env_option.nil?
 
-        attrs = names - env_option.to_a
-        attrs.each { |attr| attributes_with_environments[attr] = env_option.values } if env_option
+        attrs = names - [env_option]
+        group_by_environments(attrs, env_option) if env_option
 
         required_attributes.push(*attrs)
       end
 
       def env_attr?(attr)
-        attr.is_a?(Hash) && attr.size == 1 && attr.has_key?(:env)
+        attr.is_a?(Hash) && attr.size == 1 && attr.has_key?(ENV_OPTION)
+      end
+
+      def group_by_environments(attrs, env_option)
+        envs = env_option[ENV_OPTION]
+        grouped_envs = if envs.is_a?(Hash)
+          except_envs = envs[ENV_OPTION_EXCLUDE]
+          stringified_keys = [except_envs].flatten.map(&:to_s)
+          {ENV_OPTION_EXCLUDE => stringified_keys}
+        else
+          [envs].flatten.map(&:to_s)
+        end
+
+        attrs.each { |attr| attributes_with_environments[attr] = grouped_envs }
       end
 
       def attributes_with_environments
         return @attributes_with_environments if instance_variable_defined?(:@attributes_with_environments)
 
         @attributes_with_environments = if superclass < Anyway::Config
-                                          superclass.attributes_with_environments.dup
-                                        else
-                                          {}
-                                        end
+          superclass.attributes_with_environments.dup
+        else
+          {}
+        end
       end
 
       def required_attributes
@@ -429,20 +445,35 @@ module Anyway # :nodoc:
 
     def validate_required_attributes!
       self.class.required_attributes.select do |name|
-        env_validation_failed?(name) || values[name].nil? || (values[name].is_a?(String) && values[name].empty?)
+        required_name_missing?(name)
       end.then do |missing|
         next if missing.empty?
         raise_validation_error "The following config parameters for `#{self.class.name}(config_name: #{self.class.config_name})` are missing or empty: #{missing.join(", ")}"
       end
     end
 
-    def env_validation_failed?(attr)
-      return false unless attributes_with_environments.has_key?(attr)
+    def required_name_missing?(name)
+      return missing_in_environment?(name) if attributes_with_environments.has_key?(name)
 
+      value_missed?(name)
+    end
+
+    def missing_in_environment?(attr)
       envs = attributes_with_environments[attr]
-      return false unless envs.include?(Anyway::Settings.current_environment)
+      case envs
+      when Array
+        value_missed?(attr) if envs.include?(Anyway::Settings.current_environment)
+      when Hash
+        exclude_key = self.class::ENV_OPTION_EXCLUDE
+        except_envs = envs[exclude_key].flatten
+        value_missed?(attr) unless except_envs.include?(Anyway::Settings.current_environment)
+      else
+        false
+      end
+    end
 
-      values[attr].nil?
+    def value_missed?(name)
+      values[name].nil? || (values[name].is_a?(String) && values[name].empty?)
     end
 
     def attributes_with_environments
