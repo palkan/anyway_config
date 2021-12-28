@@ -47,8 +47,7 @@ module Anyway # :nodoc:
       __type_caster__
     ].freeze
 
-    ENV_OPTION = :env
-    ENV_OPTION_EXCLUDE = :except
+    ENV_OPTION_EXCLUDE_KEY = :except
 
     class Error < StandardError; end
 
@@ -129,29 +128,21 @@ module Anyway # :nodoc:
         end
       end
 
-      def required(*names)
+      def required(*names, env: nil)
         unknown_names = names - config_attributes
-        env_option = unknown_names.find { |name| env_attr?(name) }
-        raise ArgumentError, "Unknown config param: #{unknown_names.join(",")}" if unknown_names.any? && env_option.nil?
+        raise ArgumentError, "Unknown config param: #{unknown_names.join(",")}" if unknown_names.any?
 
-        attrs = names - [env_option]
-        group_by_environments(attrs, env_option) if env_option
-
-        required_attributes.push(*attrs)
+        group_by_environments(names, env) if env
+        required_attributes.push(*names)
       end
 
-      def env_attr?(attr)
-        attr.is_a?(Hash) && attr.size == 1 && attr.has_key?(ENV_OPTION)
-      end
-
-      def group_by_environments(attrs, env_option)
-        envs = env_option[ENV_OPTION]
-        grouped_envs = if envs.is_a?(Hash)
-          except_envs = envs[ENV_OPTION_EXCLUDE]
+      def group_by_environments(attrs, env)
+        grouped_envs = if env.is_a?(Hash)
+          except_envs = env[ENV_OPTION_EXCLUDE_KEY]
           stringified_keys = [except_envs].flatten.map(&:to_s)
-          {ENV_OPTION_EXCLUDE => stringified_keys}
+          {ENV_OPTION_EXCLUDE_KEY => stringified_keys}
         else
-          [envs].flatten.map(&:to_s)
+          [env].flatten.map(&:to_s)
         end
 
         attrs.each { |attr| attributes_with_environments[attr] = grouped_envs }
@@ -453,18 +444,18 @@ module Anyway # :nodoc:
     end
 
     def required_name_missing?(name)
-      return missing_in_environment?(name) if attributes_with_environments.has_key?(name)
+      return missing_in_environment?(name) if self.class.attributes_with_environments.has_key?(name)
 
       value_missed?(name)
     end
 
     def missing_in_environment?(attr)
-      envs = attributes_with_environments[attr]
+      envs = self.class.attributes_with_environments[attr]
       case envs
       when Array
         value_missed?(attr) if envs.include?(Anyway::Settings.current_environment)
       when Hash
-        exclude_key = self.class::ENV_OPTION_EXCLUDE
+        exclude_key = self.class::ENV_OPTION_EXCLUDE_KEY
         except_envs = envs[exclude_key].flatten
         value_missed?(attr) unless except_envs.include?(Anyway::Settings.current_environment)
       else
@@ -474,10 +465,6 @@ module Anyway # :nodoc:
 
     def value_missed?(name)
       values[name].nil? || (values[name].is_a?(String) && values[name].empty?)
-    end
-
-    def attributes_with_environments
-      self.class.send(__method__)
     end
 
     def write_config_attr(key, val)

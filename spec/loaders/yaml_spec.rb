@@ -9,7 +9,7 @@ describe Anyway::Loaders::YAML do
 
   let(:options) { {config_path: path, local: false, some_other: "value"} }
 
-  context 'for apps without environments' do
+  context "for apps without environments" do
     before { allow(Anyway::Settings).to receive(:current_environment).and_return(nil) }
 
     it "parses YAML" do
@@ -73,33 +73,33 @@ describe Anyway::Loaders::YAML do
     end
   end
 
-  context 'with environment' do
+  context "with environment" do
     let(:path) { File.join(__dir__, "../config/cool.env.yml") }
 
-    before { allow(Anyway::Settings).to receive(:current_environment).and_return('development') }
+    before { allow(Anyway::Settings).to receive(:current_environment).and_return("development") }
 
-    context 'loads all keys under current environment section' do
+    context "loads all keys under current environment section" do
       specify do
-        expect(subject).to eq('host' => 'localhost',
-                              'user' => 'user',
-                              'log_level' => 'debug',
-                              'port' => 80,
-                              'mailer' => {
-                                 'host' => 'mailhog'
-                               })
+        expect(subject).to eq("host" => "localhost",
+          "user" => "user",
+          "log_level" => "debug",
+          "port" => 80,
+          "mailer" => {
+            "host" => "mailhog"
+          })
       end
 
-      context 'using local file config' do
+      context "using local file config" do
         before { options.merge!(local: true) }
 
-        it 'overrides env config' do
-          expect(subject).to eq('host' => 'localhost',
-                                'user' => 'user',
-                                'log_level' => 'info',
-                                'port' => 443,
-                                'mailer' => {
-                                  'host' => 'mail.google.com'
-                                })
+        it "overrides env config" do
+          expect(subject).to eq("host" => "localhost",
+            "user" => "user",
+            "log_level" => "info",
+            "port" => 443,
+            "mailer" => {
+              "host" => "mail.google.com"
+            })
         end
       end
     end
