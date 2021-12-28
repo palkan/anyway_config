@@ -62,6 +62,14 @@ module Anyway
           :no_op
         end
       end
+
+      def current_environment
+        ::Rails.env
+      end
+
+      def app_root
+        ::Rails.root
+      end
     end
 
     self.default_config_path = ->(name) { ::Rails.root.join("config", "#{name}.yml") }

@@ -689,30 +689,61 @@ describe Anyway::Config, type: :config do
         end
       end
 
-      it "raises ValidationError when required params without env option is missed" do
-        expect { app_config.new(api_key: "123", user: "john", password: "simple", redis_host: "localhost:6379") }
-          .to raise_error(Anyway::Config::ValidationError, /missing or empty: host, port/)
+      let(:missed_keys) { [] }
+      let(:config_values) do
+        {
+          api_key: "123",
+          user: "john",
+          password: "simple",
+          redis_host: "localhost:6379",
+          host: "localhost",
+          port: 80
+        }.reject { |k| missed_keys.include?(k) }
+      end
+      let(:error_msg) { /missing or empty: #{missed_keys.join(', ')}$/ }
+
+      subject { app_config.new(config_values) }
+
+      it "not to raise ValidationError when all values are presence" do
+        expect { subject }.to_not raise_error(Anyway::Config::ValidationError)
       end
 
-      it "raises ValidationError when required env params missed" do
-        expect { app_config.new(api_key: "123", host: "localhost", port: "80") }
-          .to raise_error(Anyway::Config::ValidationError, /missing or empty: user, password/)
-
-        allow(Anyway::Settings).to receive(:current_environment).and_return("development")
-        expect { app_config.new(host: "localhost", port: "80") }
-          .to raise_error(Anyway::Config::ValidationError, /missing or empty: user, password/)
+      shared_examples "raises ValidationError" do
+        it "raises ValidationError" do
+          expect { subject }.to raise_error(Anyway::Config::ValidationError, error_msg)
+        end
       end
 
-      it "not raises ValidationError when current env match env under except key" do
-        allow(Anyway::Settings).to receive(:current_environment).and_return("test")
-        expect { app_config.new(host: "localhost", port: "80") }
-          .to_not raise_error(Anyway::Config::ValidationError, /missing or empty: redis_host/)
+      context "when required params without env option is missed" do
+        let(:missed_keys) { %i[host port] }
+
+        it_behaves_like "raises ValidationError"
       end
 
-      it "raises ValidationError when env value under except key mismatched" do
-        allow(Anyway::Settings).to receive(:current_environment).and_return("demo")
-        expect { demo_config.new }
-          .to raise_error(Anyway::Config::ValidationError, /missing or empty: sentry_api_key/)
+      context "when required env params missed" do
+        let(:missed_keys) { %i[user password] }
+
+        it_behaves_like "raises ValidationError"
+      end
+
+      context "when current env match env option under except key" do
+        before { allow(Anyway::Settings).to receive(:current_environment).and_return("test") }
+
+        let(:missed_keys) { [:redis_host] }
+        let(:config_values) { {host: "localhost", port: 80} }
+
+        it "not raises ValidationError" do
+          expect { subject }.to_not raise_error(Anyway::Config::ValidationError, error_msg)
+        end
+      end
+
+      context "when env value under except key mismatched" do
+        before { allow(Anyway::Settings).to receive(:current_environment).and_return("demo") }
+        let(:missed_keys) { [:sentry_api_key] }
+
+        it "raises ValidationError" do
+          expect { demo_config.new }.to raise_error(Anyway::Config::ValidationError, error_msg)
+        end
       end
     end
 

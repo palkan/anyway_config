@@ -66,8 +66,8 @@ module Anyway
         @future ||= Future.new
       end
 
-      def current_environment
-        ENV["RAILS_ENV"].present? ? ::Rails.env : nil
+      def app_root
+        Pathname.new(Dir.pwd)
       end
     end
 

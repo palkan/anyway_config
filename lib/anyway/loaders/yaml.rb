@@ -11,38 +11,37 @@ module Anyway
     class YAML < Base
       def call(config_path:, **_options)
         rel_config_path = relative_config_path(config_path).to_s
-        config = trace!(:yml, path: rel_config_path) { load_base_yml(config_path) }
-        if environmental?(config)
-          return trace!(:yml, path: rel_config_path) { config_with_env(config, config_path) }
+        base_config = trace!(:yml, path: rel_config_path) do
+          config = load_base_yml(config_path)
+          environmental?(config) ? config_with_env(config) : config
         end
 
-        mix_local!(config, config_path) if use_local?
-        config
+        return base_config unless use_local?
+
+        local_path = local_config_path(config_path)
+        local_config = trace!(:yml, path: relative_config_path(local_path).to_s) { load_local_yml(local_path) }
+        Utils.deep_merge!(base_config, local_config)
       end
 
       private
 
-      def config_with_env(config, config_path)
-        env_config = config[Anyway::Settings.current_environment] || {}
-        mix_local!(env_config, config_path) if use_local?
-        return env_config if Anyway::Settings.default_environmental_key.blank?
-
-        default_config = config[Anyway::Settings.default_environmental_key] || {}
-        Utils.deep_merge!(default_config, env_config)
-      end
-
-      def mix_local!(config, path)
-        local_path = local_config_path(path)
-        local_config = trace!(:yml, path: relative_config_path(local_path).to_s) { load_local_yml(local_path) }
-        Utils.deep_merge!(config, local_config)
-      end
-
       def environmental?(parsed_yml)
-        # preferred
-        return true if parsed_yml.key?(Anyway::Settings.current_environment)
-
         # strange, but still possible
-        Anyway::Settings.default_environmental_key.present? && parsed_yml.key?(Anyway::Settings.default_environmental_key)
+        return true if Settings.default_environmental_key.present? && parsed_yml.key?(Settings.default_environmental_key)
+        # possible
+        return true if !Settings.future.unwrap_known_environments && Settings.current_environment
+        # for other environments
+        return true if Settings.known_environments.any? { parsed_yml.key?(_1) }
+        # preferred
+        parsed_yml.key?(Settings.current_environment)
+      end
+
+      def config_with_env(config)
+        env_config = config[Settings.current_environment] || {}
+        return env_config if Settings.default_environmental_key.blank?
+
+        default_config = config[Settings.default_environmental_key] || {}
+        Utils.deep_merge!(default_config, env_config)
       end
 
       def parse_yml(path)
@@ -77,7 +76,7 @@ module Anyway
       def relative_config_path(path)
         Pathname.new(path).then do |path|
           return path if path.relative?
-          path.relative_path_from(Pathname.new(Dir.pwd))
+          path.relative_path_from(Settings.app_root)
         end
       end
     end
