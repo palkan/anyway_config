@@ -35,6 +35,8 @@ module Anyway
         names.each { store[_1] = self.class.settings[_1] }
       end
 
+      setting :unwrap_known_environments, true
+
       private
 
       attr_reader :store
@@ -43,7 +45,10 @@ module Anyway
     class << self
       # Define whether to load data from
       # *.yml.local (or credentials/local.yml.enc)
-      attr_accessor :use_local_files, :current_environment
+      attr_accessor :use_local_files,
+        :current_environment,
+        :default_environmental_key,
+        :known_environments
 
       # A proc returning a path to YML config file given the config name
       attr_reader :default_config_path
@@ -68,6 +73,10 @@ module Anyway
 
       def app_root
         Pathname.new(Dir.pwd)
+      end
+
+      def default_environmental_key?
+        [nil, ""].none?(default_environmental_key)
       end
     end
 

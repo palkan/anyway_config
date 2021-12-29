@@ -9,16 +9,8 @@ end
 
 module Anyway
   class Settings
-    class Future
-      setting :unwrap_known_environments, true
-    end
-
     class << self
       attr_reader :autoload_static_config_path, :autoloader
-      attr_accessor :known_environments
-
-      # Define a key for environmental yaml files to read default values from
-      attr_accessor :default_environmental_key
 
       if defined?(::Zeitwerk)
         def autoload_static_config_path=(val)
