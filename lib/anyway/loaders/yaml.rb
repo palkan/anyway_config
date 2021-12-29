@@ -27,11 +27,11 @@ module Anyway
 
       def environmental?(parsed_yml)
         # strange, but still possible
-        return true if Settings.default_environmental_key.present? && parsed_yml.key?(Settings.default_environmental_key)
+        return true if Settings.default_environmental_key? && parsed_yml.key?(Settings.default_environmental_key)
         # possible
         return true if !Settings.future.unwrap_known_environments && Settings.current_environment
         # for other environments
-        return true if Settings.known_environments.any? { parsed_yml.key?(_1) }
+        return true if Settings.known_environments&.any? { parsed_yml.key?(_1) }
         # preferred
         parsed_yml.key?(Settings.current_environment)
       end
