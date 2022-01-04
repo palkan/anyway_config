@@ -12,6 +12,10 @@ describe Anyway::Loaders::YAML do
   it "parses YAML" do
     expect(subject).to eq(
       {
+        "default_user" => {
+          "name" => "root",
+          "password" => "root"
+        },
         "host" => "test.host",
         "user" => {
           "name" => "root",
@@ -26,6 +30,10 @@ describe Anyway::Loaders::YAML do
     hide_const("ERB")
     expect(subject).to eq(
       {
+        "default_user" => {
+          "name" => "root",
+          "password" => "root"
+        },
         "host" => "test.host",
         "user" => {
           "name" => "root",
@@ -42,6 +50,10 @@ describe Anyway::Loaders::YAML do
     specify do
       expect(subject).to eq(
         {
+          "default_user" => {
+            "name" => "root",
+            "password" => "root"
+          },
           "host" => "local.host",
           "user" => {
             "name" => "root",

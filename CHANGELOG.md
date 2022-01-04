@@ -7,6 +7,8 @@
 Define a key for environmental yaml files to read default values from with `config.anyway_config.default_environmental_key = "default"`.
 This way Anyway Config will try to read settings under the `"default"` key and then merge environmental settings into them.
 
+- Add support for ruby 3.1
+
 ## 2.2.2 (2020-10-26)
 
 - Fixed regression introduced by the `#deep_merge!` refinement.

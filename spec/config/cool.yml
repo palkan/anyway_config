@@ -1,5 +1,8 @@
-host: "test.host"
-user:
+default_user: &default_user
   name: "root"
   password: "root"
+
+host: "test.host"
+user:
+  <<: *default_user
 port: <%= ENV['ANYWAY_COOL_PORT'] || 9292 %>
