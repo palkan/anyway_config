@@ -48,6 +48,9 @@ module Anyway
       # A proc returning a path to YML config file given the config name
       attr_reader :default_config_path
 
+      # Environment (production, development, etc.)
+      attr_accessor :current_environment
+
       def default_config_path=(val)
         if val.is_a?(Proc)
           @default_config_path = val
@@ -75,5 +78,8 @@ module Anyway
 
     # Tracing is enabled by default
     self.tracing_enabled = true
+
+    # Environment (production, development, etc.)
+    self.current_environment = nil
   end
 end

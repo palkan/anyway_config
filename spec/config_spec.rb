@@ -659,10 +659,29 @@ describe Anyway::Config, type: :config do
     let(:config) do
       Class.new(described_class) do
         config_name "testo"
-        attr_config :test, :secret, debug: false
+        attr_config :envtest, :test, :secret, debug: false
 
         required :test, :secret
+        required :envtest, env: %w[production staging]
+        required :envtest, env: { except: :test }
+
       end
+    end
+
+    it "raises ValidationError if value is not provided env dependent" do
+      oldenv = Anyway::Settings.current_environment
+      Anyway::Settings.current_environment = "production"
+      expect { config.new(secret: "1", test: 1) }
+        .to raise_error(Anyway::Config::ValidationError, /missing or empty: envtest/)
+      Anyway::Settings.current_environment = oldenv
+    end
+
+    it "raises no error if value is not provided env dependent" do
+      oldenv = Anyway::Settings.current_environment
+      Anyway::Settings.current_environment = "test"
+      expect { config.new(secret: "1", test: 1) }
+      .not_to raise_error
+      Anyway::Settings.current_environment = oldenv
     end
 
     it "raises ValidationError if value is not provided" do

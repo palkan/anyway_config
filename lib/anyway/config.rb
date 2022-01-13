@@ -126,12 +126,32 @@ module Anyway # :nodoc:
         end
       end
 
-      def required(*names)
+      def required(*names, **kwenv)
         unless (unknown_names = (names - config_attributes)).empty?
           raise ArgumentError, "Unknown config param: #{unknown_names.join(",")}"
         end
 
-        required_attributes.push(*names)
+        curenv = Anyway::Settings.current_environment.to_s
+
+        really_required = true
+        if env = kwenv.fetch(:env, nil)
+          really_required = false
+          if env.is_a?(Hash) && env.has_key?(:except)
+            if env[:except].is_a?(Array) ? env[:except].map(&:to_s).exclude?(curenv) : curenv != env[:except].to_s
+              really_required = true
+            end
+          else
+            really_required = true if env.is_a?(Array) ? env.map(&:to_s).include?(curenv) : curenv == env.to_s
+          end
+        end
+        if really_required
+          required_attributes.push(*names).uniq
+        elsif required_attributes && required_attributes.length > 0
+          names.each do |n|
+            required_attributes.delete(n)
+          end
+        end
+
       end
 
       def required_attributes

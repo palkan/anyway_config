@@ -68,5 +68,6 @@ module Anyway
     self.known_environments = %w[test development production]
     # Don't try read defaults when no key defined
     self.default_environmental_key = nil
+    #self.current_environment = ::Rails.env
   end
 end
