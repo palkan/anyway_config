@@ -134,14 +134,14 @@ module Anyway # :nodoc:
         curenv = Anyway::Settings.current_environment.to_s
 
         really_required = true
-        if env = kwenv.fetch(:env, nil)
+        if (env = kwenv.fetch(:env, nil))
           really_required = false
           if env.is_a?(Hash) && env.has_key?(:except)
             if env[:except].is_a?(Array) ? env[:except].map(&:to_s).exclude?(curenv) : curenv != env[:except].to_s
               really_required = true
             end
-          else
-            really_required = true if env.is_a?(Array) ? env.map(&:to_s).include?(curenv) : curenv == env.to_s
+          elsif env.is_a?(Array) ? env.map(&:to_s).include?(curenv) : curenv == env.to_s
+            really_required = true
           end
         end
         if really_required
@@ -151,7 +151,6 @@ module Anyway # :nodoc:
             required_attributes.delete(n)
           end
         end
-
       end
 
       def required_attributes

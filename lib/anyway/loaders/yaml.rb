@@ -43,10 +43,10 @@ module Anyway
         # By default, YAML load will return `false` when the yaml document is
         # empty. When this occurs, we return an empty hash instead, to match
         # the interface when no config file is present.
-        if defined?(ERB)
-          parsed_yml = ::YAML.load(ERB.new(File.read(path)).result) || {} # rubocop:disable Security/YAMLLoad
+        parsed_yml = if defined?(ERB)
+          ::YAML.load(ERB.new(File.read(path)).result) || {} # rubocop:disable Security/YAMLLoad
         else
-          parsed_yml = ::YAML.load_file(path) || {}
+          ::YAML.load_file(path) || {}
         end
 
         return parsed_yml unless Anyway::Settings.current_environment
@@ -69,7 +69,6 @@ module Anyway
           path.relative_path_from(Pathname.new(Dir.pwd))
         end
       end
-
     end
   end
 end

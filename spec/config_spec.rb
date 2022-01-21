@@ -663,8 +663,7 @@ describe Anyway::Config, type: :config do
 
         required :test, :secret
         required :envtest, env: %w[production staging]
-        required :envtest, env: { except: :test }
-
+        required :envtest, env: {except: :test}
       end
     end
 
@@ -680,7 +679,7 @@ describe Anyway::Config, type: :config do
       oldenv = Anyway::Settings.current_environment
       Anyway::Settings.current_environment = "test"
       expect { config.new(secret: "1", test: 1) }
-      .not_to raise_error
+        .not_to raise_error
       Anyway::Settings.current_environment = oldenv
     end
 
