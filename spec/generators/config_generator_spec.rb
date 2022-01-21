@@ -44,7 +44,13 @@ describe Anyway::Generators::ConfigGenerator, :rails, type: :generator do
       it "is a valid YAML with env keys" do
         is_expected.to exist
 
-        data = ::YAML.load_file(subject)
+        data =
+          begin
+            ::YAML.load_file(subject, aliases: true)
+          rescue
+            ::YAML.load_file(subject)
+          end
+
         expect(data.keys).to match_array(
           %w[default development test production]
         )

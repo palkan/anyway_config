@@ -3,6 +3,7 @@
 source 'https://rubygems.org'
 
 gem 'pry-byebug', platform: :mri
+gem 'steep'
 
 gemspec
 
