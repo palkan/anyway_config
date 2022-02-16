@@ -2,6 +2,10 @@
 
 ## master
 
+## 2.2.3 (2022-01-21)
+
+- Fix Ruby 3.1 compatibility. ([@palkan][])
+
 - Add ability to set default key for environmental YAML files. ([@skryukov])
 
 Define a key for environmental yaml files to read default values from with `config.anyway_config.default_environmental_key = "default"`.
