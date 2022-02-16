@@ -21,7 +21,7 @@ module Anyway
       registry[name_or_object] = block || name_or_object
     end
 
-    def deserialize(raw, type_id, array: false)
+    def deserialize(raw, type_id, array = false)
       return if raw.nil?
 
       caster =
@@ -110,7 +110,7 @@ module Anyway
 
       case caster_config
       in array:, type:, **nil
-        registry.deserialize(val, type, array: array)
+        registry.deserialize(val, type, array)
       in Hash
         return val unless val.is_a?(Hash)
 

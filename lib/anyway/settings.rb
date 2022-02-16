@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "pathname"
+
 module Anyway
   # Use Settings name to not confuse with Config.
   #
@@ -67,6 +69,10 @@ module Anyway
 
       def future
         @future ||= Future.new
+      end
+
+      def app_root
+        Pathname.new(Dir.pwd)
       end
     end
 

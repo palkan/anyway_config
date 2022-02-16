@@ -22,28 +22,6 @@ module Anyway
 
       private
 
-      def parse_yml00(path)
-        return {} unless File.file?(path)
-        require "yaml" unless defined?(::YAML)
-
-        # By default, YAML load will return `false` when the yaml document is
-        # empty. When this occurs, we return an empty hash instead, to match
-        # the interface when no config file is present.
-        begin
-          if defined?(ERB)
-            ::YAML.load(ERB.new(File.read(path)).result, aliases: true) || {} # rubocop:disable Security/YAMLLoad
-          else
-            ::YAML.load_file(path, aliases: true) || {}
-          end
-        rescue ArgumentError
-          if defined?(ERB)
-            ::YAML.load(ERB.new(File.read(path)).result) || {} # rubocop:disable Security/YAMLLoad
-          else
-            ::YAML.load_file(path) || {}
-          end
-        end
-      end
-
       def parse_yml(path)
         return {} unless File.file?(path)
         require "yaml" unless defined?(::YAML)
