@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "pathname"
+
 module Anyway
   # Use Settings name to not confuse with Config.
   #

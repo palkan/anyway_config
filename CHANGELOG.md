@@ -2,7 +2,7 @@
 
 ## master
 
-- Add ability to load configurations under specific environments in pure Ruby apps. ([@fargelus]).
+- Add ability to load configurations under specific environments in pure Ruby apps. ([@fargelus][]).
 
 Before loading environment configurations you need to specify variable `Anyway::Settings.current_environment`. In Rails apps this variable is same as `Rails.env` value.
 After adding yaml loader will try to load params under this environment.<br>
@@ -464,3 +464,4 @@ No we're dependency-free!
 [@envek]: https://github.com/Envek
 [@progapandist]: https://github.com/progapandist
 [@skryukov]: https://github.com/skryukov
+[@fargelus]: https://github.com/fargelus
