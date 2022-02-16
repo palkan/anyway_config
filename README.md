@@ -297,6 +297,24 @@ end
 MyConfig.new(api_secret: "") #=> raises Anyway::Config::ValidationError
 ```
 
+`Required` method supports additional `env` parameter which indicates necessity to run validations under specified
+environments. `Env` parameter could be present in symbol, string, array or hash formats:
+
+```ruby
+class EnvConfig < Anyway::Config
+  required :password, env: "production"
+  required :maps_api_key, env: :production
+  required :smtp_host, env: %i[production staging]
+  required :aws_bucket, env: %w[production staging]
+  required :anycable_rpc_host, env: {except: :development}
+  required :anycable_redis_url, env: {except: %i[development test]}
+  required :anycable_broadcast_adapter, env: {except: %w[development test]}
+end
+```
+
+If your current `Anyway::Settings.current_environment` is mismatch keys that specified
+`Anyway::Config::ValidationError` error will be raised.
+
 If you need more complex validation or need to manipulate with config state right after it has been loaded, you can use _on load callbacks_ and `#raise_validation_error` method:
 
 ```ruby
@@ -530,7 +548,13 @@ The default data loading mechanism for non-Rails applications is the following (
 1) **YAML configuration files**: `./config/<config-name>.yml`.
 
 In pure Ruby apps, we also can load data under specific _environments_ (`test`, `development`, `production`, etc.).
-If you want to enable this feature you must specify `Anyway::Settings.current_environment` variable for load config under specific environment:
+If you want to enable this feature you must specify `Anyway::Settings.current_environment` variable for load config under specific environment.
+
+```ruby
+Anyway::Settings.current_environment = "development"
+```
+
+YAML files should be in this format:
 
 ```yml
 development:

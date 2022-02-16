@@ -56,7 +56,7 @@ module Anyway
       end
 
       def current_environment
-        ::Rails.env
+        ::Rails.env.to_s
       end
 
       def app_root
