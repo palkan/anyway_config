@@ -132,27 +132,30 @@ module Anyway # :nodoc:
         unknown_names = names - config_attributes
         raise ArgumentError, "Unknown config param: #{unknown_names.join(",")}" if unknown_names.any?
 
-        names = filter_by_environment(names, env) if env
+        names = required_with_env(names, env) if env
         required_attributes.push(*names)
       end
 
-      def filter_by_environment(names, env)
-        return names if match_current_env?(env.to_s)
+      def required_with_env(names, env)
+        return names if env.to_s == current_env
 
-        filtered_names = case env
-                         when Hash
-                           envs = env[ENV_OPTION_EXCLUDE_KEY]
-                           excluded_envs = [envs].flatten
-                           names unless excluded_envs.any? { match_current_env?(_1) }
-                         when Array
-                           names if [env].flatten.any? { match_current_env?(_1) }
-                         end # rubocop:disable Layout/EndAlignment
+        filtered_names = if env.is_a?(Hash)
+          names_with_exclude_env_option(names, env)
+        elsif env.is_a?(Array)
+          names if env.flatten.map(&:to_s).include?(current_env)
+        end
 
         filtered_names || []
       end
 
-      def match_current_env?(env)
-        Anyway::Settings.current_environment.to_s.match?(/^#{env}$/)
+      def current_env
+        Anyway::Settings.current_environment.to_s
+      end
+
+      def names_with_exclude_env_option(names, env)
+        envs = env[ENV_OPTION_EXCLUDE_KEY]
+        excluded_envs = [envs].flatten.map(&:to_s)
+        names if excluded_envs.none?(current_env)
       end
 
       def required_attributes
