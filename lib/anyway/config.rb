@@ -149,7 +149,7 @@ module Anyway # :nodoc:
       end
 
       def current_env
-        Anyway::Settings.current_environment.to_s
+        Settings.current_environment.to_s
       end
 
       def names_with_exclude_env_option(names, env)

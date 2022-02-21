@@ -745,6 +745,18 @@ describe Anyway::Config, type: :config do
           expect { demo_config.new }.to raise_error(Anyway::Config::ValidationError, error_msg)
         end
       end
+
+      context "when current env is not specified" do
+        before { allow(Anyway::Settings).to receive(:current_environment).and_return(nil) }
+
+        it "not to raise ValidationError" do
+          expect { subject }.to_not raise_error(Anyway::Config::ValidationError)
+        end
+
+        it "has specific required keys" do
+          expect(subject.class.required_attributes).to match_array(%i[host port redis_host])
+        end
+      end
     end
 
     it "raises ValidationError if value is not provided" do
