@@ -132,17 +132,17 @@ module Anyway # :nodoc:
         unknown_names = names - config_attributes
         raise ArgumentError, "Unknown config param: #{unknown_names.join(",")}" if unknown_names.any?
 
-        names = required_with_env(names, env) if env
+        names = filter_by_env(names, env)
         required_attributes.push(*names)
       end
 
-      def required_with_env(names, env)
-        return names if env.to_s == current_env
+      def filter_by_env(names, env)
+        return names if ["", current_env].any?(env.to_s)
 
         filtered_names = if env.is_a?(Hash)
           names_with_exclude_env_option(names, env)
         elsif env.is_a?(Array)
-          names if env.flatten.map(&:to_s).include?(current_env)
+          names if env.flat_map(&:to_s).include?(current_env)
         end
 
         filtered_names || []
@@ -154,7 +154,7 @@ module Anyway # :nodoc:
 
       def names_with_exclude_env_option(names, env)
         envs = env[ENV_OPTION_EXCLUDE_KEY]
-        excluded_envs = [envs].flatten.map(&:to_s)
+        excluded_envs = [envs].flat_map(&:to_s)
         names if excluded_envs.none?(current_env)
       end
 
