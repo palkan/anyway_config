@@ -78,7 +78,7 @@ module Anyway
       end
 
       def default_environmental_key?
-        [nil, ""].none?(default_environmental_key)
+        !default_environmental_key.nil?
       end
     end
 

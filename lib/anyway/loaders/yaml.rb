@@ -38,7 +38,7 @@ module Anyway
 
       def config_with_env(config)
         env_config = config[Settings.current_environment] || {}
-        return env_config if Settings.default_environmental_key.blank?
+        return env_config unless Settings.default_environmental_key?
 
         default_config = config[Settings.default_environmental_key] || {}
         Utils.deep_merge!(default_config, env_config)

@@ -562,7 +562,7 @@ development:
   port: 3000
 ```
 
-Behavior for load all data under single environment enable by default:
+If `Anyway::Settings.current_environment` is missed we assume that the YAML contains values for a single environment:
 
 ```yml
 host: localhost

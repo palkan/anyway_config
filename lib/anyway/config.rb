@@ -137,7 +137,7 @@ module Anyway # :nodoc:
       end
 
       def filter_by_env(names, env)
-        return names if ["", current_env].any?(env.to_s)
+        return names if env.nil? || env.to_s == current_env
 
         filtered_names = if env.is_a?(Hash)
           names_with_exclude_env_option(names, env)

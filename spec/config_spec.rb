@@ -721,16 +721,52 @@ describe Anyway::Config, type: :config do
       end
 
       context "when required env params missed" do
-        let(:missed_keys) { %i[user password] }
+        context "when env param string" do
+          let(:missed_keys) { [:api_key] }
 
-        it_behaves_like "raises ValidationError"
+          it_behaves_like "raises ValidationError"
+        end
+
+        context "when env param symbol" do
+          let(:app_config) do
+            Class.new(described_class) do
+              config_name "app"
+              attr_config :host, :port
+
+              required :host, env: :production
+            end
+          end
+
+          let(:missed_keys) { [:host] }
+
+          it_behaves_like "raises ValidationError"
+        end
+
+        context "when env is array of strings" do
+          let(:missed_keys) { %i[user password] }
+
+          it_behaves_like "raises ValidationError"
+        end
+
+        context "when env param is array of symbols" do
+          let(:app_config) do
+            Class.new(described_class) do
+              config_name "app"
+              attr_config :host, :port
+
+              required :host, env: %i[production demo]
+            end
+          end
+
+          let(:missed_keys) { [:host] }
+          it_behaves_like "raises ValidationError"
+        end
       end
 
       context "when current env match env option under except key" do
         before { allow(Anyway::Settings).to receive(:current_environment).and_return("test") }
 
         let(:missed_keys) { [:redis_host] }
-        let(:config_values) { {host: "localhost", port: 80} }
 
         it "not raises ValidationError" do
           expect { subject }.to_not raise_error(Anyway::Config::ValidationError, error_msg)
