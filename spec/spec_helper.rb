@@ -75,6 +75,8 @@ RSpec.configure do |config|
 
   config.filter_run_excluding(rails: true) if NORAILS
   config.filter_run_excluding(norails: true) unless NORAILS
+  # Igonore specs manually checking for argument types when running RBS runtime tester
+  config.filter_run_excluding(rbs: false) if defined?(::RBS::Test)
 
   config.example_status_persistence_file_path = "tmp/rspec_examples.txt"
   config.filter_run :focus

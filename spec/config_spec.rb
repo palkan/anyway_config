@@ -641,7 +641,7 @@ describe Anyway::Config, type: :config do
         .to raise_error(ArgumentError, /reserved names.+: load, values/)
     end
 
-    it "only allows alphanumerics", :aggregate_failures do
+    it "only allows alphanumerics", :aggregate_failures, rbs: false do
       expect { Class.new(described_class) { attr_config "1a" } }
         .to raise_error(ArgumentError, /invalid attr_config name: 1a/i)
       expect { Class.new(described_class) { attr_config :a? } }

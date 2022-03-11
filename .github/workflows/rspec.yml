@@ -22,17 +22,26 @@ jobs:
         gemfile: [
           "gemfiles/rails6.gemfile"
         ]
+        rbs: 'false'
         include:
         - ruby: "3.1"
+          gemfile: "Gemfile"
+          rbs: 'true'
+        - ruby: "3.1"
           gemfile: "gemfiles/rails7.gemfile"
+          rbs: 'false'
         - ruby: "3.1"
           gemfile: "gemfiles/railsmaster.gemfile"
+          rbs: 'false'
         - ruby: "2.5"
           gemfile: "gemfiles/rails5.gemfile"
+          rbs: 'false'
         - ruby: "2.7"
           gemfile: "gemfiles/rails5.gemfile"
+          rbs: 'false'
         - ruby: "2.6"
           gemfile: "gemfiles/rails6.gemfile"
+          rbs: 'false'
     steps:
     - uses: actions/checkout@v2
     - uses: ruby/setup-ruby@v1
@@ -54,3 +63,8 @@ jobs:
     - name: Run Rails autoload tests
       run: |
         bundle exec rake spec:autoload
+    - name: Run RSpec with RBS runtime checks
+      if: matrix.rbs == 'true'
+      run: |
+        bundle exec rbs collection install
+        bundle exec rake spec:rbs -- --force-color

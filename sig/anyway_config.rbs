@@ -3,7 +3,7 @@ module Anyway
   def self.loaders: -> Loaders::Registry
 
   class Settings
-    def self.default_config_path=: (^(untyped) -> String val) -> ^(untyped) -> String?
+    def self.default_config_path=: (String | Pathname | ^(untyped) -> String val) -> void
     def self.future: -> Future
     def self.current_environment: -> String?
     def self.default_environmental_key: -> String?
@@ -22,14 +22,14 @@ module Anyway
     end
 
     def inspect: -> String
-    def self.capture: ?{ -> Hash[untyped, untyped] } -> nil
+    def self.capture: ?{ -> Hash[untyped, untyped]? } -> Trace
     def self.trace_stack: -> Array[untyped]
     def self.current_trace: -> Trace?
     def self.source_stack: -> Array[untyped]
-    def self.current_trace_source: -> {type: :accessor, called_from: untyped}
-    def self.with_trace_source: (untyped src) -> untyped
-    def trace!: (Symbol, *Array[String] paths, **untyped) ?{ -> Hash[untyped, untyped]} -> Hash[untyped, untyped]
-    def self.trace!: (Symbol, *Array[String] paths, **untyped) ?{ -> Hash[untyped, untyped]} -> Hash[untyped, untyped]
+    def self.current_trace_source: -> ({type: Symbol} & Hash[Symbol, untyped])
+    def self.with_trace_source: (untyped src) { -> void } -> untyped
+    def trace!: [V] (Symbol, *String paths, **untyped) ?{ -> V} -> V
+    def self.trace!: [V] (Symbol, *String paths, **untyped) ?{ -> V} -> V
   end
 
   module RBSGenerator
@@ -59,7 +59,7 @@ module Anyway
   type hashType = Hash[Symbol, valueType | arrayType | hashType]
 
   type mappingType = valueType | arrayType | hashType
-  type envType = { env: String | Symbol | Array[String | Symbol] | { except: String | Symbol | Array[String | Symbol] } }
+  type envType = String | Symbol | Array[String | Symbol] | {except: String | Symbol | Array[String | Symbol]}
 
   class Config
     extend RBSGenerator
@@ -71,7 +71,7 @@ module Anyway
     def self.attr_config: (*Symbol args, **untyped) -> void
     def self.defaults: -> Hash[String, untyped]
     def self.config_attributes: -> Array[Symbol]?
-    def self.required: (*Symbol names, envType?) -> void
+    def self.required: (*Symbol names, ?env: envType) -> void
     def self.required_attributes: -> Array[Symbol]
     def self.on_load: (*Symbol callbacks) ?{ () -> void } -> void
     def self.config_name: (?(Symbol | String) val) -> String?
@@ -84,9 +84,11 @@ module Anyway
     attr_reader env_prefix: String
 
     def initialize: (?Hash[Symbol | String, untyped] overrides) -> void
+                  | (NilClass) -> void
     def reload: (?Hash[Symbol | String, untyped] overrides) -> Config
     def clear: -> void
     def load: (Hash[Symbol | String, untyped] overrides) -> Config
+            | (NilClass) -> Config
     def dig: (*(Symbol | String) keys) -> untyped
     def to_h: -> Hash[untyped, untyped]
     def dup: -> Config
@@ -121,12 +123,21 @@ module Anyway
       def use_local?: -> bool
     end
 
+    interface _Loader
+      def call: (**untyped) -> Hash[untyped, untyped]
+    end
+
     class Registry
-      def prepend: (Symbol id, Base loader) -> void
-      def append: (Symbol id, Base loader) -> void
-      def insert_before: (Symbol another_id, Symbol id, Base loader) -> void
-      def insert_after: (Symbol another_id, Symbol id, Base loader) -> void
-      def override: (Symbol id, Base loader) -> void
+      def prepend: (Symbol id, _Loader loader) -> void
+                 | (Symbol id) { (**untyped) -> Hash[untyped, untyped] } -> void
+      def append: (Symbol id, _Loader loader) -> void
+                | (Symbol id) { (**untyped) -> Hash[untyped, untyped] } -> void
+      def insert_before: (Symbol another_id, Symbol id, _Loader loader) -> void
+                       | (Symbol another_id, Symbol id) { (**untyped) -> Hash[untyped, untyped] } -> void
+      def insert_after: (Symbol another_id, Symbol id, _Loader loader) -> void
+                      | (Symbol another_id, Symbol id) { (**untyped) -> Hash[untyped, untyped] } -> void
+      def override: (Symbol id, _Loader loader) -> void
+                  | (Symbol id) { (**untyped) -> Hash[untyped, untyped] } -> void
       def delete: (Symbol id) -> void
     end
   end

@@ -84,5 +84,25 @@ task :steep do
   Steep::CLI.new(argv: ["check"], stdout: $stdout, stderr: $stderr, stdin: $stdin).run
 end
 
+namespace :steep do
+  task :stats do
+    exec "bundle exec steep stats --log-level=fatal --format=table"
+  end
+end
+
+namespace :spec do
+  desc "Run RSpec with RBS runtime tester enabled"
+  task :rbs do
+    rspec_args = ARGV.join.split("--", 2).then { _1.size == 2 ? _1.last : nil }
+    sh <<~COMMAND
+      RACK_ENV=test \
+      RBS_TEST_LOGLEVEL=error \
+      RBS_TEST_TARGET="Anyway::*" \
+      rspec -rrbs/test/setup \
+      #{rspec_args}
+    COMMAND
+  end
+end
+
 desc "Run the all specs"
-task default: %w[rubocop rubocop:md steep spec:norails spec spec:secrets spec:autoload]
+task default: %w[rubocop rubocop:md steep spec:norails spec spec:secrets spec:autoload spec:rbs]
