@@ -40,3 +40,5 @@ Gemfile.local
 tmp/
 .rbnext/
 gemfiles/*.lock
+
+.gem_rbs_collection/

@@ -3,11 +3,11 @@
 source 'https://rubygems.org'
 
 gem 'pry-byebug', platform: :mri
-gem 'steep'
 
 gemspec
 
 eval_gemfile "gemfiles/rubocop.gemfile"
+eval_gemfile "gemfiles/rbs.gemfile"
 
 local_gemfile = "#{File.dirname(__FILE__)}/Gemfile.local"
 

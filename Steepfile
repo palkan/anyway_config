@@ -4,6 +4,4 @@ target :lib do
   signature "sig"
 
   check "sig/types"
-
-  library "optparse"
 end
