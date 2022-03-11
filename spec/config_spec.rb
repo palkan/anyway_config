@@ -549,9 +549,10 @@ describe Anyway::Config, type: :config do
                 values:
                   port => 3334 (type=load),
                   host => "test.host" (type=yml path=./config/cool.yml),
-                  user =>
+                  user => { 
                     name => "john" (type=env key=COOL_USER__NAME),
-                    password => "root" (type=yml path=./config/cool.yml)>
+                    password => "root" (type=yml path=./config/cool.yml)
+                  }>
             STR
           ).to_stdout
         end

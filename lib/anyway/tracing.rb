@@ -6,12 +6,6 @@ module Anyway
     using Anyway::Ext::DeepDup
 
     using(Module.new do
-      refine Hash do
-        def inspect
-          "{#{map { |k, v| "#{k}: #{v.inspect}" }.join(", ")}}"
-        end
-      end
-
       refine Thread::Backtrace::Location do
         def path_lineno() = "#{path}:#{lineno}"
       end
@@ -100,8 +94,15 @@ module Anyway
               q.group do
                 q.text k
                 q.text " =>"
-                q.breakable " " unless v.trace?
-                q.pp v
+                if v.trace?
+                  q.text " { "
+                  q.pp v
+                  q.breakable " "
+                  q.text "}"
+                else
+                  q.breakable " "
+                  q.pp v
+                end
               end
             end
           end
