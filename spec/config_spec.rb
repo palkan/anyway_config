@@ -705,7 +705,7 @@ describe Anyway::Config, type: :config do
       subject { app_config.new(config_values) }
 
       it "not to raise ValidationError when all values are presence" do
-        expect { subject }.to_not raise_error(Anyway::Config::ValidationError)
+        expect { subject }.to_not raise_error
       end
 
       shared_examples "raises ValidationError" do
@@ -769,7 +769,7 @@ describe Anyway::Config, type: :config do
         let(:missed_keys) { [:redis_host] }
 
         it "not raises ValidationError" do
-          expect { subject }.to_not raise_error(Anyway::Config::ValidationError, error_msg)
+          expect { subject }.to_not raise_error
         end
       end
 
@@ -786,7 +786,7 @@ describe Anyway::Config, type: :config do
         before { allow(Anyway::Settings).to receive(:current_environment).and_return(nil) }
 
         it "not to raise ValidationError" do
-          expect { subject }.to_not raise_error(Anyway::Config::ValidationError)
+          expect { subject }.to_not raise_error
         end
 
         it "has specific required keys" do
