@@ -65,6 +65,9 @@ jobs:
         bundle exec rake spec:autoload
     - name: Run RSpec with RBS runtime checks
       if: matrix.rbs == 'true'
+      env:
+        # RBS adds method aliases
+        VERIFY_RESERVED: 0
       run: |
         bundle exec rbs collection install
         bundle exec rake spec:rbs -- --force-color
