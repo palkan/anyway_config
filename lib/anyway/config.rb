@@ -273,7 +273,7 @@ module Anyway # :nodoc:
         # - SomeModule::Config => "some_module"
         # - SomeConfig => "some"
         unless name =~ /^(\w+)(::)?Config$/
-          raise "Couldn't infer config name, please, specify it explicitly" \
+          raise "Couldn't infer config name, please, specify it explicitly " \
             "via `config_name :my_config`"
         end
 
