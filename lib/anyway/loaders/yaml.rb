@@ -53,13 +53,13 @@ module Anyway
         # the interface when no config file is present.
         begin
           if defined?(ERB)
-            ::YAML.load(ERB.new(File.read(path)).result, aliases: true) || {} # rubocop:disable Security/YAMLLoad
+            ::YAML.load(ERB.new(File.read(path)).result, aliases: true) || {}
           else
             ::YAML.load_file(path, aliases: true) || {}
           end
         rescue ArgumentError
           if defined?(ERB)
-            ::YAML.load(ERB.new(File.read(path)).result) || {} # rubocop:disable Security/YAMLLoad
+            ::YAML.load(ERB.new(File.read(path)).result) || {}
           else
             ::YAML.load_file(path) || {}
           end
