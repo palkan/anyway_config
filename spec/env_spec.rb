@@ -60,7 +60,7 @@ describe Anyway::Env, type: :config do
   context "with trace" do
     it "returns hash and trace" do
       with_env("TESTO_KEY" => "a", "MY_TEST_KEY" => "b", "TESTOS" => "c") do
-        conf, trace = env.fetch_with_trace("TESTO")
+        conf, trace = env.fetch("TESTO", include_trace: true)
         expect(conf).to eq("key" => "a")
         expect(trace.to_h).to include(
           {"key" => {value: "a", source: {type: :env, key: "TESTO_KEY"}}}

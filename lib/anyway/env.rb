@@ -23,23 +23,29 @@ module Anyway
       traces.clear
     end
 
-    def fetch(prefix)
-      return data[prefix].deep_dup if data.key?(prefix)
+    def fetch(prefix, include_trace: false)
+      fetch!(prefix)
+
+      res = data[prefix].deep_dup
+
+      if include_trace
+        [res, traces[prefix]]
+      else
+        res
+      end
+    end
+
+    private
+
+    def fetch!(prefix)
+      return if data.key?(prefix)
 
       Tracing.capture do
         data[prefix] = parse_env(prefix)
       end.then do |trace|
         traces[prefix] = trace
       end
-
-      data[prefix].deep_dup
     end
-
-    def fetch_with_trace(prefix)
-      [fetch(prefix), traces[prefix]]
-    end
-
-    private
 
     def parse_env(prefix)
       match_prefix = "#{prefix}_"
