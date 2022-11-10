@@ -3,7 +3,6 @@
 target :lib do
   signature "sig"
 
+  # We only check public API
   check "sig/types"
-
-  ignore "sig/types/*.rb"
 end

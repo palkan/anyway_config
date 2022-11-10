@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-# Make sure you have generated `sig/private/rbsconfig.rbs` via:
-#   bundle exec rbs:generate
+# Make sure you have generated `sig/types/config.rbs` via:
+#   bundle exec rake rbs:generate
 #
 
 require_relative "./config"

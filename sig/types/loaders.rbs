@@ -1,0 +1,12 @@
+class LoadConfig < Anyway::Config
+  interface _Config
+    def revision: () -> untyped
+    def version=: (untyped) -> void
+  end
+
+  include _Config
+end
+
+# Custom loader
+class CustomConfigLoader < Anyway::Loaders::Base
+end
