@@ -404,7 +404,7 @@ module Anyway # :nodoc:
     end
 
     def resolve_config_path(name, env_prefix)
-      Anyway.env.fetch(env_prefix).delete("conf") || Settings.default_config_path.call(name)
+      Anyway.env.fetch(env_prefix).data.delete("conf") || Settings.default_config_path.call(name)
     end
 
     def deconstruct_keys(keys) = values.deconstruct_keys(keys)

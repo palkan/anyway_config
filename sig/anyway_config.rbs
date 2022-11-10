@@ -109,9 +109,14 @@ module Anyway
   end
 
   class Env
+    class Parsed
+      attr_reader data: untyped
+      attr_reader trace: Tracing::Trace?
+    end
+
+    def initialize: (?type_cast: untyped) -> self
     def clear: -> void
-    def fetch: (String prefix) -> untyped
-    def fetch_with_trace: (String prefix) -> [untyped, Tracing::Trace?]
+    def fetch: (String prefix, ?include_trace: bool) -> Parsed
   end
 
   module Loaders

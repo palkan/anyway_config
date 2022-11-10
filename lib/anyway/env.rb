@@ -4,6 +4,9 @@ module Anyway
   # Parses environment variables and provides
   # method-like access
   class Env
+    class Parsed < Struct.new(:data, :trace)
+    end
+
     using RubyNext
     using Anyway::Ext::DeepDup
     using Anyway::Ext::Hash
@@ -26,13 +29,7 @@ module Anyway
     def fetch(prefix, include_trace: false)
       fetch!(prefix)
 
-      res = data[prefix].deep_dup
-
-      if include_trace
-        [res, traces[prefix]]
-      else
-        res
-      end
+      Parsed.new(data[prefix].deep_dup, include_trace ? traces[prefix] : nil)
     end
 
     private
