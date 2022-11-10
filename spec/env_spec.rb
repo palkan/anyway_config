@@ -56,4 +56,16 @@ describe Anyway::Env, type: :config do
       expect(new_config["conf"]).to eq "path/to/conf.yml"
     end
   end
+
+  context "with trace" do
+    it "returns hash and trace" do
+      with_env("TESTO_KEY" => "a", "MY_TEST_KEY" => "b", "TESTOS" => "c") do
+        conf, trace = env.fetch_with_trace("TESTO")
+        expect(conf).to eq("key" => "a")
+        expect(trace.to_h).to include(
+          {"key" => {value: "a", source: {type: :env, key: "TESTO_KEY"}}}
+        )
+      end
+    end
+  end
 end

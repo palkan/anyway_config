@@ -3,31 +3,38 @@
 require "spec_helper"
 
 describe Anyway::Loaders::Env do
-  include Anyway::Testing::Helpers
-
-  subject { described_class.call(**options) }
+  let(:env_double) { double("env") }
+  let(:env) do
+    {
+      "sebya" => "y",
+      "hare" => {
+        "egg" => "needle"
+      }
+    }
+  end
 
   let(:options) { {env_prefix: "VNE", some_other: "value"} }
 
-  it "loads data from env" do
-    with_env(
-      "VNE_SEBYA" => "y",
-      "VNESHNIY" => "n",
-      "VNE_HARE__EGG" => "needle"
-    ) do
-      expect(subject).to eq(
-        {
-          "sebya" => "y",
-          "hare" => {
-            "egg" => "needle"
-          }
+  subject { described_class.call(**options) }
+
+  before do
+    allow(::Anyway::Env).to receive(:new).and_return(env_double)
+    allow(env_double).to receive(:fetch_with_trace).and_return([env, nil])
+  end
+
+  it "loads data from Anyway::Env" do
+    expect(subject).to eq(
+      {
+        "sebya" => "y",
+        "hare" => {
+          "egg" => "needle"
         }
-      )
-    end
+      }
+    )
   end
 
   context "when env has no matching values" do
-    let(:options) { {env_prefix: "VNE" * 4} }
+    let(:env) { {} }
 
     it "returns empty hash" do
       expect(subject).to eq({})
