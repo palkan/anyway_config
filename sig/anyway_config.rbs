@@ -73,7 +73,7 @@ module Anyway
     def self.config_attributes: -> Array[Symbol]?
     def self.required: (*Symbol names, ?env: envType) -> void
     def self.required_attributes: -> Array[Symbol]
-    def self.on_load: (*Symbol callbacks) ?{ () -> void } -> void
+    def self.on_load: (*Symbol callbacks) ?{ () [self: instance] -> void } -> void
     def self.config_name: (?(Symbol | String) val) -> String?
     def self.env_prefix: (?(Symbol | String) val) -> String
     def self.coerce_types: (**mappingType) -> void

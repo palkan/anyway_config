@@ -46,7 +46,6 @@ class RBS::Config < Anyway::Config
   on_load :normalize_checker
 
   on_load do
-    # @type self : RBS::Config
     raise_validation_error("checker is missing") if checker.nil?
   end
 

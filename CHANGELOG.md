@@ -2,6 +2,10 @@
 
 ## master
 
+- RBS: Now `.on_load` automatically pass block context type (instance), so no need to add annotations! ([@palkan][])
+
+Steep 1.2+ is required. Read more about the [feature](https://hackmd.io/xLrYaqUtQ1GhgTHODkYypw?view).
+
 - Added `manifest.yml` for RBS. ([@palkan][])
 
 ## 2.3.0 (2022-03-11)
