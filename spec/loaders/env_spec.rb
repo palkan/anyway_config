@@ -3,7 +3,7 @@
 require "spec_helper"
 
 describe Anyway::Loaders::Env do
-  let(:env_double) { double("env") }
+  let(:env_double) { instance_double("Anyway::Env") }
   let(:env) do
     {
       "sebya" => "y",
@@ -19,7 +19,7 @@ describe Anyway::Loaders::Env do
 
   before do
     allow(::Anyway::Env).to receive(:new).and_return(env_double)
-    allow(env_double).to receive(:fetch_with_trace).and_return([env, nil])
+    allow(env_double).to receive(:fetch).and_return([env, nil])
   end
 
   it "loads data from Anyway::Env" do
@@ -31,6 +31,7 @@ describe Anyway::Loaders::Env do
         }
       }
     )
+    expect(env_double).to have_received(:fetch).with("VNE", include_trace: true)
   end
 
   context "when env has no matching values" do
