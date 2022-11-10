@@ -5,6 +5,19 @@ begin
 rescue LoadError
 end
 
+if ENV["TRAVIS_JOB_ID"].to_s != ""
+  ENV["TRAVIS"] = "true"
+  ENV["CI"] = "true"
+  ENV["COVERALLS_ENDPOINT"] = "http://localhost:3000"
+
+  require "coveralls"
+  Coveralls.wear!("rails") do
+    add_filter do |src_file|
+      !src_file.filename.match?(/\benv/)
+    end
+  end
+end
+
 ENV["RUBY_NEXT_WARN"] = "false"
 ENV["RUBY_NEXT_EDGE"] = "1"
 ENV["RUBY_NEXT_PROPOSED"] = "1"
