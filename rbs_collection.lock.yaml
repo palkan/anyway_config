@@ -6,14 +6,6 @@ sources:
   repo_dir: gems
 path: ".gem_rbs_collection"
 gems:
-- name: logger
-  version: '0'
-  source:
-    type: stdlib
-- name: monitor
-  version: '0'
-  source:
-    type: stdlib
 - name: optparse
   version: '0'
   source:
@@ -22,15 +14,7 @@ gems:
   version: '0'
   source:
     type: stdlib
-- name: uri
-  version: '0'
-  source:
-    type: stdlib
 - name: pathname
-  version: '0'
-  source:
-    type: stdlib
-- name: mutex_m
   version: '0'
   source:
     type: stdlib
@@ -46,24 +30,12 @@ gems:
   version: '0'
   source:
     type: stdlib
-- name: tempfile
-  version: '0'
-  source:
-    type: stdlib
-- name: tsort
-  version: '0'
-  source:
-    type: stdlib
-- name: singleton
-  version: '0'
-  source:
-    type: stdlib
 - name: activesupport
   version: '6.0'
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 6320a194c85afbf4ff332c3eb75fcae2a6518c92
+    revision: 0a45b6d56b0e1b089731f5eb007912a7c36be121
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: actionpack
@@ -71,7 +43,7 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 6320a194c85afbf4ff332c3eb75fcae2a6518c92
+    revision: 0a45b6d56b0e1b089731f5eb007912a7c36be121
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: actionview
@@ -79,7 +51,7 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 6320a194c85afbf4ff332c3eb75fcae2a6518c92
+    revision: 0a45b6d56b0e1b089731f5eb007912a7c36be121
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: activejob
@@ -87,7 +59,7 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 6320a194c85afbf4ff332c3eb75fcae2a6518c92
+    revision: 0a45b6d56b0e1b089731f5eb007912a7c36be121
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: activemodel
@@ -95,7 +67,7 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 6320a194c85afbf4ff332c3eb75fcae2a6518c92
+    revision: 0a45b6d56b0e1b089731f5eb007912a7c36be121
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: activerecord
@@ -103,7 +75,7 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 6320a194c85afbf4ff332c3eb75fcae2a6518c92
+    revision: 0a45b6d56b0e1b089731f5eb007912a7c36be121
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: activestorage
@@ -111,15 +83,47 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 6320a194c85afbf4ff332c3eb75fcae2a6518c92
+    revision: 0a45b6d56b0e1b089731f5eb007912a7c36be121
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
-- name: rack
-  version: 2.2.2
+- name: csv
+  version: '0'
+  source:
+    type: stdlib
+- name: fileutils
+  version: '0'
+  source:
+    type: stdlib
+- name: i18n
+  version: '1.10'
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 6320a194c85afbf4ff332c3eb75fcae2a6518c92
+    revision: 0a45b6d56b0e1b089731f5eb007912a7c36be121
+    remote: https://github.com/ruby/gem_rbs_collection.git
+    repo_dir: gems
+- name: logger
+  version: '0'
+  source:
+    type: stdlib
+- name: minitest
+  version: '0'
+  source:
+    type: stdlib
+- name: rack
+  version: '2.2'
+  source:
+    type: git
+    name: ruby/gem_rbs_collection
+    revision: 0a45b6d56b0e1b089731f5eb007912a7c36be121
+    remote: https://github.com/ruby/gem_rbs_collection.git
+    repo_dir: gems
+- name: rails-dom-testing
+  version: '2.0'
+  source:
+    type: git
+    name: ruby/gem_rbs_collection
+    revision: 0a45b6d56b0e1b089731f5eb007912a7c36be121
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: railties
@@ -127,6 +131,46 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 6320a194c85afbf4ff332c3eb75fcae2a6518c92
+    revision: 0a45b6d56b0e1b089731f5eb007912a7c36be121
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
+- name: securerandom
+  version: '0'
+  source:
+    type: stdlib
+- name: strscan
+  version: '0'
+  source:
+    type: stdlib
+- name: monitor
+  version: '0'
+  source:
+    type: stdlib
+- name: singleton
+  version: '0'
+  source:
+    type: stdlib
+- name: mutex_m
+  version: '0'
+  source:
+    type: stdlib
+- name: tempfile
+  version: '0'
+  source:
+    type: stdlib
+- name: forwardable
+  version: '0'
+  source:
+    type: stdlib
+- name: cgi
+  version: '0'
+  source:
+    type: stdlib
+- name: uri
+  version: '0'
+  source:
+    type: stdlib
+- name: tsort
+  version: '0'
+  source:
+    type: stdlib

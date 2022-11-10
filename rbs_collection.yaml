@@ -9,19 +9,12 @@ sources:
 path: .gem_rbs_collection
 
 gems:
-  - name: logger
-  - name: monitor
   - name: optparse
   - name: json
-  - name: uri
   - name: pathname
-  - name: mutex_m
   - name: date
   - name: time
   - name: set
-  - name: tempfile
-  - name: tsort
-  - name: singleton
   - name: activesupport
   # Skip loading rbs gem's RBS.
   # It's unnecessary if you don't use rbs as a library.
@@ -40,6 +33,8 @@ gems:
   - name: listen
     ignore: true
   - name: activesupport
+    ignore: true
+  - name: mail
     ignore: true
   - name: anyway_config
     ignore: true

@@ -2,6 +2,8 @@
 
 ## master
 
+- Added `manifest.yml` for RBS. ([@palkan][])
+
 ## 2.3.0 (2022-03-11)
 
 - Add ability to load configurations under specific environments in pure Ruby apps. ([@fargelus][]).
