@@ -84,7 +84,9 @@ end
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].sort.each { |f| require f }
 
 RSpec.configure do |config|
-  config.mock_with :rspec
+  config.mock_with :rspec do |mocks|
+    mocks.verify_partial_doubles = true
+  end
 
   config.filter_run_excluding(rails: true) if NORAILS
   config.filter_run_excluding(norails: true) unless NORAILS
