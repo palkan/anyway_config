@@ -68,4 +68,12 @@ describe Anyway::Env, type: :config do
       )
     end
   end
+
+  it "returns empty hash when no values for prefix found" do
+    expect(env.fetch("UNKNOWN").data).to eq({})
+  end
+
+  it "returns nil when prefix is empty" do
+    expect(env.fetch("")).to be_nil
+  end
 end

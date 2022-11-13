@@ -14,5 +14,6 @@ mock_context "Anyway::Env" do
 
     allow(env_double).to receive(:fetch).with("UNKNOWN", any_args).and_return(Anyway::Env::Parsed.new({}, nil))
     allow(env_double).to receive(:fetch).with("TESTO", any_args).and_return(Anyway::Env::Parsed.new(testo_env, nil))
+    allow(env_double).to receive(:fetch).with("", any_args).and_return(Anyway::Env::Parsed.new({}, nil))
   end
 end

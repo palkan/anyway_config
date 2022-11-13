@@ -21,7 +21,15 @@ describe Anyway::Loaders::Env do
   end
 
   context "when env has no matching values" do
-    let(:options) { {env_prefix: "UNKNOWN", some_other: "value"} }
+    let(:options) { {env_prefix: "UNKNOWN"} }
+
+    it "returns empty hash" do
+      expect(subject).to eq({})
+    end
+  end
+
+  context "when env prefix is empty" do
+    let(:options) { {env_prefix: ""} }
 
     it "returns empty hash" do
       expect(subject).to eq({})

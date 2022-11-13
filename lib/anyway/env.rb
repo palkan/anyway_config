@@ -27,6 +27,8 @@ module Anyway
     end
 
     def fetch(prefix, include_trace: false)
+      return if prefix.nil? || prefix.empty?
+
       fetch!(prefix)
 
       Parsed.new(data[prefix].deep_dup, include_trace ? traces[prefix] : nil)
