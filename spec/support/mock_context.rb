@@ -22,6 +22,22 @@ module RSpecMockContext
     def calls = @calls ||= CallsCollector.new
   end
 
+  module RewriteRules
+    def rewrite(method_name, &block)
+      rewrite_rules[method_name] = block
+    end
+
+    def rewrite_rules = @rewrite_rules ||= {}
+
+    def apply_rewrite_rules(mod, method_name)
+      if rewrite_rules.key?(method_name)
+        rewrite_rules[method_name].call(mod, method_name)
+      else
+        [mod, method_name]
+      end
+    end
+  end
+
   class MocksCollector
     using(Module.new do
       refine RSpec::Mocks::MethodDouble do
@@ -89,6 +105,8 @@ module RSpecMockContext
         end.uniq.join("\n")
       end
     end
+
+    include RewriteRules
 
     attr_reader :mocks, :verifications
 
@@ -165,6 +183,8 @@ module RSpecMockContext
               mid = double.method_name
               target = double.target_class
 
+              target, mid = this.apply_rewrite_rules(target, mid)
+
               double.stubs.each do |stub|
                 next if stub.expected_args.empty?
                 next unless stub.expected_args.any? { this.contractable_arg?(_1) }
@@ -197,6 +217,8 @@ module RSpecMockContext
         (kwargs || {}).values.any? { _1.is_a?(::RSpec::Mocks::TestDouble) }
       end
     end
+
+    include RewriteRules
 
     attr_reader :store
 
@@ -232,11 +254,11 @@ module RSpecMockContext
             end
           end
 
-          target, mid = tp.defined_class, tp.method_id
+          target, mid = this.apply_rewrite_rules(tp.defined_class, tp.method_id)
 
           store[target][mid] << CallTrace.new(arguments: args, kwargs:, return_value: UNKNOWN, location: method.source_location.first)
         elsif tp.event == :return
-          target, mid = tp.defined_class, tp.method_id
+          target, mid = this.apply_rewrite_rules(tp.defined_class, tp.method_id)
 
           call_trace = store[target][mid].last
           call_trace.return_value = tp.return_value

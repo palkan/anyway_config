@@ -1,5 +1,23 @@
 # frozen_string_literal: true
 
+require_relative './mock_context'
+
+using(Module.new do
+  refine Class.singleton_class do
+    def instance_class
+      eval inspect.sub(%r{^#<Class:}, '').sub(/>$/, '')
+    end
+  end
+end)
+
+RSpecMockContext.collector.rewrite(:perform_async) do |mod, method_name|
+  [mod.instance_class, :perform]
+end
+
+RSpecMockContext.calls.rewrite(:perform) do |mod, method_name|
+  [mod.singleton_class, :perform_async]
+end
+
 RSpec.configure do |config|
   config.before(:suite) do
     # p RSpecMockContext.collector.mocks
