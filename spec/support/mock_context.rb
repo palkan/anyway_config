@@ -226,7 +226,35 @@ module RSpecMockContext
       @store = Hash.new { |h, k| h[k] = Hash.new { |ih, ik| ih[ik] = [] } }
     end
 
-    def start!(targets)
+    def module_for(klass, methods)
+      Module.new do
+        methods.each do |mid|
+          module_eval <<~RUBY
+            def #{mid}(*arguments, **kwargs, &block)
+              super.tap do |return_value|
+                RSpecMockContext.calls.store[self.class][__method__] << CallTrace.new(
+                  arguments: arguments,
+                  kwargs: kwargs,
+                  return_value: return_value,
+                  location: method(__method__).super_method.source_location.first
+                )
+              end
+            end
+          RUBY
+        end
+      end
+    end
+
+    def patch!(targets)
+      targets.each do |klass, methods|
+        mod = module_for(klass, methods)
+        klass.prepend(mod)
+      end
+    end
+
+    def start!(targets, prepend: false)
+      return patch!(targets) if prepend
+
       store = @store
       this = self
       @tp = TracePoint.trace(:call, :return) do |tp|
@@ -267,7 +295,7 @@ module RSpecMockContext
     end
 
     def stop
-      tp.disable
+      tp&.disable
       # Filter out calls involved test doubles (we only need real ones)
       @store.transform_values! do |class_calls|
         class_calls.transform_values! do |calls|
