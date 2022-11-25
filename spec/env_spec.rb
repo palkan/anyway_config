@@ -76,4 +76,32 @@ describe Anyway::Env, type: :config do
   it "returns nil when prefix is empty" do
     expect(env.fetch("")).to be_nil
   end
+
+  context "with custom type_caster" do
+    let(:type_caster) { ->(val) { val.upcase } }
+
+    let(:env) { Anyway::Env.new(type_cast: type_caster) }
+
+    specify do
+      with_env(
+        "TESTO_NAME" => "vova"
+      ) do
+        testo_config = env.fetch("TESTO").data
+        expect(testo_config["name"]).to eq("VOVA")
+      end
+    end
+
+    context "with no cast" do
+      let(:type_caster) { Anyway::NoCast }
+
+      specify do
+        with_env(
+          "TESTO_YEAR" => "1989"
+        ) do
+          testo_config = env.fetch("TESTO").data
+          expect(testo_config["year"]).to eq("1989")
+        end
+      end
+    end
+  end
 end

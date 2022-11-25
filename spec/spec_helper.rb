@@ -81,6 +81,17 @@ rescue => err
   exit(1)
 end
 
+require "mock-suey"
+
+MockSuey.configure do |config|
+  config.type_check = :ruby
+  config.signature_load_dirs = []
+  config.auto_type_check = true
+  config.verify_mock_contracts = true
+end
+
+Dir["#{File.dirname(__FILE__)}/fixtures/mocks/**/*.rb"].sort.each { |f| require f }
+
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].sort.each { |f| require f }
 
 RSpec.configure do |config|

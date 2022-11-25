@@ -116,8 +116,7 @@ module Anyway
 
     def initialize: (?type_cast: untyped) -> self
     def clear: -> void
-    def fetch: (String prefix, ?include_trace: bool) -> Parsed |
-               (NilClass, **untyped) -> nil
+    def fetch: (String? prefix, ?include_trace: bool) -> Parsed?
   end
 
   module Loaders
