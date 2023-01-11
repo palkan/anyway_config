@@ -591,6 +591,20 @@ Anyway::Settings.default_config_path = ->(name) { Rails.root.join("data", "confi
 
 See [environment variables](#environment-variables).
 
+3) **Doppler loader**:
+
+We also can load data from [Doppler](https://www.doppler.com/). If you want to enable this feature you must add Doppler loader.
+
+```ruby
+Anyway.loaders.append :Doppler, Anyway::Loaders::Doppler
+```
+
+And you must set env `DOPPLER_TOKEN`
+
+`DOPPLER_TOKEN` is service token, which associated with specific content
+
+Read more about [Service tokens](https://docs.doppler.com/docs/service-tokens)
+
 ## Environment variables
 
 Environmental variables for your config should start with your config name, upper-cased.
