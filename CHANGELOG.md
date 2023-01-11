@@ -8,6 +8,10 @@ Steep 1.2+ is required. Read more about the [feature](https://hackmd.io/xLrYaqUt
 
 - Added `manifest.yml` for RBS. ([@palkan][])
 
+## 2.3.0 (2023-01-11)
+
+- Add Doppler loader. ([@prog-supdex][]).
+
 ## 2.3.0 (2022-03-11)
 
 - Add ability to load configurations under specific environments in pure Ruby apps. ([@fargelus][]).
@@ -465,3 +469,4 @@ No we're dependency-free!
 [@progapandist]: https://github.com/progapandist
 [@skryukov]: https://github.com/skryukov
 [@fargelus]: https://github.com/fargelus
+[@prog-supdex]: https://github.com/prog-supdex
