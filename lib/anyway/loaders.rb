@@ -75,3 +75,4 @@ end
 require "anyway/loaders/base"
 require "anyway/loaders/yaml"
 require "anyway/loaders/env"
+require "anyway/loaders/doppler"
