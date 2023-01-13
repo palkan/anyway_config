@@ -5,12 +5,11 @@ require "spec_helper"
 describe Anyway::Loaders::EJSON do
   subject { described_class.call(**options) }
 
-  let(:options) { {name:, ejson_adapter:} }
+  let(:options) { {name:, ejson_adapter:, local: false} }
 
   # let(:path) { File.join(__dir__, "../config/cool.yml") }
   let(:name) { 'clever' }
 
-  # let(:options) { {config_path: path, local: false, some_other: "value"} }
   let(:ejson_adapter) do
     adapter = instance_double(Anyway::EJSONAdapter)
     allow(adapter).to receive(:parse).with(config_path).and_return(ejson_parsed_result)
@@ -47,23 +46,39 @@ describe Anyway::Loaders::EJSON do
       )
     end
 
-    # # TODO: rewrite
-    # context "when local is enabled" do
-    #   let(:options) { {config_path: path, local: true, some_other: "value"} }
+    context "when local is enabled" do
+      let(:options) { {name:, ejson_adapter:, local: true} }
 
-    #   specify do
-    #     expect(subject).to eq(
-    #       {
-    #         "host" => "local.host",
-    #         "user" => {
-    #           "name" => "root",
-    #           "password" => "root"
-    #         },
-    #         "port" => 9292
-    #       }
-    #     )
-    #   end
-    # end
+      let(:local_config_path) { "#{Anyway::Settings.app_root}/config/secrets.local.ejson" }
+      let(:local_ejson_parsed_result) do
+        {
+          "_public_key"=>"any_public_key",
+          "clever" =>
+            {
+              "_username"=>"1234username1234",
+              "password"=>"1234password1234"
+            },
+          "cool" =>
+            {
+              "_username"=>"5678username5678",
+              "password"=>"5678password5678"
+            }
+        }
+      end
+
+      before do
+        allow(ejson_adapter).to receive(:parse).with(local_config_path).and_return(local_ejson_parsed_result)
+      end
+
+      it 'parses local EJSON config' do
+        expect(subject).to eq(
+          {
+            "username"=>"1234username1234",
+            "password"=>"1234password1234"
+          }
+        )
+      end
+    end
 
     context "when parser returns nil" do
       let(:ejson_parsed_result) { nil }
