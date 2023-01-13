@@ -17,7 +17,6 @@ module Anyway
           # local: # true|false, whether to load local configuration
         )
 
-        config_path = "#{Settings.app_root}/config/secrets.ejson"
         secrets_hash = ejson_adapter.parse(config_path)
 
         return {} unless secrets_hash
@@ -43,7 +42,19 @@ module Anyway
         # Utils.deep_merge!(base_config, local_config)
       end
 
-      # private
+      private
+
+      def config_path
+        "#{Settings.app_root}/config/#{config_name}"
+      end
+
+      def config_name
+        if use_local?
+          "secrets.local.ejson"
+        else
+          "secrets.ejson"
+        end
+      end
 
       # def environmental?(parsed_yml)
       #   # strange, but still possible
