@@ -36,8 +36,6 @@ module Anyway
         http = Net::HTTP.new(uri.host, uri.port)
         http.use_ssl = true
 
-        # dp.st.dev.9IAsQwBQnFDQsmnyukYTtaJBqjCXJhq8zSFdSvkBVHW
-
         request = Net::HTTP::Get.new(uri)
         request["Accept"] = "application/json"
         request["Authorization"] = "Bearer #{ENV.fetch("DOPPLER_TOKEN")}"
