@@ -35,6 +35,7 @@ module Anyway # :nodoc:
 
   # Configure default loaders
   loaders.append :yml, Loaders::YAML
+  loaders.append :ejson, Loaders::EJSON
   loaders.append :env, Loaders::Env
 
   if ENV.key?("DOPPLER_TOKEN") && ENV["ANYWAY_CONFIG_DISABLE_DOPPLER"] != "true"

@@ -43,4 +43,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency "rspec", ">= 3.8"
   s.add_development_dependency "ruby-next", ">= 0.14.0"
   s.add_development_dependency "webmock", "~> 3.18"
+  s.add_development_dependency "ejson", ">= 1.3.1"
 end
