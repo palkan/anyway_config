@@ -35,6 +35,7 @@ module Anyway # :nodoc:
 
   # Configure default loaders
   loaders.append :yml, Loaders::YAML
+  loaders.append :ejson, Loaders::EJSON
   loaders.append :env, Loaders::Env
 end
 
