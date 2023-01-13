@@ -8,7 +8,7 @@ describe Anyway::Loaders::EJSON do
   let(:options) { {name:, ejson_adapter:, local: false} }
 
   # let(:path) { File.join(__dir__, "../config/cool.yml") }
-  let(:name) { 'clever' }
+  let(:name) { "clever" }
 
   let(:ejson_adapter) do
     adapter = instance_double(Anyway::EJSONAdapter)
@@ -18,19 +18,19 @@ describe Anyway::Loaders::EJSON do
   let(:config_path) { "#{Anyway::Settings.app_root}/config/secrets.ejson" }
   let(:ejson_parsed_result) do
     {
-      "_public_key"=>"any_public_key",
+      "_public_key" => "any_public_key",
       "clever" => clever_service_parsed_data,
       "cool" =>
         {
-          "_username"=>"5678username",
-          "password"=>"5678password"
+          "_username" => "5678username",
+          "password" => "5678password"
         }
     }
   end
   let(:clever_service_parsed_data) do
     {
-      "_username"=>"1234username",
-      "password"=>"1234password"
+      "_username" => "1234username",
+      "password" => "1234password"
     }
   end
 
@@ -40,8 +40,8 @@ describe Anyway::Loaders::EJSON do
     it "parses EJSON" do
       expect(subject).to eq(
         {
-          "username"=>"1234username",
-          "password"=>"1234password"
+          "username" => "1234username",
+          "password" => "1234password"
         }
       )
     end
@@ -52,16 +52,16 @@ describe Anyway::Loaders::EJSON do
       let(:local_config_path) { "#{Anyway::Settings.app_root}/config/secrets.local.ejson" }
       let(:local_ejson_parsed_result) do
         {
-          "_public_key"=>"any_public_key",
+          "_public_key" => "any_public_key",
           "clever" =>
             {
-              "_username"=>"1234username1234",
-              "password"=>"1234password1234"
+              "_username" => "1234username1234",
+              "password" => "1234password1234"
             },
           "cool" =>
             {
-              "_username"=>"5678username5678",
-              "password"=>"5678password5678"
+              "_username" => "5678username5678",
+              "password" => "5678password5678"
             }
         }
       end
@@ -70,11 +70,11 @@ describe Anyway::Loaders::EJSON do
         allow(ejson_adapter).to receive(:parse).with(local_config_path).and_return(local_ejson_parsed_result)
       end
 
-      it 'parses local EJSON config' do
+      it "parses local EJSON config" do
         expect(subject).to eq(
           {
-            "username"=>"1234username1234",
-            "password"=>"1234password1234"
+            "username" => "1234username1234",
+            "password" => "1234password1234"
           }
         )
       end
@@ -96,7 +96,7 @@ describe Anyway::Loaders::EJSON do
       end
     end
 
-    context 'when parsed content contains empty service data' do
+    context "when parsed content contains empty service data" do
       let(:clever_service_parsed_data) { {} }
 
       it "returns empty hash" do

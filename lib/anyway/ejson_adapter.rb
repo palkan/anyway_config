@@ -3,8 +3,8 @@
 module Anyway
   class EJSONAdapter
     def parse(file_path)
-      return unless which('ejson')
-      return unless File.exists?(file_path)
+      return unless which("ejson")
+      return unless File.exist?(file_path)
 
       cmd_result =
         Open3.popen3("ejson decrypt #{file_path}") do |stdin, stdout, stderr, thread|
@@ -21,8 +21,8 @@ module Anyway
     # Cross-platform solution
     # taken from https://stackoverflow.com/a/5471032
     def which(cmd)
-      exts = ENV['PATHEXT'] ? ENV['PATHEXT'].split(';') : ['']
-      ENV['PATH'].split(File::PATH_SEPARATOR).each do |path|
+      exts = ENV["PATHEXT"] ? ENV["PATHEXT"].split(";") : [""]
+      ENV["PATH"].split(File::PATH_SEPARATOR).each do |path|
         exts.each do |ext|
           exe = File.join(path, "#{cmd}#{ext}")
           return exe if File.executable?(exe) && !File.directory?(exe)

@@ -10,12 +10,11 @@ require "anyway/ejson_adapter"
 module Anyway
   module Loaders
     class EJSON < Base
-      def call(name:, ejson_adapter: Anyway::EJSONAdapter.new, **_options
-          # name: # config name
-          # env_prefix:, # prefix for env vars if any
-          # config_path:#, # path to YML config
-          # local: # true|false, whether to load local configuration
-        )
+      def call(name:, ejson_adapter: Anyway::EJSONAdapter.new, **_options)
+        # name: # config name
+        # env_prefix:, # prefix for env vars if any
+        # config_path:#, # path to YML config
+        # local: # true|false, whether to load local configuration
 
         secrets_hash = ejson_adapter.parse(config_path)
 
@@ -26,8 +25,7 @@ module Anyway
         return {} unless config_hash.is_a?(Hash)
 
         # TODO: refactor
-        config_hash.transform_keys { |key| key[0] == '_' ? key[1..-1] : key }
-
+        config_hash.transform_keys { |key| (key[0] == "_") ? key[1..] : key }
 
         # rel_config_path = relative_config_path(config_path).to_s
         # base_config = trace!(:yml, path: rel_config_path) do
