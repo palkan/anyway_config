@@ -2,8 +2,8 @@
 
 require "spec_helper"
 
-describe Anyway::EJSONAdapter do
-  subject { described_class.new.parse(file_path) }
+describe Anyway::EJSONParser do
+  subject { described_class.new.call(file_path) }
 
   let(:file_path) { "#{Anyway::Settings.app_root}/ejson/correct.ejson" }
   let(:ejson_keydir) { "#{Anyway::Settings.app_root}/ejson/keys" }

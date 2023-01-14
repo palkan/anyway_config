@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module Anyway
-  class EJSONAdapter
-    def parse(file_path)
+  class EJSONParser
+    def call(file_path)
       return unless which("ejson")
       return unless File.exist?(file_path)
 
