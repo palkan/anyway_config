@@ -2,13 +2,22 @@
 
 require "anyway/ejson_parser"
 
-# using RubyNext
+using RubyNext
 
 module Anyway
   module Loaders
     class EJSON < Base
       def call(name:, ejson_parser: Anyway::EJSONParser.new, **_options)
-        secrets_hash = config_pathes_chain.lazy.map { |config_path| ejson_parser.call(config_path) }.find &:itself
+        secrets_hash, relative_config_path =
+          rel_config_pathes.lazy.map do |rel_config_path|
+            rel_path = "config/#{rel_config_path}"
+            abs_path = "#{Settings.app_root}/#{rel_path}"
+
+            [
+              ejson_parser.call(abs_path),
+              rel_path
+            ]
+          end.find { |el| el.itself[0] }
 
         return {} unless secrets_hash
 
@@ -16,19 +25,20 @@ module Anyway
 
         return {} unless config_hash.is_a?(Hash)
 
-        # TODO: refactor
-        config_hash.transform_keys { |key| (key[0] == "_") ? key[1..] : key }
+        trace!(:ejson, path: relative_config_path) do
+          config_hash.transform_keys do |key|
+            if key[0] == "_"
+              key[1..]
+            else
+              key
+            end
+          end
+        end
       end
 
       private
 
-      def config_pathes_chain
-        config_relative_pathes_chain.map do |config_relative_path|
-          "#{Settings.app_root}/config/#{config_relative_path}"
-        end
-      end
-
-      def config_relative_pathes_chain
+      def rel_config_pathes
         chain = []
 
         chain << "secrets.local.ejson" if use_local?
