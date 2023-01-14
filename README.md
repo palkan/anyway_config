@@ -357,16 +357,15 @@ Loading order of configuration is next:
 - `config/<environment>/secrets.ejson` (if you have any multi-environment setup, e.g Rails environments)
 - `config/secrets.ejson`
 
-Example of `.ejson` file content for your `MyConfig`:
+Example of `config/secrets.ejson` file content for your `MyConfig`:
 
 ```json
-// config/secrets.ejson
 {
-  "_public_key": "0843d33f0eee994adc66b939fe4ef569e4c97db84e238ff581934ee599e19d1a", // your public key
+  "_public_key": "0843d33f0eee994adc66b939fe4ef569e4c97db84e238ff581934ee599e19d1a",
   "my":
     {
       "_username": "root",
-      "password": "EJ[1:IC1d347GkxLXdZ0KrjGaY+ljlsK1BmK7CobFt6iOLgE=:Z55OYS1+On0xEBvxUaIOdv/mE2r6lp44:T7bE5hkAbazBnnH6M8bfVcv8TOQJAgUDQffEgw==]" // your encrypted password
+      "password": "EJ[1:IC1d347GkxLXdZ0KrjGaY+ljlsK1BmK7CobFt6iOLgE=:Z55OYS1+On0xEBvxUaIOdv/mE2r6lp44:T7bE5hkAbazBnnH6M8bfVcv8TOQJAgUDQffEgw==]"
     }
 }
 ```
