@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'open3'
+
 module Anyway
   class EJSONParser
     def call(file_path)
