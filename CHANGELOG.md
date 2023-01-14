@@ -2,6 +2,10 @@
 
 ## master
 
+- Added EJSON support. ([@inner-whisper])
+
+- Add Doppler loader. ([@prog-supdex][]).
+
 ## 2.3.1 (2023-01-17)
 
 - [Fixes [#110](https://github.com/palkan/anyway_config/issues/110)] Fix setting up autoloader for the same folder. ([@palkan][])
@@ -11,8 +15,6 @@
 Steep 1.2+ is required. Read more about the [feature](https://hackmd.io/xLrYaqUtQ1GhgTHODkYypw?view).
 
 - Added `manifest.yml` for RBS. ([@palkan][])
-
-- Add Doppler loader. ([@prog-supdex][]).
 
 ## 2.3.0 (2022-03-11)
 
@@ -471,4 +473,8 @@ No we're dependency-free!
 [@progapandist]: https://github.com/progapandist
 [@skryukov]: https://github.com/skryukov
 [@fargelus]: https://github.com/fargelus
+<<<<<<< HEAD
 [@prog-supdex]: https://github.com/prog-supdex
+=======
+[@inner-whisper]: https://github.com/inner-whisper
+>>>>>>> de91cd6 (added changelog entry)
