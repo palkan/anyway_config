@@ -2,8 +2,6 @@
 
 require "anyway/ejson_parser"
 
-using RubyNext
-
 module Anyway
   module Loaders
     class EJSON < Base
