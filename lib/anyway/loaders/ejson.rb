@@ -1,11 +1,8 @@
 # frozen_string_literal: true
 
-# require "pathname"
-# require "anyway/ext/hash"
 require "anyway/ejson_parser"
 
 # using RubyNext
-# using Anyway::Ext::Hash
 
 module Anyway
   module Loaders
@@ -26,22 +23,19 @@ module Anyway
       private
 
       def config_pathes_chain
-        if use_local?
-          [config_path("secrets.local.ejson")]
-        elsif Settings.current_environment
-          [
-            config_path("#{Settings.current_environment}/secrets.ejson"),
-            config_path("secrets.ejson")
-          ]
-        else
-          [
-            config_path("secrets.ejson")
-          ]
+        config_relative_pathes_chain.map do |config_relative_path|
+          "#{Settings.app_root}/config/#{config_relative_path}"
         end
       end
 
-      def config_path(config_relative_path)
-        "#{Settings.app_root}/config/#{config_relative_path}"
+      def config_relative_pathes_chain
+        if use_local?
+          ["secrets.local.ejson"]
+        elsif Settings.current_environment
+          ["#{Settings.current_environment}/secrets.ejson"]
+        else
+          []
+        end + ["secrets.ejson"]
       end
     end
   end
