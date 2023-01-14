@@ -29,13 +29,13 @@ module Anyway
       end
 
       def config_relative_pathes_chain
-        if use_local?
-          ["secrets.local.ejson"]
-        elsif Settings.current_environment
-          ["#{Settings.current_environment}/secrets.ejson"]
-        else
-          []
-        end + ["secrets.ejson"]
+        chain = []
+
+        chain << "secrets.local.ejson" if use_local?
+        chain << "#{Settings.current_environment}/secrets.ejson" if Settings.current_environment
+        chain << "secrets.ejson"
+
+        chain
       end
     end
   end
