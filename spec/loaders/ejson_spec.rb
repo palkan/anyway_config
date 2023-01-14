@@ -90,6 +90,18 @@ describe Anyway::Loaders::EJSON do
       end
     end
 
+    context "when local is enabled, but there is no secrets.local.ejson file" do
+      let(:options) { {name:, ejson_parser:, local: true} }
+      let(:local_ejson_parsed_result) { nil }
+
+      it "parses default EJSON config" do
+        expect(subject).to eq(
+          "username" => "1234username",
+          "password" => "1234password"
+        )
+      end
+    end
+
     context "when parser returns nil" do
       let(:ejson_parsed_result) { nil }
 
