@@ -2,7 +2,7 @@
 
 # require "pathname"
 # require "anyway/ext/hash"
-require "anyway/ejson_adapter"
+require "anyway/ejson_parser"
 
 # using RubyNext
 # using Anyway::Ext::Hash
@@ -10,13 +10,13 @@ require "anyway/ejson_adapter"
 module Anyway
   module Loaders
     class EJSON < Base
-      def call(name:, ejson_adapter: Anyway::EJSONAdapter.new, **_options)
+      def call(name:, ejson_parser: Anyway::EJSONParser.new, **_options)
         # name: # config name
         # env_prefix:, # prefix for env vars if any
         # config_path:#, # path to YML config
         # local: # true|false, whether to load local configuration
 
-        secrets_hash = ejson_adapter.parse(config_path)
+        secrets_hash = ejson_parser.call(config_path)
 
         return {} unless secrets_hash
 
