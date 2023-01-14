@@ -7,6 +7,7 @@
 Steep 1.2+ is required. Read more about the [feature](https://hackmd.io/xLrYaqUtQ1GhgTHODkYypw?view).
 
 - Added `manifest.yml` for RBS. ([@palkan][])
+- Added EJSON support ([@inner-whisper])
 
 ## 2.3.0 (2022-03-11)
 
@@ -465,3 +466,4 @@ No we're dependency-free!
 [@progapandist]: https://github.com/progapandist
 [@skryukov]: https://github.com/skryukov
 [@fargelus]: https://github.com/fargelus
+[@inner-whisper]: https://github.com/inner-whisper
