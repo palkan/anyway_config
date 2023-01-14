@@ -36,6 +36,7 @@ For version 1.x see the [1-4-stable branch](https://github.com/palkan/anyway_con
   - [Configuration classes](#configuration-classes)
   - [Dynamic configuration](#dynamic-configuration)
   - [Validation & Callbacks](#validation-and-callbacks)
+  - [EJSON support](#ejson-support)
 - [Using with Rails applications](#using-with-rails)
   - [Data population](#data-population)
   - [Organizing configs](#organizing-configs)
@@ -337,6 +338,43 @@ class MyConfig < Anyway::Config
     end
   end
 end
+```
+
+### EJSON support
+
+Anyway Config allows you to keep your configuration also in encrypted `.ejson` files. More information 
+about EJSON format you can read [here](https://github.com/Shopify/ejson).
+
+Configuration will be loaded only if you have `ejson` executable in your PATH. Easiest way to do this - install `ejson` as a gem into project:
+
+```ruby
+# Gemfile
+gem "ejson"
+```
+
+Loading order of configuration is next:
+- `config/secrets.local.ejson` (see [Local files](#local-files) for more information)
+- `config/<environment>/secrets.ejson` (if you have any multi-environment setup, e.g Rails environments)
+- `config/secrets.ejson`
+
+Example of `.ejson` file content for your `MyConfig`:
+
+```json
+// config/secrets.ejson
+{
+  "_public_key": "0843d33f0eee994adc66b939fe4ef569e4c97db84e238ff581934ee599e19d1a", // your public key
+  "my":
+    {
+      "_username": "root",
+      "password": "EJ[1:IC1d347GkxLXdZ0KrjGaY+ljlsK1BmK7CobFt6iOLgE=:Z55OYS1+On0xEBvxUaIOdv/mE2r6lp44:T7bE5hkAbazBnnH6M8bfVcv8TOQJAgUDQffEgw==]" // your encrypted password
+    }
+}
+```
+
+To debug any problems with loading configurations from `.ejson` files you can directly call `ejson decrypt`:
+
+```sh
+ejson decrypt config/secrets.ejson
 ```
 
 ## Using with Rails
