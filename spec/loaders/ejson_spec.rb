@@ -5,14 +5,14 @@ require "spec_helper"
 describe Anyway::Loaders::EJSON do
   subject { described_class.call(**options) }
 
-  let(:options) { {name:, ejson_adapter:, local: false} }
+  let(:options) { {name:, ejson_parser:, local: false} }
 
   # let(:path) { File.join(__dir__, "../config/cool.yml") }
   let(:name) { "clever" }
 
-  let(:ejson_adapter) do
-    adapter = instance_double(Anyway::EJSONAdapter)
-    allow(adapter).to receive(:parse).with(config_path).and_return(ejson_parsed_result)
+  let(:ejson_parser) do
+    adapter = instance_double(Anyway::EJSONParser)
+    allow(adapter).to receive(:call).with(config_path).and_return(ejson_parsed_result)
     adapter
   end
   let(:config_path) { "#{Anyway::Settings.app_root}/config/secrets.ejson" }
@@ -47,7 +47,7 @@ describe Anyway::Loaders::EJSON do
     end
 
     context "when local is enabled" do
-      let(:options) { {name:, ejson_adapter:, local: true} }
+      let(:options) { {name:, ejson_parser:, local: true} }
 
       let(:local_config_path) { "#{Anyway::Settings.app_root}/config/secrets.local.ejson" }
       let(:local_ejson_parsed_result) do
@@ -67,7 +67,7 @@ describe Anyway::Loaders::EJSON do
       end
 
       before do
-        allow(ejson_adapter).to receive(:parse).with(local_config_path).and_return(local_ejson_parsed_result)
+        allow(ejson_parser).to receive(:call).with(local_config_path).and_return(local_ejson_parsed_result)
       end
 
       it "parses local EJSON config" do
