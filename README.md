@@ -596,7 +596,7 @@ See [environment variables](#environment-variables).
 We also can load data from [Doppler](https://www.doppler.com/).
 
 You must set env `DOPPLER_TOKEN`, after this `Doppler loader` will work.
-If you want to enable this feature manual, you can set env `ANYWAY_CONFIG_DISABLE_DOPPLER=true` and append Doppler loader manually if you need
+If you want to enable this feature manually, you can set env `ANYWAY_CONFIG_DISABLE_DOPPLER=true` and append Doppler loader manually if you need
 
 ```ruby
 Anyway.loaders.append :Doppler, Anyway::Loaders::Doppler
