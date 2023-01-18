@@ -21,7 +21,7 @@ describe Anyway::Loaders::EJSON do
   let(:ejson_parsed_result) do
     {
       "_public_key" => "any_public_key",
-      "clever" => clever_service_parsed_data,
+      "clever" => default_parsed_data,
       "cool" =>
         {
           "username" => "5678username",
@@ -29,12 +29,15 @@ describe Anyway::Loaders::EJSON do
         }
     }
   end
-  let(:clever_service_parsed_data) do
+  let(:default_parsed_data) do
     {
       "username" => "default_username",
       "password" => "default_password",
-      "host" => "default.host",
-      "port" => 12345
+      "connection" =>
+        {
+          "host" => "default.host",
+          "port" => 12345
+        }
     }
   end
 
@@ -44,8 +47,12 @@ describe Anyway::Loaders::EJSON do
       "public_key" => "any_public_key",
       "clever" =>
         {
-          "host" => "local.host",
-          "port" => 54321
+          "password" => "local_password",
+          "connection" =>
+            {
+              "host" => "local.host",
+              "port" => 54321
+            }
         }
     }
   end
@@ -71,23 +78,21 @@ describe Anyway::Loaders::EJSON do
     before { allow(Anyway::Settings).to receive(:current_environment).and_return(nil) }
 
     it "parses default EJSON" do
-      expect(subject).to eq(
-        "username" => "default_username",
-        "password" => "default_password",
-        "host" => "default.host",
-        "port" => 12345
-      )
+      expect(subject).to eq(default_parsed_data)
     end
 
     context "when local is enabled" do
       let(:local) { true }
 
-      it "parses local EJSON config" do
+      it "merges local config into default one" do
         expect(subject).to eq(
           "username" => "default_username",
-          "password" => "default_password",
-          "host" => "local.host",
-          "port" => 54321
+          "password" => "local_password",
+          "connection" =>
+            {
+              "host" => "local.host",
+              "port" => 54321
+            }
         )
       end
     end
@@ -97,12 +102,7 @@ describe Anyway::Loaders::EJSON do
       let(:local_ejson_parsed_result) { nil }
 
       it "parses default EJSON config" do
-        expect(subject).to eq(
-          "username" => "default_username",
-          "password" => "default_password",
-          "host" => "default.host",
-          "port" => 12345
-        )
+        expect(subject).to eq(default_parsed_data)
       end
     end
 
@@ -123,7 +123,7 @@ describe Anyway::Loaders::EJSON do
     end
 
     context "when parsed content contains empty service data" do
-      let(:clever_service_parsed_data) { {} }
+      let(:default_parsed_data) { {} }
 
       it "returns empty hash" do
         expect(subject).to eq({})
@@ -145,10 +145,7 @@ describe Anyway::Loaders::EJSON do
     #   let(:development_ejson_parsed_result) { nil }
 
     #   it "returns data from default file" do
-    #     expect(subject).to eq(
-    #       "username" => "1234username",
-    #       "password" => "1234password"
-    #     )
+    #     expect(subject).to eq(default_parsed_data)
     #   end
     # end
 
@@ -158,9 +155,12 @@ describe Anyway::Loaders::EJSON do
       it "overrides config with local data" do
         expect(subject).to eq(
           "username" => "development_username",
-          "password" => "development_password",
-          "host" => "local.host",
-          "port" => 54321
+          "password" => "local_password",
+          "connection" =>
+            {
+              "host" => "local.host",
+              "port" => 54321
+            }
         )
       end
     end
