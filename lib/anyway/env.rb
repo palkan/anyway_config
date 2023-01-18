@@ -10,12 +10,13 @@ module Anyway
 
     include Tracing
 
-    attr_reader :data, :traces, :type_cast
+    attr_reader :data, :traces, :type_cast, :env_container
 
-    def initialize(type_cast: AutoCast)
+    def initialize(type_cast: AutoCast, env_container: ENV)
       @type_cast = type_cast
       @data = {}
       @traces = {}
+      @env_container = env_container
     end
 
     def clear
@@ -43,7 +44,7 @@ module Anyway
 
     def parse_env(prefix)
       match_prefix = "#{prefix}_"
-      ENV.each_pair.with_object({}) do |(key, val), data|
+      env_container.each_pair.with_object({}) do |(key, val), data|
         next unless key.start_with?(match_prefix)
 
         path = key.sub(/^#{prefix}_/, "").downcase
