@@ -24,17 +24,19 @@ module Anyway
         return {} unless config_hash.is_a?(Hash)
 
         trace!(:ejson, path: relative_config_path) do
-          config_hash.transform_keys do |key|
-            if key[0] == "_"
-              key[1..]
-            else
-              key
-            end
-          end
+          config_hash
         end
       end
 
       private
+
+      def deep_transform_keys(&block)
+        result = {}
+        each do |key, value|
+          result[yield(key)] = value.is_a?(Hash) ? value.deep_transform_keys(&block) : value
+        end
+        result
+      end
 
       def rel_config_paths
         chain = []
