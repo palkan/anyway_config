@@ -2,50 +2,55 @@
 
 require "anyway/ejson_parser"
 
+# using RubyNext
+
 module Anyway
   module Loaders
     class EJSON < Base
       def call(name:, ejson_parser: Anyway::EJSONParser.new, **_options)
-        secrets_hash, relative_config_path =
-          rel_config_paths.lazy.map do |rel_config_path|
-            rel_path = "config/#{rel_config_path}"
-            abs_path = "#{Settings.app_root}/#{rel_path}"
+        configs = []
 
-            [
-              ejson_parser.call(abs_path),
-              rel_path
-            ]
-          end.find { |el| el.itself[0] }
+        rel_config_paths.each do |rel_config_path|
+          rel_path = "config/#{rel_config_path}"
+          abs_path = "#{Settings.app_root}/#{rel_path}"
 
-        return {} unless secrets_hash
+          secrets_hash = ejson_parser.call(abs_path)
 
-        config_hash = secrets_hash[name]
+          next unless secrets_hash
 
-        return {} unless config_hash.is_a?(Hash)
+          config_hash = secrets_hash[name]
 
-        trace!(:ejson, path: relative_config_path) do
-          config_hash
+          next unless config_hash.is_a?(Hash)
+
+          configs <<
+            trace!(:ejson, path: rel_config_path) do
+              config_hash
+            end
+        end
+
+        return {} if configs.empty?
+
+        configs.inject do |result_config, next_config|
+          Utils.deep_merge!(result_config, next_config)
         end
       end
 
       private
 
-      def deep_transform_keys(&block)
-        result = {}
-        each do |key, value|
-          result[yield(key)] = value.is_a?(Hash) ? value.deep_transform_keys(&block) : value
-        end
-        result
-      end
-
       def rel_config_paths
-        chain = []
+        chain = [environmental_rel_config_path]
 
         chain << "secrets.local.ejson" if use_local?
-        chain << "#{Settings.current_environment}/secrets.ejson" if Settings.current_environment
-        chain << "secrets.ejson"
 
         chain
+      end
+
+      def environmental_rel_config_path
+        if Settings.current_environment
+          "#{Settings.current_environment}/secrets.ejson"
+        else
+          "secrets.ejson"
+        end
       end
     end
   end
