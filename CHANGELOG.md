@@ -12,8 +12,6 @@ Steep 1.2+ is required. Read more about the [feature](https://hackmd.io/xLrYaqUt
 
 - Added `manifest.yml` for RBS. ([@palkan][])
 
-## 2.3.0 (2023-01-11)
-
 - Add Doppler loader. ([@prog-supdex][]).
 
 ## 2.3.0 (2022-03-11)
