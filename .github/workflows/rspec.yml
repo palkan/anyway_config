@@ -24,6 +24,15 @@ jobs:
         ]
         rbs: ['false']
         include:
+        - ruby: "3.2"
+          gemfile: "Gemfile"
+          rbs: 'true'
+        - ruby: "3.2"
+          gemfile: "gemfiles/rails7.gemfile"
+          rbs: 'false'
+        - ruby: "3.2"
+          gemfile: "gemfiles/railsmaster.gemfile"
+          rbs: 'false'
         - ruby: "3.1"
           gemfile: "Gemfile"
           rbs: 'true'
@@ -43,7 +52,7 @@ jobs:
           gemfile: "gemfiles/rails6.gemfile"
           rbs: 'false'
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - uses: ruby/setup-ruby@v1
       with:
         ruby-version: ${{ matrix.ruby }}
