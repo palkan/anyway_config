@@ -5,9 +5,9 @@ require "spec_helper"
 describe Anyway::Loaders::EJSON do
   subject { described_class.call(**options) }
 
-  let(:options) { {name:, ejson_parser:, local: false} }
-
+  let(:options) { {name: name, ejson_parser: ejson_parser, local: local} }
   let(:name) { "clever" }
+  let(:local) { false }
 
   let(:ejson_parser) do
     parser = instance_double(Anyway::EJSONParser)
@@ -16,6 +16,7 @@ describe Anyway::Loaders::EJSON do
     allow(parser).to receive(:call).with(development_config_path).and_return(development_ejson_parsed_result)
     parser
   end
+
   let(:config_path) { "#{Anyway::Settings.app_root}/config/secrets.ejson" }
   let(:ejson_parsed_result) do
     {
@@ -79,7 +80,7 @@ describe Anyway::Loaders::EJSON do
     end
 
     context "when local is enabled" do
-      let(:options) { {name:, ejson_parser:, local: true} }
+      let(:local) { true }
 
       it "parses local EJSON config" do
         expect(subject).to eq(
@@ -92,7 +93,7 @@ describe Anyway::Loaders::EJSON do
     end
 
     context "when local is enabled, but there is no secrets.local.ejson file" do
-      let(:options) { {name:, ejson_parser:, local: true} }
+      let(:local) { true }
       let(:local_ejson_parsed_result) { nil }
 
       it "parses default EJSON config" do
@@ -152,7 +153,7 @@ describe Anyway::Loaders::EJSON do
     # end
 
     context "using local file config" do
-      let(:options) { {name:, ejson_parser:, local: true} }
+      let(:local) { true }
 
       it "overrides config with local data" do
         expect(subject).to eq(
@@ -165,7 +166,7 @@ describe Anyway::Loaders::EJSON do
     end
 
     context "when local is enabled, but there is no secrets.local.ejson file" do
-      let(:options) { {name:, ejson_parser:, local: true} }
+      let(:local) { true }
       let(:local_ejson_parsed_result) { nil }
 
       it "parses default EJSON config" do
