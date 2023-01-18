@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
-RSpec.describe Anyway::Utils do
-  describe '.which' do
+describe Anyway::Utils do
+  describe ".which" do
     subject { described_class.which("ejson") }
 
     it { expect(subject).to be_a(String) }

@@ -40,12 +40,11 @@ describe Anyway::Ext::Hash do
   describe "#deep_transform_keys" do
     let(:source) do
       {
-        a: 1,
-        'b' => "hello",
-        c:
-          {
-            id: 1
-          }
+        :a => 1,
+        "b" => "hello",
+        :c => {
+          id: 1
+        }
       }
     end
 
@@ -60,7 +59,7 @@ describe Anyway::Ext::Hash do
       }
     end
 
-    it 'transforms all keys' do
+    it "transforms all keys" do
       result = source.deep_transform_keys { |key| "#{key} - #{key.class}" }
 
       expect(result).to eq(expected_result)

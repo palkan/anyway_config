@@ -28,7 +28,7 @@ module Anyway
         end
 
         def deep_transform_keys(&block)
-          each_with_object(::Hash.new) do |(key, value), result|
+          each_with_object({}) do |(key, value), result|
             result[yield(key)] = value.is_a?(::Hash) ? value.deep_transform_keys(&block) : value
           end
         end

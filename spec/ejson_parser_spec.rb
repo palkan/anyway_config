@@ -24,11 +24,11 @@ describe Anyway::EJSONParser do
       "my_service" =>
         {
           "username" => "my_username",
-          "password"=>"my_password",
-          "config"=>
+          "password" => "my_password",
+          "config" =>
             {
-              "host"=>"example.com",
-              "port"=>555
+              "host" => "example.com",
+              "port" => 555
             }
         }
     )
