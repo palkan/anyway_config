@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 require 'open3'
+require "anyway/ext/hash"
+
+using Anyway::Ext::Hash
 
 module Anyway
   class EJSONParser
@@ -12,7 +15,15 @@ module Anyway
           stdout.read.chomp
         end
 
-      JSON.parse(cmd_result)
+      raw_content = JSON.parse(cmd_result)
+
+      raw_content.deep_transform_keys do |key|
+        if key[0] == "_"
+          key[1..]
+        else
+          key
+        end
+      end
     rescue JSON::ParserError
       nil
     end

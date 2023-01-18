@@ -26,6 +26,13 @@ module Anyway
           end
           hash[last_key] = val
         end
+
+        # TODO: Unit-тест
+        def deep_transform_keys(&block)
+          each_with_object(::Hash.new) do |(key, value), result|
+            result[yield(key)] = value.is_a?(::Hash) ? value.deep_transform_keys(&block) : value
+          end
+        end
       end
 
       using self

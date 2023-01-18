@@ -23,14 +23,14 @@ describe Anyway::Loaders::EJSON do
       "clever" => clever_service_parsed_data,
       "cool" =>
         {
-          "_username" => "5678username",
+          "username" => "5678username",
           "password" => "5678password"
         }
     }
   end
   let(:clever_service_parsed_data) do
     {
-      "_username" => "1234username",
+      "username" => "1234username",
       "password" => "1234password"
     }
   end
@@ -38,15 +38,15 @@ describe Anyway::Loaders::EJSON do
   let(:local_config_path) { "#{Anyway::Settings.app_root}/config/secrets.local.ejson" }
   let(:local_ejson_parsed_result) do
     {
-      "_public_key" => "any_public_key",
+      "public_key" => "any_public_key",
       "clever" =>
         {
-          "_username" => "local_username",
+          "username" => "local_username",
           "password" => "local_password"
         },
       "cool" =>
         {
-          "_username" => "5678username5678",
+          "username" => "5678username5678",
           "password" => "5678password5678"
         }
     }
@@ -55,15 +55,15 @@ describe Anyway::Loaders::EJSON do
   let(:development_config_path) { "#{Anyway::Settings.app_root}/config/development/secrets.ejson" }
   let(:development_ejson_parsed_result) do
     {
-      "_public_key" => "any_public_key",
+      "public_key" => "any_public_key",
       "clever" =>
         {
-          "_username" => "development_username",
+          "username" => "development_username",
           "password" => "development_password"
         },
       "cool" =>
         {
-          "_username" => "8765username8765",
+          "username" => "8765username8765",
           "password" => "8765password8765"
         }
     }

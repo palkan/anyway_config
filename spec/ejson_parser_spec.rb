@@ -18,11 +18,19 @@ describe Anyway::EJSONParser do
 
   it "decrypts and parses EJSON file into Hash" do
     expect(subject).to eq(
-      {
-        "_public_key" => "57f49135636ef90e35a6ea7fed5772a101002c501b0405297d2c2b4fd8db9739",
-        "_database_username" => "1234username",
-        "database_password" => "1234password"
-      }
+      "public_key" => "57f49135636ef90e35a6ea7fed5772a101002c501b0405297d2c2b4fd8db9739",
+      "database_username" => "1234username",
+      "database_password" => "1234password",
+      "my_service" =>
+        {
+          "username" => "my_username",
+          "password"=>"my_password",
+          "config"=>
+            {
+              "host"=>"example.com",
+              "port"=>555
+            }
+        }
     )
   end
 
