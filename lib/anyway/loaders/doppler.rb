@@ -12,7 +12,7 @@ module Anyway
       DOPPLER_REQUEST_ERROR = Class.new(StandardError)
       DOPPLER_JSON_FORMAT_URL = "https://api.doppler.com/v3/configs/config/secrets/download"
 
-      def call(env_prefix:, **_options)
+      def call(env_prefix:, **)
         env_payload = parse_doppler_response
 
         env = ::Anyway::Env.new(type_cast: ::Anyway::NoCast, env_container: env_payload)
