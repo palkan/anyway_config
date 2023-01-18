@@ -15,7 +15,7 @@ describe Anyway::Loaders::Doppler do
 
   context "when success loads data from doppler" do
     it "loads data from doppler" do
-      stub_request(:get, /api.doppler.com/)
+      stub_request(:get, described_class::DOPPLER_JSON_FORMAT_URL)
         .with(headers: {"Authorization" => "Bearer #{valid_doppler_token}"})
         .to_return(status: 200, body: doppler_content.to_json)
 
@@ -35,7 +35,7 @@ describe Anyway::Loaders::Doppler do
 
   context "when DOPPLER_TOKEN is not valid" do
     it "raises DOPPLER_REQUEST_ERROR" do
-      stub_request(:get, /api.doppler.com/)
+      stub_request(:get, described_class::DOPPLER_JSON_FORMAT_URL)
         .with(headers: {"Authorization" => "Bearer #{invalid_doppler_token}"})
         .to_return(status: [401, "Unauthorized"])
 
