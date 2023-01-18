@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'open3'
+require "open3"
 require "anyway/ext/hash"
 
 using Anyway::Ext::Hash
