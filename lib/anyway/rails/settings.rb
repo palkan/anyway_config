@@ -18,6 +18,8 @@ module Anyway
 
           return unless ::Rails.root.join(val).exist?
 
+          return if val == autoload_static_config_path
+
           autoloader&.unload
 
           @autoload_static_config_path = val
