@@ -268,7 +268,7 @@ module Anyway # :nodoc:
         names.each do |name|
           accessors_module.module_eval <<~RUBY, __FILE__, __LINE__ + 1
             def #{name}=(val)
-              __trace__&.record_value(val, \"#{name}\", **Tracing.current_trace_source)
+              __trace__&.record_value(val, "#{name}", **Tracing.current_trace_source)
               values[:#{name}] = val
             end
 

@@ -93,7 +93,7 @@ end
 namespace :spec do
   desc "Run RSpec with RBS runtime tester enabled"
   task :rbs do
-    rspec_args = ARGV.join.split("--", 2).then { _1.size == 2 ? _1.last : nil }
+    rspec_args = ARGV.join.split("--", 2).then { (_1.size == 2) ? _1.last : nil }
     sh <<~COMMAND
       RACK_ENV=test \
       RBS_TEST_LOGLEVEL=error \
