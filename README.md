@@ -342,7 +342,7 @@ end
 
 ### EJSON support
 
-Anyway Config allows you to keep your configuration also in encrypted `.ejson` files. More information 
+Anyway Config allows you to keep your configuration also in encrypted `.ejson` files. More information
 about EJSON format you can read [here](https://github.com/Shopify/ejson).
 
 Configuration will be loaded only if you have `ejson` executable in your PATH. Easiest way to do this - install `ejson` as a gem into project:
@@ -353,6 +353,7 @@ gem "ejson"
 ```
 
 Loading order of configuration is next:
+
 - `config/secrets.local.ejson` (see [Local files](#local-files) for more information)
 - `config/<environment>/secrets.ejson` (if you have any multi-environment setup, e.g Rails environments)
 - `config/secrets.ejson`
