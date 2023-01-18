@@ -2,6 +2,10 @@
 
 ## master
 
+## 2.3.1 (2023-01-17)
+
+- [Fixes [#110](https://github.com/palkan/anyway_config/issues/110)] Fix setting up autoloader for the same folder. ([@palkan][])
+
 - RBS: Now `.on_load` automatically pass block context type (instance), so no need to add annotations! ([@palkan][])
 
 Steep 1.2+ is required. Read more about the [feature](https://hackmd.io/xLrYaqUtQ1GhgTHODkYypw?view).

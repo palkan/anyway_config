@@ -19,7 +19,7 @@ module Anyway
       def initialize(type = :trace, value = UNDEF, **source)
         @type = type
         @source = source
-        @value = value == UNDEF ? Hash.new { |h, k| h[k] = Trace.new(:trace) } : value
+        @value = (value == UNDEF) ? Hash.new { |h, k| h[k] = Trace.new(:trace) } : value
       end
 
       def dig(...)
