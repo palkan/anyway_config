@@ -7,7 +7,7 @@ module Anyway
     class EJSON < Base
       def call(name:, ejson_parser: Anyway::EJSONParser.new, **_options)
         secrets_hash, relative_config_path =
-          rel_config_pathes.lazy.map do |rel_config_path|
+          rel_config_paths.lazy.map do |rel_config_path|
             rel_path = "config/#{rel_config_path}"
             abs_path = "#{Settings.app_root}/#{rel_path}"
 
@@ -36,7 +36,7 @@ module Anyway
 
       private
 
-      def rel_config_pathes
+      def rel_config_paths
         chain = []
 
         chain << "secrets.local.ejson" if use_local?
