@@ -46,7 +46,7 @@ module Anyway
 
       def environmental_rel_config_path
         if Settings.current_environment
-          # if data from environment file is empty then take data from default one
+          # if environment file is absent, then take data from the default one
           [
             "#{Settings.current_environment}/secrets.ejson",
             default_rel_config_path
