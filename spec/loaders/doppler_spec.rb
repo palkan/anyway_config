@@ -5,21 +5,24 @@ require "spec_helper"
 describe Anyway::Loaders::Doppler do
   include Anyway::Testing::Helpers
 
-  subject { described_class.call }
+  subject { described_class.call(**options) }
 
-  let(:doppler_content) { { "some_content" => "success", "some_variable" => "variable" } }
+  let(:options) { {env_prefix: "SOME_APP"} }
+  let(:doppler_content) { {"SOME_APP_TOKEN" => "token_value", "ANOTHER_ENV_KEY" => "another_key"} }
+  let(:doppler_response) { {"token" => "token_value"} }
+  let(:valid_doppler_token) { "valid_bearer_token" }
+  let(:invalid_doppler_token) { "invalid_bearer_token" }
 
   context "when success loads data from doppler" do
     it "loads data from doppler" do
-      http_success = Net::HTTPSuccess.new(1.0, '200', 'OK')
-
-      allow(http_success).to receive(:read_body) { doppler_content.to_json  }
-      expect_any_instance_of(Net::HTTP).to receive(:request) { http_success }
+      stub_request(:get, /api.doppler.com/)
+        .with(headers: {"Authorization" => "Bearer #{valid_doppler_token}"})
+        .to_return(status: 200, body: doppler_content.to_json)
 
       with_env(
-        "DOPPLER_TOKEN" => "valid",
+        "DOPPLER_TOKEN" => valid_doppler_token
       ) do
-        expect(subject).to eq(doppler_content)
+        expect(subject).to eq(doppler_response)
       end
     end
   end
@@ -32,12 +35,12 @@ describe Anyway::Loaders::Doppler do
 
   context "when DOPPLER_TOKEN is not valid" do
     it "raises DOPPLER_REQUEST_ERROR" do
-      http_error = Net::HTTPUnauthorized.new(1.0, "401", "Unauthorized")
-
-      expect_any_instance_of(Net::HTTP).to receive(:request) { http_error }
+      stub_request(:get, /api.doppler.com/)
+        .with(headers: {"Authorization" => "Bearer #{invalid_doppler_token}"})
+        .to_return(status: [401, "Unauthorized"])
 
       with_env(
-        "DOPPLER_TOKEN" => "not_valid",
+        "DOPPLER_TOKEN" => invalid_doppler_token
       ) do
         expect { subject }.to raise_error(Anyway::Loaders::Doppler::DOPPLER_REQUEST_ERROR, "401 Unauthorized")
       end
