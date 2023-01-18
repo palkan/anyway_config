@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'uri'
-require 'net/http'
+require "uri"
+require "net/http"
 require "json"
 
 module Anyway
@@ -12,9 +12,14 @@ module Anyway
       DOPPLER_REQUEST_ERROR = Class.new(StandardError)
       DOPPLER_JSON_FORMAT_URL = "https://api.doppler.com/v3/configs/config/secrets/download"
 
-      def call(**_options)
-        trace!(:doppler) do
-          parse_doppler_response
+      def call(env_prefix:, **_options)
+        env_payload = parse_doppler_response
+
+        env = ::Anyway::Env.new(type_cast: ::Anyway::NoCast, env_container: env_payload)
+
+        env.fetch_with_trace(env_prefix).then do |(conf, trace)|
+          Tracing.current_trace&.merge!(trace)
+          conf
         end
       end
 

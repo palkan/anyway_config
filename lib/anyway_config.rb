@@ -36,6 +36,10 @@ module Anyway # :nodoc:
   # Configure default loaders
   loaders.append :yml, Loaders::YAML
   loaders.append :env, Loaders::Env
+
+  if ENV.key?("DOPPLER_TOKEN") && ENV["ANYWAY_CONFIG_DISABLE_DOPPLER"] != "true"
+    loaders.append :doppler, Loaders::Doppler
+  end
 end
 
 require "anyway/rails" if defined?(::Rails::VERSION)
