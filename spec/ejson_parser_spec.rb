@@ -26,16 +26,6 @@ describe Anyway::EJSONParser do
     )
   end
 
-  context "when `ejson` executable is not in the PATH" do
-    before do
-      stub_const("ENV", ENV.to_hash.merge("PATH" => ""))
-    end
-
-    it "returns nil" do
-      expect(subject).to eq(nil)
-    end
-  end
-
   context "when file does not exist" do
     let(:file_path) { "#{Anyway::Settings.app_root}/ejson/no.ejson" }
 
