@@ -9,10 +9,11 @@ module Anyway
         configs = []
 
         rel_config_paths.each do |rel_config_path|
-          rel_path = "config/#{rel_config_path}"
-          abs_path = "#{Settings.app_root}/#{rel_path}"
-
-          secrets_hash = ejson_parser.call(abs_path)
+          secrets_hash, rel_path =
+            extract_hash_from_rel_config_path(
+              ejson_parser: ejson_parser,
+              rel_config_path: rel_config_path
+            )
 
           next unless secrets_hash
 
@@ -21,7 +22,7 @@ module Anyway
           next unless config_hash.is_a?(Hash)
 
           configs <<
-            trace!(:ejson, path: rel_config_path) do
+            trace!(:ejson, path: rel_path) do
               config_hash
             end
         end
@@ -45,10 +46,33 @@ module Anyway
 
       def environmental_rel_config_path
         if Settings.current_environment
-          "#{Settings.current_environment}/secrets.ejson"
+          # if data from environment file is empty then take data from default one
+          [
+            "#{Settings.current_environment}/secrets.ejson",
+            default_rel_config_path
+          ]
         else
-          "secrets.ejson"
+          default_rel_config_path
         end
+      end
+
+      def default_rel_config_path
+        "secrets.ejson"
+      end
+
+      def extract_hash_from_rel_config_path(ejson_parser:, rel_config_path:)
+        rel_config_path = [rel_config_path] unless rel_config_path.is_a?(Array)
+
+        rel_config_path.each do |rel_conf_path|
+          rel_path = "config/#{rel_conf_path}"
+          abs_path = "#{Settings.app_root}/#{rel_path}"
+
+          result = ejson_parser.call(abs_path)
+
+          return [result, rel_path] if result
+        end
+
+        nil
       end
     end
   end

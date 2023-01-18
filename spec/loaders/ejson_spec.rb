@@ -141,13 +141,13 @@ describe Anyway::Loaders::EJSON do
       )
     end
 
-    # context "when there is no development config" do
-    #   let(:development_ejson_parsed_result) { nil }
+    context "when there is no development config" do
+      let(:development_ejson_parsed_result) { nil }
 
-    #   it "returns data from default file" do
-    #     expect(subject).to eq(default_parsed_data)
-    #   end
-    # end
+      it "returns data from default file" do
+        expect(subject).to eq(default_parsed_data)
+      end
+    end
 
     context "using local file config" do
       let(:local) { true }
