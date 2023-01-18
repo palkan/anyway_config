@@ -12,6 +12,7 @@ require "anyway/ext/deep_freeze"
 require "anyway/ext/hash"
 
 require "anyway/utils/deep_merge"
+require "anyway/utils/which"
 
 require "anyway/settings"
 require "anyway/tracing"
@@ -35,7 +36,7 @@ module Anyway # :nodoc:
 
   # Configure default loaders
   loaders.append :yml, Loaders::YAML
-  loaders.append :ejson, Loaders::EJSON
+  loaders.append :ejson, Loaders::EJSON if Utils.which("ejson")
   loaders.append :env, Loaders::Env
 end
 
