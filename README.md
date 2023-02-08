@@ -778,6 +778,15 @@ def call(name:, **_opts)
 end
 ```
 
+### Doppler Loader
+
+Anyway Config supports [Doppler](https://www.doppler.com/) as a data loader.
+To use it:
+- Add the following line to your config initializer
+```ruby
+Anyway.loaders.insert_before :env, :doppler_loader, Anyway::Loaders::Doppler
+```
+- Add `DOPPLER_TOKEN` environment variable. Here's how to create it: https://docs.doppler.com/docs/service-tokens
 ## Tracing
 
 Since Anyway Config loads data from multiple source, it could be useful to know where a particular value came from.
