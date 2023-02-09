@@ -3,6 +3,7 @@
 ## master
 
 ## 2.3.1 (2023-02-08)
+
 - [Fixes [#107](https://github.com/palkan/anyway_config/issues/107)] Add Doppler loader. ([@sergey-tyan][])
 
 - [Fixes [#110](https://github.com/palkan/anyway_config/issues/110)] Fix setting up autoloader for the same folder. ([@palkan][])

@@ -782,11 +782,15 @@ end
 
 Anyway Config supports [Doppler](https://www.doppler.com/) as a data loader.
 To use it:
+
 - Add the following line to your config initializer
+
 ```ruby
 Anyway.loaders.insert_before :env, :doppler_loader, Anyway::Loaders::Doppler
 ```
-- Add `DOPPLER_TOKEN` environment variable. Here's how to create it: https://docs.doppler.com/docs/service-tokens
+
+- Add `DOPPLER_TOKEN` environment variable. Documentation on how to get a token can be found [here](https://docs.doppler.com/docs/cli#section-authentication).
+
 ## Tracing
 
 Since Anyway Config loads data from multiple source, it could be useful to know where a particular value came from.
