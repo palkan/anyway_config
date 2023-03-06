@@ -595,16 +595,20 @@ See [environment variables](#environment-variables).
 
 We also can load data from [Doppler](https://www.doppler.com/).
 
-You must set env `DOPPLER_TOKEN`, after this `Doppler loader` will work.
-If you want to enable this feature manually, you can set env `ANYWAY_CONFIG_DISABLE_DOPPLER=true` and append Doppler loader manually if you need
+If you specify the `DOPPLER_TOKEN` env var, the Doppler data loader is enabled automatically (you can disable it by specifying the`ANYWAY_CONFIG_DISABLE_DOPPLER=true` env var).
+
+You can also configure Doppler loader manually if needed:
 
 ```ruby
+# Add loader
 Anyway.loaders.append :Doppler, Anyway::Loaders::Doppler
+
+# Configure API URL and token (defaults are shown)
+Anyway::Loaders::Doppler.download_url = "https://api.doppler.com/v3/configs/config/secrets/download"
+Anyway::Loaders::Doppler.token = ENV["DOPPLER_TOKEN"]
 ```
 
-`DOPPLER_TOKEN` is service token, which associated with specific content
-
-Read more about [Service tokens](https://docs.doppler.com/docs/service-tokens)
+**NOTE**: `DOPPLER_TOKEN` is service token, which associated with specific content. Read more about [Service tokens](https://docs.doppler.com/docs/service-tokens).
 
 ## Environment variables
 
