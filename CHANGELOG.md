@@ -473,8 +473,5 @@ No we're dependency-free!
 [@progapandist]: https://github.com/progapandist
 [@skryukov]: https://github.com/skryukov
 [@fargelus]: https://github.com/fargelus
-<<<<<<< HEAD
 [@prog-supdex]: https://github.com/prog-supdex
-=======
 [@inner-whisper]: https://github.com/inner-whisper
->>>>>>> de91cd6 (added changelog entry)
