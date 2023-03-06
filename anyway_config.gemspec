@@ -39,7 +39,6 @@ Gem::Specification.new do |s|
   end
 
   s.add_development_dependency "ammeter", "~> 1.1.3"
-  s.add_development_dependency "bundler", ">= 1.15"
   s.add_development_dependency "rake", ">= 13.0"
   s.add_development_dependency "rspec", ">= 3.8"
   s.add_development_dependency "ruby-next", ">= 0.14.0"
