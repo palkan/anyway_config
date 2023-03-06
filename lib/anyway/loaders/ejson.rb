@@ -5,7 +5,13 @@ require "anyway/ejson_parser"
 module Anyway
   module Loaders
     class EJSON < Base
-      def call(name:, ejson_parser: Anyway::EJSONParser.new, **_options)
+      class << self
+        attr_accessor :bin_path
+      end
+
+      self.bin_path = "ejson"
+
+      def call(name:, ejson_parser: Anyway::EJSONParser.new(EJSON.bin_path), **_options)
         configs = []
 
         rel_config_paths.each do |rel_config_path|

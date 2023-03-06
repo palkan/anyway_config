@@ -7,15 +7,26 @@ using Anyway::Ext::Hash
 
 module Anyway
   class EJSONParser
+    attr_reader :bin_path
+
+    def initialize(bin_path = "ejson")
+      @bin_path = bin_path
+    end
+
     def call(file_path)
       return unless File.exist?(file_path)
 
-      cmd_result =
-        Open3.popen3("ejson decrypt #{file_path}") do |stdin, stdout, stderr, thread|
-          stdout.read.chomp
-        end
+      raw_content = nil
 
-      raw_content = JSON.parse(cmd_result)
+      stdout, stderr, status = Open3.capture3("#{bin_path} decrypt #{file_path}")
+
+      if status.success?
+        raw_content = JSON.parse(stdout.chomp)
+      else
+        Kernel.warn "Failed to decrypt #{file_path}: #{stderr}"
+      end
+
+      return unless raw_content
 
       raw_content.deep_transform_keys do |key|
         if key[0] == "_"
@@ -24,8 +35,6 @@ module Anyway
           key
         end
       end
-    rescue JSON::ParserError
-      nil
     end
   end
 end

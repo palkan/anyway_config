@@ -5,8 +5,9 @@ require "spec_helper"
 describe Anyway::EJSONParser do
   subject { described_class.new.call(file_path) }
 
-  let(:file_path) { "#{Anyway::Settings.app_root}/ejson/correct.ejson" }
-  let(:ejson_keydir) { "#{Anyway::Settings.app_root}/ejson/keys" }
+  let(:app_root) { File.join(__dir__, "dummy") }
+  let(:file_path) { "#{app_root}/ejson/correct.ejson" }
+  let(:ejson_keydir) { "#{app_root}/ejson/keys" }
 
   before do
     ENV["EJSON_KEYDIR"] = ejson_keydir
@@ -35,7 +36,7 @@ describe Anyway::EJSONParser do
   end
 
   context "when file does not exist" do
-    let(:file_path) { "#{Anyway::Settings.app_root}/ejson/no.ejson" }
+    let(:file_path) { "#{app_root}/ejson/no.ejson" }
 
     it "returns nil" do
       expect(subject).to eq(nil)
@@ -43,10 +44,13 @@ describe Anyway::EJSONParser do
   end
 
   context "when file decryption fails" do
-    let(:ejson_keydir) { "#{Anyway::Settings.app_root}/ejson" }
+    let(:ejson_keydir) { "#{app_root}/ejson" }
 
-    it "returns nil" do
+    before { allow(Kernel).to receive(:warn) }
+
+    it "warns and returns nil" do
       expect(subject).to eq(nil)
+      expect(Kernel).to have_received(:warn).with(/decryption failed/i)
     end
   end
 end
