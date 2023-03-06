@@ -36,7 +36,6 @@ For version 1.x see the [1-4-stable branch](https://github.com/palkan/anyway_con
   - [Configuration classes](#configuration-classes)
   - [Dynamic configuration](#dynamic-configuration)
   - [Validation & Callbacks](#validation-and-callbacks)
-  - [EJSON support](#ejson-support)
 - [Using with Rails applications](#using-with-rails)
   - [Data population](#data-population)
   - [Organizing configs](#organizing-configs)
@@ -46,6 +45,9 @@ For version 1.x see the [1-4-stable branch](https://github.com/palkan/anyway_con
 - [Type coercion](#type-coercion)
 - [Local configuration](#local-files)
 - [Data loaders](#data-loaders)
+  - [Doppler integration](#doppler-integration)
+  - [EJSON support](#ejson-support)
+  - [Custom loaders](#custom-loaders)
 - [Source tracing](#tracing)
 - [Pattern matching](#pattern-matching)
 - [Test helpers](#test-helpers)
@@ -270,7 +272,7 @@ This feature is similar to `Rails.application.config_for` but more powerful:
 | Load data from `secrets` | ❌ | ✅ |
 | Load data from `credentials` | ❌ | ✅ |
 | Load data from environment | ❌ | ✅ |
-| Load data from [custom sources](#data-loaders) | ❌ | ✅ |
+| Load data from [other sources](#data-loaders) | ❌ | ✅ |
 | Local config files | ❌ | ✅ |
 | Type coercion | ❌ | ✅ |
 | [Source tracing](#tracing) | ❌ | ✅ |
@@ -338,43 +340,6 @@ class MyConfig < Anyway::Config
     end
   end
 end
-```
-
-### EJSON support
-
-Anyway Config allows you to keep your configuration also in encrypted `.ejson` files. More information
-about EJSON format you can read [here](https://github.com/Shopify/ejson).
-
-Configuration will be loaded only if you have `ejson` executable in your PATH. Easiest way to do this - install `ejson` as a gem into project:
-
-```ruby
-# Gemfile
-gem "ejson"
-```
-
-Loading order of configuration is next:
-
-- `config/secrets.local.ejson` (see [Local files](#local-files) for more information)
-- `config/<environment>/secrets.ejson` (if you have any multi-environment setup, e.g Rails environments)
-- `config/secrets.ejson`
-
-Example of `config/secrets.ejson` file content for your `MyConfig`:
-
-```json
-{
-  "_public_key": "0843d33f0eee994adc66b939fe4ef569e4c97db84e238ff581934ee599e19d1a",
-  "my":
-    {
-      "_username": "root",
-      "password": "EJ[1:IC1d347GkxLXdZ0KrjGaY+ljlsK1BmK7CobFt6iOLgE=:Z55OYS1+On0xEBvxUaIOdv/mE2r6lp44:T7bE5hkAbazBnnH6M8bfVcv8TOQJAgUDQffEgw==]"
-    }
-}
-```
-
-To debug any problems with loading configurations from `.ejson` files you can directly call `ejson decrypt`:
-
-```sh
-ejson decrypt config/secrets.ejson
 ```
 
 ## Using with Rails
@@ -629,25 +594,6 @@ Anyway::Settings.default_config_path = ->(name) { Rails.root.join("data", "confi
 
 See [environment variables](#environment-variables).
 
-3) **Doppler loader**:
-
-We also can load data from [Doppler](https://www.doppler.com/).
-
-If you specify the `DOPPLER_TOKEN` env var, the Doppler data loader is enabled automatically (you can disable it by specifying the`ANYWAY_CONFIG_DISABLE_DOPPLER=true` env var).
-
-You can also configure Doppler loader manually if needed:
-
-```ruby
-# Add loader
-Anyway.loaders.append :Doppler, Anyway::Loaders::Doppler
-
-# Configure API URL and token (defaults are shown)
-Anyway::Loaders::Doppler.download_url = "https://api.doppler.com/v3/configs/config/secrets/download"
-Anyway::Loaders::Doppler.token = ENV["DOPPLER_TOKEN"]
-```
-
-**NOTE**: `DOPPLER_TOKEN` is service token, which associated with specific content. Read more about [Service tokens](https://docs.doppler.com/docs/service-tokens).
-
 ## Environment variables
 
 Environmental variables for your config should start with your config name, upper-cased.
@@ -789,6 +735,62 @@ Don't forget to add `*.local.yml` (and `config/credentials/local.*`) to your `.g
 **NOTE:** local YAML configs for a Rails app must be environment-free (i.e., you shouldn't have top-level `development:` key).
 
 ## Data loaders
+
+### Doppler integration
+
+Anyway Config can pull configuration data from [Doppler](https://www.doppler.com/). All you need is to specify the `DOPPLER_TOKEN` environment variable with the **service token**, associated with the specific content (read more about [service tokens](https://docs.doppler.com/docs/service-tokens)).
+
+You can also configure Doppler loader manually if needed:
+
+```ruby
+# Add loader
+Anyway.loaders.append :Doppler, Anyway::Loaders::Doppler
+
+# Configure API URL and token (defaults are shown)
+Anyway::Loaders::Doppler.download_url = "https://api.doppler.com/v3/configs/config/secrets/download"
+Anyway::Loaders::Doppler.token = ENV["DOPPLER_TOKEN"]
+```
+
+**NOTE:** You can opt-out from Doppler loader by specifying the`ANYWAY_CONFIG_DISABLE_DOPPLER=true` env var (in case you have the `DOPPLER_TOKEN` env var, but don't want to use it with Anyway Config).
+
+### EJSON support
+
+Anyway Config allows you to keep your configuration also in encrypted `.ejson` files. More information
+about EJSON format you can read [here](https://github.com/Shopify/ejson).
+
+Configuration will be loaded only if you have `ejson` executable in your PATH. Easiest way to do this - install `ejson` as a gem into project:
+
+```ruby
+# Gemfile
+gem "ejson"
+```
+
+Loading order of configuration is next:
+
+- `config/secrets.local.ejson` (see [Local files](#local-files) for more information)
+- `config/<environment>/secrets.ejson` (if you have any multi-environment setup, e.g Rails environments)
+- `config/secrets.ejson`
+
+Example of `config/secrets.ejson` file content for your `MyConfig`:
+
+```json
+{
+  "_public_key": "0843d33f0eee994adc66b939fe4ef569e4c97db84e238ff581934ee599e19d1a",
+  "my":
+    {
+      "_username": "root",
+      "password": "EJ[1:IC1d347GkxLXdZ0KrjGaY+ljlsK1BmK7CobFt6iOLgE=:Z55OYS1+On0xEBvxUaIOdv/mE2r6lp44:T7bE5hkAbazBnnH6M8bfVcv8TOQJAgUDQffEgw==]"
+    }
+}
+```
+
+To debug any problems with loading configurations from `.ejson` files you can directly call `ejson decrypt`:
+
+```sh
+ejson decrypt config/secrets.ejson
+```
+
+### Custom loaders
 
 You can provide your own data loaders or change the existing ones using the Loaders API (which is very similar to Rack middleware builder):
 
