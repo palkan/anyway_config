@@ -210,6 +210,27 @@ describe Anyway::Config, type: :config do
         end
 
         specify { expect(conf.port).to eq "8080" }
+
+        context "with arrays" do
+          let(:conf) do
+            klass = Class.new(CoolConfig)
+            klass.attr_config(hosts: [])
+            klass.coerce_types(hosts: {type: :string, array: true})
+            klass.new
+          end
+
+          specify do
+            expect(conf.hosts).to eq []
+          end
+
+          specify "with values" do
+            with_env(
+              "COOL_HOSTS" => "local,dev"
+            ) do
+              expect(conf.hosts).to eq(%w[local dev])
+            end
+          end
+        end
       end
 
       context "when auto cast is disabled" do
