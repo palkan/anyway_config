@@ -32,7 +32,7 @@ spec/dummy/db/*.sqlite3-journal
 spec/dummy/tmp/
 
 Gemfile.lock
-Gemfile.local
+Gemfile.local*
 .rspec
 .ruby-version
 *.gem

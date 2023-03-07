@@ -2,6 +2,10 @@
 
 ## master
 
+- Add support for using `env_prefix ""` to load from unprefixed env vars. ([@palkan][])
+
+See [#118](https://github.com/palkan/anyway_config/issues/118).
+
 - Added EJSON support. ([@inner-whisper])
 
 - Add Doppler loader. ([@prog-supdex][]).

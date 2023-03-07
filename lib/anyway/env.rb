@@ -43,11 +43,11 @@ module Anyway
     private
 
     def parse_env(prefix)
-      match_prefix = "#{prefix}_"
+      match_prefix = prefix.empty? ? prefix : "#{prefix}_"
       env_container.each_pair.with_object({}) do |(key, val), data|
         next unless key.start_with?(match_prefix)
 
-        path = key.sub(/^#{prefix}_/, "").downcase
+        path = key.sub(/^#{match_prefix}/, "").downcase
 
         paths = path.split("__")
         trace!(:env, *paths, key:) { data.bury(type_cast.call(val), *paths) }

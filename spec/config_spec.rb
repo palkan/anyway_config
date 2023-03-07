@@ -175,6 +175,28 @@ describe Anyway::Config, type: :config do
             expect(conf.user[:name]).to eq "bill"
           end
         end
+
+        context "with env_prefix = ''" do
+          let(:conf) do
+            klass = CoolConfig.dup
+            klass.env_prefix("")
+            klass.new
+          end
+
+          it "loads unprefixed env vars" do
+            with_env(
+              "PORT" => "2004",
+              "USER__NAME" => "flo",
+              "USER__SOME__FIELD" => "y",
+              "HOST" => "stink.ie"
+            ) do
+              expect(conf.host).to eq "stink.ie"
+              expect(conf.port).to eq 2004
+              expect(conf.user[:name]).to eq "flo"
+              expect(conf.user[:some][:field]).to eq "y"
+            end
+          end
+        end
       end
 
       context "when config_name contains underscores" do

@@ -35,7 +35,7 @@ module Anyway
         end
 
         target_trace = path.empty? ? self : value.dig(*path)
-        target_trace.value[key.to_s] = trace
+        target_trace.record_key(key.to_s, trace)
 
         val
       end
@@ -52,6 +52,12 @@ module Anyway
         end
 
         hash
+      end
+
+      def record_key(key, key_trace)
+        @value = Hash.new { |h, k| h[k] = Trace.new(:trace) } unless value.is_a?(::Hash)
+
+        value[key] = key_trace
       end
 
       def merge!(another_trace)
