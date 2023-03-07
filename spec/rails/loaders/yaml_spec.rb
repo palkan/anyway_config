@@ -31,6 +31,7 @@ describe "Anyway::Rails::Loaders::YAML", :rails do
 
   context "when known environments enabled" do
     before { Anyway::Settings.future.use :unwrap_known_environments }
+
     after do
       Rails.env = "test"
       Anyway::Settings.future.use []
@@ -158,6 +159,7 @@ describe "Anyway::Rails::Loaders::YAML", :rails do
 
     context "when only default environmental key is one of environments" do
       let(:options) { {config_path: Rails.root.join("config/cool_unmatched_environment.yml"), some_other: "value"} }
+
       before { Anyway::Settings.default_environmental_key = "production" }
 
       it "loads production as default" do

@@ -5,6 +5,9 @@ require:
 inherit_gem:
   standard: config/base.yml
 
+inherit_from:
+  - .rubocop/rubocop_rspec.yml
+
 AllCops:
   Exclude:
     - 'bin/*'

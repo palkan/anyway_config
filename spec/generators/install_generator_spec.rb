@@ -5,6 +5,7 @@ require "generators/anyway/install/install_generator"
 
 describe Anyway::Generators::InstallGenerator, :rails, type: :generator do
   before(:all) { destination File.join(__dir__, "../../tmp/basic_rails_app") }
+
   let(:configs_root) { Anyway::Settings.autoload_static_config_path }
   let(:args) { [] }
 

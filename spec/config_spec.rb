@@ -224,7 +224,7 @@ describe Anyway::Config, type: :config do
         end
       end
 
-      fcontext "with types" do
+      context "with types" do
         let(:conf) do
           klass = Class.new(CoolConfig)
           klass.coerce_types(port: :string)
@@ -723,7 +723,7 @@ describe Anyway::Config, type: :config do
     end
   end
 
-  fdescribe ".required" do
+  describe ".required" do
     let(:config) do
       Class.new(described_class) do
         config_name "testo"
@@ -864,6 +864,7 @@ describe Anyway::Config, type: :config do
           end
 
           let(:missed_keys) { [:host] }
+
           it_behaves_like "raises ValidationError"
         end
       end
@@ -880,6 +881,7 @@ describe Anyway::Config, type: :config do
 
       context "when env value under except key mismatched" do
         before { allow(Anyway::Settings).to receive(:current_environment).and_return("demo") }
+
         let(:missed_keys) { [:sentry_api_key] }
 
         it "raises ValidationError" do
