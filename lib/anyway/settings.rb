@@ -80,6 +80,20 @@ module Anyway
       def default_environmental_key?
         !default_environmental_key.nil?
       end
+
+      def matching_env?(env)
+        return true if env.nil? || env.to_s == current_environment
+
+        if env.is_a?(::Hash)
+          envs = env[:except]
+          excluded_envs = [envs].flat_map(&:to_s)
+          excluded_envs.none?(current_environment)
+        elsif env.is_a?(::Array)
+          env.flat_map(&:to_s).include?(current_environment)
+        else
+          false
+        end
+      end
     end
 
     # By default, use local files only in development (that's the purpose if the local files)

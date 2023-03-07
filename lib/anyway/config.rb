@@ -8,6 +8,7 @@ module Anyway # :nodoc:
   using Anyway::Ext::DeepDup
   using Anyway::Ext::DeepFreeze
   using Anyway::Ext::Hash
+  using Anyway::Ext::FlattenNames
 
   using(Module.new do
     refine Object do
@@ -46,8 +47,6 @@ module Anyway # :nodoc:
       write_config_attr
       __type_caster__
     ].freeze
-
-    ENV_OPTION_EXCLUDE_KEY = :except
 
     class Error < StandardError; end
 
@@ -128,34 +127,14 @@ module Anyway # :nodoc:
         end
       end
 
-      def required(*names, env: nil)
-        unknown_names = names - config_attributes
+      def required(*names, env: nil, **nested)
+        unknown_names = names + nested.keys - config_attributes
         raise ArgumentError, "Unknown config param: #{unknown_names.join(",")}" if unknown_names.any?
 
-        names = filter_by_env(names, env)
+        return unless Settings.matching_env?(env)
+
         required_attributes.push(*names)
-      end
-
-      def filter_by_env(names, env)
-        return names if env.nil? || env.to_s == current_env
-
-        filtered_names = if env.is_a?(Hash)
-          names_with_exclude_env_option(names, env)
-        elsif env.is_a?(Array)
-          names if env.flat_map(&:to_s).include?(current_env)
-        end
-
-        filtered_names || []
-      end
-
-      def current_env
-        Settings.current_environment.to_s
-      end
-
-      def names_with_exclude_env_option(names, env)
-        envs = env[ENV_OPTION_EXCLUDE_KEY]
-        excluded_envs = [envs].flat_map(&:to_s)
-        names if excluded_envs.none?(current_env)
+        required_attributes.push(*nested.flatten_names)
       end
 
       def required_attributes
@@ -436,7 +415,8 @@ module Anyway # :nodoc:
 
     def validate_required_attributes!
       self.class.required_attributes.select do |name|
-        values[name].nil? || (values[name].is_a?(String) && values[name].empty?)
+        val = values.dig(*name.to_s.split(".").map(&:to_sym))
+        val.nil? || (val.is_a?(String) && val.empty?)
       end.then do |missing|
         next if missing.empty?
         raise_validation_error "The following config parameters for `#{self.class.name}(config_name: #{self.class.config_name})` are missing or empty: #{missing.join(", ")}"

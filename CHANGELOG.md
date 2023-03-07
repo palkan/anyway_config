@@ -2,6 +2,18 @@
 
 ## master
 
+- Add support for nested required config attributes. ([@palkan][])
+
+The API is inspired by Rails permitted params:
+
+```ruby
+class AppConfig < Anyway::Config
+  attr_config :assets_host, database: {host: nil, port: nil}
+
+  required :assets_host, database: [:host, :port]
+end
+```
+
 - Add support for using `env_prefix ""` to load from unprefixed env vars. ([@palkan][])
 
 See [#118](https://github.com/palkan/anyway_config/issues/118).

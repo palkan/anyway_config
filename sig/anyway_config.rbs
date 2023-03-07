@@ -61,6 +61,8 @@ module Anyway
   type mappingType = valueType | arrayType | hashType
   type envType = String | Symbol | Array[String | Symbol] | {except: String | Symbol | Array[String | Symbol]}
 
+  type requiredType = Array[Symbol | Hash[Symbol, requiredType]]
+
   class Config
     extend RBSGenerator
     extend DynamicConfig::ClassMethods
@@ -71,7 +73,7 @@ module Anyway
     def self.attr_config: (*Symbol args, **untyped) -> void
     def self.defaults: -> Hash[String, untyped]
     def self.config_attributes: -> Array[Symbol]?
-    def self.required: (*Symbol names, ?env: envType) -> void
+    def self.required: (*Symbol names, ?env: envType, **requiredType) -> void
     def self.required_attributes: -> Array[Symbol]
     def self.on_load: (*Symbol callbacks) ?{ () [self: instance] -> void } -> void
     def self.config_name: (?(Symbol | String) val) -> String?

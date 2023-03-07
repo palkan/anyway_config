@@ -699,13 +699,50 @@ describe Anyway::Config, type: :config do
     end
   end
 
-  describe ".required" do
+  fdescribe ".required" do
     let(:config) do
       Class.new(described_class) do
         config_name "testo"
         attr_config :test, :secret, debug: false
 
         required :test, :secret
+      end
+    end
+
+    context "with nested required attributes" do
+      let(:config) do
+        Class.new(described_class) do
+          config_name "nesty"
+          attr_config :test, :secret,
+            ldap: {
+              base_dn: nil,
+              user_dn: nil
+            },
+            database: {
+              host: nil,
+              port: nil
+            }
+
+          required :test, ldap: [:base_dn, :user_dn], database: [:host]
+        end
+      end
+
+      let(:values) do
+        {
+          test: "",
+          database: {
+            host: "localhost"
+          },
+          ldap: {
+            base_dn: "laladap"
+          }
+        }
+      end
+
+      subject { config.new(values) }
+
+      it "raises ValidationError" do
+        expect { subject }.to raise_error(Anyway::Config::ValidationError, %r{missing or empty: test, ldap.user_dn})
       end
     end
 
