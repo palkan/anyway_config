@@ -19,7 +19,8 @@ Gem::Specification.new do |s|
     "changelog_uri" => "https://github.com/palkan/anyway_config/blob/master/CHANGELOG.md",
     "documentation_uri" => "http://github.com/palkan/anyway_config",
     "homepage_uri" => "http://github.com/palkan/anyway_config",
-    "source_code_uri" => "http://github.com/palkan/anyway_config"
+    "source_code_uri" => "http://github.com/palkan/anyway_config",
+    "funding_uri" => "https://github.com/sponsors/palkan"
   }
 
   s.license = "MIT"
