@@ -202,6 +202,12 @@ module Anyway # :nodoc:
 
       def coerce_types(mapping)
         Utils.deep_merge!(coercion_mapping, mapping)
+
+        mapping.each do |key, val|
+          next unless val == :boolean || (val.is_a?(::Hash) && val[:type] == :boolean)
+
+          alias_method :"#{key}?", :"#{key}"
+        end
       end
 
       def coercion_mapping

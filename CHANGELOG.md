@@ -2,6 +2,8 @@
 
 ## master
 
+- Define predicate methods when `:boolean` type is specified for the attribute. ([@palkan][])
+
 - Add support for nested required config attributes. ([@palkan][])
 
 The API is inspired by Rails permitted params:

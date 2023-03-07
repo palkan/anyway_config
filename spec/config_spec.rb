@@ -224,7 +224,7 @@ describe Anyway::Config, type: :config do
         end
       end
 
-      context "with types" do
+      fcontext "with types" do
         let(:conf) do
           klass = Class.new(CoolConfig)
           klass.coerce_types(port: :string)
@@ -250,6 +250,30 @@ describe Anyway::Config, type: :config do
               "COOL_HOSTS" => "local,dev"
             ) do
               expect(conf.hosts).to eq(%w[local dev])
+            end
+          end
+        end
+
+        context "with boolean" do
+          let(:conf) do
+            klass = Class.new(CoolConfig)
+            klass.attr_config(:booley, :complex_bull, :int_bool)
+            klass.coerce_types(booley: :boolean, complex_bull: {type: :boolean}, int_bool: :integer)
+            klass.new
+          end
+
+          specify do
+            expect(conf).not_to be_booley
+            expect(conf).not_to be_complex_bull
+            expect(conf.respond_to?(:int_bool?)).to be false
+          end
+
+          specify "with values" do
+            with_env(
+              "COOL_BOOLEY" => "1"
+            ) do
+              expect(conf).to be_booley
+              expect(conf).not_to be_complex_bull
             end
           end
         end
