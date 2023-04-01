@@ -99,10 +99,12 @@ module Anyway
     def to_source_trace: -> Hash[String, untyped]
     def inspect: -> String
     def pretty_print: (untyped q) -> untyped
+    def as_env: -> Hash[String, String]
 
     private
     attr_reader values: Hash[untyped, untyped]
     def raise_validation_error: (String msg) -> void
+    def flatten_hash: (Hash[untyped, untyped], String, Hash[String, String]) -> Hash[String, String]
 
     class Error < StandardError
     end

@@ -347,6 +347,16 @@ describe Anyway::Config, type: :config do
         end
       end
     end
+
+    describe "#as_env" do
+      it "returns ENV-like hash" do
+        expect(conf.as_env).to eq({"COOL_HOST" => "test.host",
+                                   "COOL_META__KOT" => "leta",
+                                   "COOL_PORT" => "8080",
+                                   "COOL_USER__NAME" => "secret man",
+                                   "COOL_USER__PASSWORD" => "root"})
+      end
+    end
   end
 
   context "without Rails", :norails do
