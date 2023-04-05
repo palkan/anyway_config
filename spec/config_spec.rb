@@ -277,6 +277,32 @@ describe Anyway::Config, type: :config do
             end
           end
         end
+
+        context "with config class as a type" do
+          let(:subconf) do
+            Class.new(AnywayTest::Config) do
+              config_name "test"
+              env_prefix "COOL_TEST"
+            end
+          end
+
+          let(:conf) do
+            klass = Class.new(CoolConfig)
+            klass.attr_config(:test)
+            klass.coerce_types(test: {config: subconf})
+            klass.new
+          end
+
+          specify do
+            with_env(
+              "COOL_TEST_API__KEY" => "s3creD",
+              "COOL_TEST__LOG__FORMAT__COLOR" => "true"
+            ) do
+              expect(conf.test.log[:format][:color]).to be true
+              expect(conf.test.api[:key]).to eq "s3creD"
+            end
+          end
+        end
       end
 
       context "when auto cast is disabled" do

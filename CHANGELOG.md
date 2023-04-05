@@ -2,6 +2,25 @@
 
 ## master
 
+- Added experimental support for sub-configs via coercion. ([@palkan][])
+
+```ruby
+class AnotherConfig < Anyway::Config
+  attr_config foo: "bar"
+end
+
+class MyConfig < Anyway::Config
+  attr_config :another_config
+
+  coerce_types another_config: "AnotherConfig"
+end
+
+MyConfig.new.another_config.foo #=> "bar"
+
+ENV["MY_ANOTHER_CONFIG__FOO"] = "baz"
+MyConfig.new.another_config.foo #=> "baz"
+```
+
 - Define predicate methods when `:boolean` type is specified for the attribute. ([@palkan][])
 
 - Add support for nested required config attributes. ([@palkan][])

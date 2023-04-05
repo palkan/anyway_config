@@ -90,6 +90,11 @@ module Anyway
     end
   end
 
+  unless "".respond_to?(:safe_constantize)
+    require "anyway/ext/string_constantize"
+    using Anyway::Ext::StringConstantize
+  end
+
   # TypeCaster is an object responsible for type-casting.
   # It uses a provided types registry and mapping, and also
   # accepts a fallback typecaster.
@@ -109,8 +114,13 @@ module Anyway
       return fallback.coerce(key, val) unless caster_config
 
       case caster_config
-      in array:, type:, **nil
+      in Hash[array:, type:, **nil]
         registry.deserialize(val, type, array: array)
+      in Hash[config: subconfig]
+        subconfig = subconfig.safe_constantize if subconfig.is_a?(::String)
+        raise ArgumentError, "Config is not found: #{subconfig}" unless subconfig
+
+        subconfig.new(val)
       in Hash
         return val unless val.is_a?(Hash)
 

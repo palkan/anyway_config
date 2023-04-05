@@ -56,9 +56,10 @@ module Anyway
 
   type valueType = Symbol | nil
   type arrayType = {array: bool, type: valueType}
+  type configType = {config: Class | String}
   type hashType = Hash[Symbol, valueType | arrayType | hashType]
 
-  type mappingType = valueType | arrayType | hashType
+  type mappingType = valueType | arrayType | hashType | configType
   type envType = String | Symbol | Array[String | Symbol] | {except: String | Symbol | Array[String | Symbol]}
 
   type requiredType = Array[Symbol | Hash[Symbol, requiredType]]
