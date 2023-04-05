@@ -198,6 +198,15 @@ module Anyway # :nodoc:
         end
       end
 
+
+      def loader_options(val = nil)
+        return (@loader_options = val) unless val.nil?
+
+        return @loader_options if instance_variable_defined?(:@loader_options)
+
+        @loader_options = {}
+      end
+
       def new_empty_config() = {}
 
       def coerce_types(mapping)
@@ -342,7 +351,13 @@ module Anyway # :nodoc:
 
         config_path = resolve_config_path(config_name, env_prefix)
 
-        load_from_sources(base_config, name: config_name, env_prefix:, config_path:)
+        load_from_sources(
+          base_config,
+          name: config_name,
+          env_prefix:,
+          config_path:,
+          **self.class.loader_options
+        )
 
         if overrides
           Tracing.trace!(:load) { overrides }

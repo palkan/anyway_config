@@ -81,6 +81,26 @@ describe Anyway::Loaders::EJSON do
       expect(subject).to eq(default_parsed_data)
     end
 
+    context "when ejson_namespace is set to nil" do
+      let(:ejson_parsed_result) do
+        {
+          "_public_key" => "any_public_key",
+          **default_parsed_data
+        }
+      end
+      let(:options) { {name: name, ejson_parser: ejson_parser, ejson_namespace: nil} }
+      let(:ejson_parser) do
+        parser = instance_double(Anyway::EJSONParser)
+        allow(parser).to receive(:call).with(config_path).and_return(ejson_parsed_result)
+        parser
+      end
+
+      it "parses default EJSON" do
+        # It also includes the public key, but we don't care about it
+        expect(subject).to include(default_parsed_data)
+      end
+    end
+
     context "when local is enabled" do
       let(:local) { true }
 

@@ -11,7 +11,7 @@ module Anyway
 
       self.bin_path = "ejson"
 
-      def call(name:, env_prefix:, ejson_parser: Anyway::EJSONParser.new(EJSON.bin_path), **_options)
+      def call(name:, ejson_namespace: name, ejson_parser: Anyway::EJSONParser.new(EJSON.bin_path), **_options)
         configs = []
 
         rel_config_paths.each do |rel_config_path|
@@ -23,11 +23,11 @@ module Anyway
 
           next unless secrets_hash
 
-          config_hash = if env_prefix == ""
-              secrets_hash
-            else
-              secrets_hash[name]
-            end
+          config_hash = if ejson_namespace.nil?
+            secrets_hash
+          else
+            secrets_hash[ejson_namespace]
+          end
 
           next unless config_hash.is_a?(Hash)
 
