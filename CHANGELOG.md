@@ -4,7 +4,7 @@
 
 ## 2.4.0 (2023-04-04)
 
-- Add `Confi#as_env` to convert config into a ENV-like HASH. ([@tagirahmad][])
+- Added `Confi#as_env` to convert config into a ENV-like Hash. ([@tagirahmad][])
 
 - Added experimental support for sub-configs via coercion. ([@palkan][])
 
