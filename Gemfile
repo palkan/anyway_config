@@ -2,7 +2,7 @@
 
 source 'https://rubygems.org'
 
-gem 'pry-byebug', platform: :mri
+gem "debug", platform: :mri unless ENV["CI"]
 
 gemspec
 
