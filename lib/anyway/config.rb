@@ -417,7 +417,7 @@ module Anyway # :nodoc:
     end
 
     def as_env
-      flatten_hash(to_h, env_prefix)
+      Env.from_hash(to_h, prefix: env_prefix)
     end
 
     private
@@ -444,20 +444,6 @@ module Anyway # :nodoc:
 
     def raise_validation_error(msg)
       raise ValidationError, msg
-    end
-
-    def flatten_hash(hash, prefix, memo = {})
-      hash.each do |key, value|
-        prefix_with_key = "#{prefix}_#{key.to_s.upcase}"
-
-        if value.is_a?(Hash)
-          flatten_hash(value, "#{prefix_with_key}_", memo)
-        else
-          memo[prefix_with_key] = value.to_s
-        end
-      end
-
-      memo
     end
 
     def __type_caster__

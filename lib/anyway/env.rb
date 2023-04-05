@@ -8,6 +8,22 @@ module Anyway
     using Anyway::Ext::DeepDup
     using Anyway::Ext::Hash
 
+    class << self
+      def from_hash(hash, prefix: nil, memo: {})
+        hash.each do |key, value|
+          prefix_with_key = (prefix && !prefix.empty?) ? "#{prefix}_#{key.to_s.upcase}" : key.to_s.upcase
+
+          if value.is_a?(Hash)
+            from_hash(value, prefix: "#{prefix_with_key}_", memo:)
+          else
+            memo[prefix_with_key] = value.to_s
+          end
+        end
+
+        memo
+      end
+    end
+
     include Tracing
 
     attr_reader :data, :traces, :type_cast, :env_container

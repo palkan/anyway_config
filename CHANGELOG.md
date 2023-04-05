@@ -2,6 +2,8 @@
 
 ## master
 
+- Add `Confi#as_env` to convert config into a ENV-like HASH. ([@tagirahmad][])
+
 - Added experimental support for sub-configs via coercion. ([@palkan][])
 
 ```ruby
@@ -512,3 +514,4 @@ No we're dependency-free!
 [@fargelus]: https://github.com/fargelus
 [@prog-supdex]: https://github.com/prog-supdex
 [@inner-whisper]: https://github.com/inner-whisper
+[@tagirahmad]: https://github.com/tagirahmad
