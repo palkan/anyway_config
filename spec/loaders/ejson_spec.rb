@@ -84,9 +84,8 @@ describe Anyway::Loaders::EJSON do
     context "when ejson_namespace is set to false" do
       let(:ejson_parsed_result) do
         {
-          "_public_key" => "any_public_key",
-          **default_parsed_data
-        }
+          "_public_key" => "any_public_key"
+        }.merge(default_parsed_data)
       end
       let(:options) { {name: name, ejson_parser: ejson_parser, ejson_namespace: false} }
       let(:ejson_parser) do
