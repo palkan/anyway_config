@@ -790,7 +790,7 @@ To debug any problems with loading configurations from `.ejson` files you can di
 ejson decrypt config/secrets.ejson
 ```
 
-You can customise the JSON namespace under which a loader searches for configuration via `loader_options`:
+You can customize the JSON namespace under which a loader searches for configuration via `loader_options`:
 
 ```ruby
 class MyConfig < Anyway::Config
@@ -822,7 +822,7 @@ def call(
   name:, # config name
   env_prefix:, # prefix for env vars if any
   config_path:, # path to YML config
-  local: # true|false, whether to load local configuration
+  local:, # true|false, whether to load local configuration
   **options # custom options can be passed via Anyway::Config.loader_options example: "custom", option: "blah"
 )
   #=> must return Hash with configuration data

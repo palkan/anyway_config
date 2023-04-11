@@ -2,6 +2,10 @@
 
 ## master
 
+- Add custom namespace support via `ejson_namespace` ([@bessey])
+
+- Add arbitrary custom loader options support via `loader_options` ([@bessey])
+
 ## 2.4.0 (2023-04-04)
 
 - Added `Confi#as_env` to convert config into a ENV-like Hash. ([@tagirahmad][])
@@ -44,11 +48,8 @@ end
 See [#118](https://github.com/palkan/anyway_config/issues/118).
 
 - Added EJSON support. ([@inner-whisper])
-  - Add custom namespace support via `ejson_namespace` ([@bessey])
 
 - Add Doppler loader. ([@prog-supdex][]).
-- Add arbitrary custom loader options support via `loader_options` ([@bessey])
-
 
 ## 2.3.1 (2023-01-17)
 
@@ -520,3 +521,4 @@ No we're dependency-free!
 [@prog-supdex]: https://github.com/prog-supdex
 [@inner-whisper]: https://github.com/inner-whisper
 [@tagirahmad]: https://github.com/tagirahmad
+[@bessey]: https://github.com/bessey
