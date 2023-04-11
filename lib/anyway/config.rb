@@ -204,7 +204,11 @@ module Anyway # :nodoc:
 
         return @loader_options if instance_variable_defined?(:@loader_options)
 
-        @loader_options = {}
+        @loader_options = if superclass < Anyway::Config
+          superclass.loader_options
+        else
+          {}
+        end
       end
 
       def new_empty_config() = {}
