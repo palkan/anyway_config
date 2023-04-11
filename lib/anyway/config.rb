@@ -198,7 +198,6 @@ module Anyway # :nodoc:
         end
       end
 
-
       def loader_options(val = nil)
         return (@loader_options = val) unless val.nil?
 
