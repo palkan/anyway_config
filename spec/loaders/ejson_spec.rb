@@ -96,8 +96,7 @@ describe Anyway::Loaders::EJSON do
       end
 
       it "parses default EJSON" do
-        # It also includes the public key, but we don't care about it
-        expect(subject).to include(default_parsed_data)
+        expect(subject).to eq(default_parsed_data)
       end
     end
 

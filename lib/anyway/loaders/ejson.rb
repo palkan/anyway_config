@@ -24,7 +24,7 @@ module Anyway
           next unless secrets_hash
 
           config_hash = if ejson_namespace.nil?
-            secrets_hash
+            secrets_hash.except("_public_key")
           else
             secrets_hash[ejson_namespace]
           end
