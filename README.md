@@ -790,6 +790,18 @@ To debug any problems with loading configurations from `.ejson` files you can di
 ejson decrypt config/secrets.ejson
 ```
 
+You can customise the JSON namespace under which a loader searches for configuration via `loader_options`:
+
+```ruby
+class MyConfig < Anyway::Config
+  # To look under the key "foo" instead of the default key of "my"
+  loader_options ejson_namespace: "foo"
+
+  # Or to disable namespacing entirely, and instead search in the root object
+  loader_options ejson_namespace: false
+end
+```
+
 ### Custom loaders
 
 You can provide your own data loaders or change the existing ones using the Loaders API (which is very similar to Rack middleware builder):
@@ -811,6 +823,7 @@ def call(
   env_prefix:, # prefix for env vars if any
   config_path:, # path to YML config
   local: # true|false, whether to load local configuration
+  **options # custom options can be passed via Anyway::Config.loader_options example: "custom", option: "blah"
 )
   #=> must return Hash with configuration data
 end

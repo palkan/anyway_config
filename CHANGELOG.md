@@ -21,8 +21,11 @@ end
 See [#118](https://github.com/palkan/anyway_config/issues/118).
 
 - Added EJSON support. ([@inner-whisper])
+  - Add custom namespace support via `ejson_namespace` ([@bessey])
 
 - Add Doppler loader. ([@prog-supdex][]).
+- Add arbitrary custom loader options support via `loader_options` ([@bessey])
+
 
 ## 2.3.1 (2023-01-17)
 
