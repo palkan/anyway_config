@@ -23,10 +23,10 @@ module Anyway
 
           next unless secrets_hash
 
-          config_hash = if ejson_namespace.nil?
-            secrets_hash.except("_public_key")
-          else
+          config_hash = if ejson_namespace
             secrets_hash[ejson_namespace]
+          else
+            secrets_hash.except("_public_key")
           end
 
           next unless config_hash.is_a?(Hash)
