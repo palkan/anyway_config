@@ -544,6 +544,8 @@ Would you like to generate a heroku.yml file? (Y/n) n
 You can also specify the `--app` option to put the newly created class into `app/configs` folder.
 Alternatively, you can call `rails g anyway:app_config name param1 param2 ...`.
 
+**NOTE:** The generated `ApplicationConfig` class uses a singleton pattern along with `delegate_missing_to` to re-use the same instance across the application. However, the delegation can lead to unexpected behaviour and break Anyway Config internals if you have attributes named as `Anyway::Config` class methods. See [#120](https://github.com/palkan/anyway_config/issues/120).
+
 ## Using with Ruby
 
 The default data loading mechanism for non-Rails applications is the following (ordered by priority from low to high):
