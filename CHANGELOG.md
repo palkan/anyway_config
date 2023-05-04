@@ -2,6 +2,8 @@
 
 ## master
 
+## 2.4.1 (2023-05-04)
+
 - Add custom namespace support via `ejson_namespace` ([@bessey])
 
 - Add arbitrary custom loader options support via `loader_options` ([@bessey])
