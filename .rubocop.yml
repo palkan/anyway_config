@@ -19,6 +19,7 @@ AllCops:
     - 'lib/generators/**/templates/*.rb'
   DisplayCopNames: true
   SuggestExtensions: false
+  NewCops: disable
   TargetRubyVersion: next
 
 Standard/BlockSingleLineBraces:
