@@ -1,6 +1,7 @@
 # Download sources
 sources:
-  - name: ruby/gem_rbs_collection
+  - type:
+    name: ruby/gem_rbs_collection
     remote: https://github.com/ruby/gem_rbs_collection.git
     revision: main
     repo_dir: gems
@@ -14,7 +15,6 @@ gems:
   - name: pathname
   - name: date
   - name: time
-  - name: set
   - name: activesupport
   # Skip loading rbs gem's RBS.
   # It's unnecessary if you don't use rbs as a library.
@@ -31,10 +31,4 @@ gems:
   - name: rainbow
     ignore: true
   - name: listen
-    ignore: true
-  - name: activesupport
-    ignore: true
-  - name: mail
-    ignore: true
-  - name: anyway_config
     ignore: true
