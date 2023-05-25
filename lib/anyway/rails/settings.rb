@@ -76,6 +76,7 @@ module Anyway
 
     self.default_config_path = ->(name) { ::Rails.root.join("config", "#{name}.yml") }
     self.known_environments = %w[test development production]
+    self.use_local_files ||= ::Rails.env.development?
     # Don't try read defaults when no key defined
     self.default_environmental_key = nil
   end
