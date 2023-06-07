@@ -367,6 +367,8 @@ development:
   port: 3000
 ```
 
+**NOTE:** You can override the environment name for configuration files via the `ANYWAY_ENV` environment variable or by setting it explicitly in the code: `Anyway::Settings.current_environment = "some_other_env"`.
+
 ### Multi-env configuration
 
 _⚡️ This feature will be turned on by default in the future releases. You can turn it on now via `config.anyway_config.future.use :unwrap_known_environments`._
@@ -558,6 +560,8 @@ If you want to enable this feature you must specify `Anyway::Settings.current_en
 ```ruby
 Anyway::Settings.current_environment = "development"
 ```
+
+You can also specify the `ANYWAY_ENV=development` environment variable to set the current environment for configuration.
 
 YAML files should be in this format:
 

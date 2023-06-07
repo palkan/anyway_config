@@ -2,6 +2,10 @@
 
 ## master
 
+- Use ANYWAY_ENV as the current environment if defined. ([@palkan][])
+
+It can be used to specify environment for configs independently of Rails environment.
+
 ## 2.4.1 (2023-05-04)
 
 - Add custom namespace support via `ejson_namespace` ([@bessey])
