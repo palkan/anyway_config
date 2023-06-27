@@ -45,5 +45,10 @@ module Anyway # :nodoc:
   end
 end
 
-require "anyway/rails" if defined?(::Rails::VERSION)
+if defined?(::Rails::VERSION)
+  require "anyway/rails"
+else
+  require "anyway/rails/autoload"
+end
+
 require "anyway/testing" if ENV["RACK_ENV"] == "test" || ENV["RAILS_ENV"] == "test"
