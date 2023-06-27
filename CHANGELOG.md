@@ -2,6 +2,8 @@
 
 ## master
 
+- Fix handling `config.credentials.content_path` provided as String. ([@palkan][])
+
 ## 2.4.2 (2023-06-07)
 
 - Use ANYWAY_ENV as the current environment if defined. ([@palkan][])

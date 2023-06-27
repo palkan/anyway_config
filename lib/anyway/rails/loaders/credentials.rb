@@ -53,7 +53,7 @@ module Anyway
 
         def credentials_path
           if ::Rails.application.config.respond_to?(:credentials)
-            ::Rails.application.config.credentials.content_path.relative_path_from(::Rails.root).to_s
+            ::Rails.root.join(::Rails.application.config.credentials.content_path).relative_path_from(::Rails.root).to_s
           else
             "config/credentials.yml.enc"
           end
