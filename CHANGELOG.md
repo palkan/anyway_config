@@ -2,6 +2,8 @@
 
 ## master
 
+- Load Rails extensions even if Rails was loaded after Anyway Config. ([@palkan][])
+
 - Fix handling `config.credentials.content_path` provided as String. ([@palkan][])
 
 ## 2.4.2 (2023-06-07)

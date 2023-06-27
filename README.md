@@ -548,6 +548,14 @@ Alternatively, you can call `rails g anyway:app_config name param1 param2 ...`.
 
 **NOTE:** The generated `ApplicationConfig` class uses a singleton pattern along with `delegate_missing_to` to re-use the same instance across the application. However, the delegation can lead to unexpected behaviour and break Anyway Config internals if you have attributes named as `Anyway::Config` class methods. See [#120](https://github.com/palkan/anyway_config/issues/120).
 
+### Loading Anyway Config before Rails
+
+Anyway Config activates Rails-specific features automatically on the gem load only if Rails has been already required (we check for the `Rails::VERSION` constant presence). However, in some cases you may want to use Anyway Config before Rails initialization (e.g., in `config/puma.rb` when starting a Puma web server).
+
+By default, Anyway Config sets up a hook (via TracePoint API) and waits for Rails to be loaded to require the Rails extensions (`require "anyway/rails"`). In case you load Rails after Anyway Config, you will see a warning telling you about that. Note that config classes loaded before Rails are not populated from Rails-specific data sources (e.g., credentials).
+
+You can disable the warning by setting `Anyway::Rails.disable_postponed_load_warning = true` in your application. Also, you can disable the _hook_ completely by calling `Anyway::Rails.tracer.disable`.
+
 ## Using with Ruby
 
 The default data loading mechanism for non-Rails applications is the following (ordered by priority from low to high):
