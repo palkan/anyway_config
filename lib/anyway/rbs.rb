@@ -44,7 +44,7 @@ module Anyway
             TYPE_TO_CLASS.fetch(type) { defaults[param] ? "Symbol" : "untyped" }
           in Array
             "Array[untyped]"
-          in array:, type:, **nil
+          in array: _, type:, **nil
             "Array[#{TYPE_TO_CLASS.fetch(type, "untyped")}]"
           in Hash
             "Hash[string,untyped]"
