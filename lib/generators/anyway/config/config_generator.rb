@@ -41,6 +41,11 @@ module Anyway
           static_config_root
         end
       end
+
+      def needs_config_name?
+        raise "No longer needed" if Gem::Version.new(Anyway::VERSION) >= Gem::Version.new("3.0.0")
+        file_name.include?("_")
+      end
     end
   end
 end

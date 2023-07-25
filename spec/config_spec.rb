@@ -640,8 +640,14 @@ describe Anyway::Config, type: :config do
 
   describe ".config_name" do
     specify "<SomeModule>::Config", :aggregate_failures do
-      expect(AnywayTest::Config.config_name).to eq "anywaytest"
-      expect(AnywayTest::Config.env_prefix).to eq "ANYWAYTEST"
+      # TODO(v3.0): Fix this confusion https://github.com/palkan/anyway_config/issues/104
+      if Gem::Version.new(Anyway::VERSION) >= Gem::Version.new("3.0.0")
+        expect(AnywayTest::Config.config_name).to eq "anyway_test"
+        expect(AnywayTest::Config.env_prefix).to eq "ANYWAY_TEST"
+      else
+        expect(AnywayTest::Config.config_name).to eq "anywaytest"
+        expect(AnywayTest::Config.env_prefix).to eq "ANYWAYTEST"
+      end
     end
 
     specify "<Some>Config" do

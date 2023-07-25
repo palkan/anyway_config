@@ -2,6 +2,9 @@
 
 <% module_namespacing do -%>
 class <%= class_name %>Config < ApplicationConfig
+<%- if needs_config_name? %>
+  config_name :<%= file_name %>
+<%- end -%>
 <%- unless parameters.empty? -%>
   attr_config <%= parameters.map { |param| ":#{param}" }.join(", ") %>
 <%- end -%>

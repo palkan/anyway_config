@@ -30,6 +30,7 @@ describe Anyway::Generators::ConfigGenerator, :rails, type: :generator do
       is_expected.to exist
       is_expected.to contain(/class APIServiceConfig < ApplicationConfig/)
       is_expected.to contain(/attr_config :api_key, :secret, :mode/)
+      is_expected.to contain(/config_name :api_service/)
     end
 
     context "with --yml" do
@@ -80,6 +81,19 @@ describe Anyway::Generators::ConfigGenerator, :rails, type: :generator do
 
       it "creates config in this path" do
         is_expected.to exist
+      end
+    end
+
+    context "when name doesn't contain underscores" do
+      let(:target_file) { file("#{configs_root}/avz_config.rb") }
+
+      let(:args) { %w[avz sacred_key continent --no-yml] }
+
+      specify do
+        is_expected.to exist
+        is_expected.to contain(/class AvzConfig < ApplicationConfig/)
+        is_expected.to contain(/attr_config :sacred_key, :continent/)
+        is_expected.not_to contain(/config_name/)
       end
     end
   end

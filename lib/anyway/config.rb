@@ -299,6 +299,7 @@ module Anyway # :nodoc:
             "via `config_name :my_config`"
         end
 
+        # TODO(v3.0): Replace downcase with underscore
         Regexp.last_match[1].tap(&:downcase!)
       end
 
