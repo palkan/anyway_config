@@ -2,6 +2,8 @@
 
 ## master
 
+## 2.5.0 (2023-07-24)
+
 - Generators: Add `config_name` to generated classes if name contains underscore. ([@palkan][])
 
 - Load Rails extensions even if Rails was loaded after Anyway Config. ([@palkan][])
