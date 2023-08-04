@@ -2,6 +2,12 @@
 
 ## master
 
+## 2.5.1 (2023-08-04)
+
+- Fix Rails detection. ([@palkan][])
+
+Fixes [#134](https://github.com/palkan/anyway_config/issues/134).
+
 ## 2.5.0 (2023-07-24)
 
 - Generators: Add `config_name` to generated classes if name contains underscore. ([@palkan][])
