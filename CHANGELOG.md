@@ -2,6 +2,10 @@
 
 ## master
 
+## 2.5.2 (2023-08-23)
+
+- Disable Rails post-load detection in TruffleRuby. ([@palkan][])
+
 ## 2.5.1 (2023-08-04)
 
 - Fix Rails detection. ([@palkan][])
