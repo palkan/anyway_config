@@ -70,7 +70,7 @@ module Anyway
       alias_method :load_local_yml, :parse_yml
 
       def local_config_path(path)
-        path.sub(/\.yml/, ".local.yml")
+        path.sub(".yml", ".local.yml")
       end
 
       def relative_config_path(path)

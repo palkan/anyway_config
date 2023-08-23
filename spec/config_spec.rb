@@ -822,7 +822,7 @@ describe Anyway::Config, type: :config do
           port: 80
         }.reject { |k| missed_keys.include?(k) }
       end
-      let(:error_msg) { /missing or empty: #{missed_keys.join(', ')}$/ }
+      let(:error_msg) { /missing or empty: #{missed_keys.join(", ")}$/ }
 
       subject { app_config.new(config_values) }
 

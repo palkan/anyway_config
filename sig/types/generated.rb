@@ -4,7 +4,7 @@
 #   bundle exec rake rbs:generate
 #
 
-require_relative "./config"
+require_relative "config"
 
 ENV["RBS_TEST_VERSION"] = "1.0"
 
