@@ -26,7 +26,7 @@ begin
     ENV["RAILS_ENV"] = "test"
 
     # Load anyway_config before Rails to test that we can detect Rails app before it's loaded
-    require "anyway_config"
+    require "anyway_config" unless defined?(TruffleRuby)
 
     require "ammeter"
 

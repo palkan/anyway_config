@@ -31,9 +31,12 @@ module Anyway
       end
     end
 
-    @tracer = TracePoint.new(:end, &method(:tracepoint_class_callback))
-    @tracer.enable
-    # Use `Module#name` instead of `self.name` to handle overwritten `name` method
-    @name_method = Module.instance_method(:name)
+    # TruffleRuby doesn't support TracePoint's end event
+    unless defined?(::TruffleRuby)
+      @tracer = TracePoint.new(:end, &method(:tracepoint_class_callback))
+      @tracer.enable
+      # Use `Module#name` instead of `self.name` to handle overwritten `name` method
+      @name_method = Module.instance_method(:name)
+    end
   end
 end
