@@ -1,0 +1,30 @@
+name: TruffleRuby Build
+
+on:
+  push:
+    branches:
+    - master
+  pull_request:
+
+jobs:
+  rspec:
+    runs-on: ubuntu-latest
+    env:
+      BUNDLE_JOBS: 4
+      BUNDLE_RETRY: 3
+      BUNDLE_GEMFILE: gemfiles/rails7.gemfile
+      CI: true
+    steps:
+    - uses: actions/checkout@v3
+    - uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: truffleruby-head
+        bundler-cache: true
+    - name: Run Ruby Next
+      run: bundle exec rake nextify
+    - name: Run RSpec
+      run: |
+        bundle exec rake spec
+    - name: Run RSpec without rails
+      run: |
+        bundle exec rake spec:norails
