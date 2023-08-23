@@ -619,7 +619,7 @@ By default, environment variables are automatically type cast (rules are case-in
 - `"true"`, `"t"`, `"yes"` and `"y"` to `true`;
 - `"false"`, `"f"`, `"no"` and `"n"` to `false`;
 - `"nil"` and `"null"` to `nil` (do you really need it?);
-- `"123"` to 123 and `"3.14"` to 3.14.
+- `"123"` to `123` and `"3.14"` to `3.14`.
 
 Type coercion can be [customized or disabled](#type-coercion).
 
