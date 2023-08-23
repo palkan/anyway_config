@@ -614,14 +614,14 @@ Environmental variables for your config should start with your config name, uppe
 
 For example, if your config name is "mycoolgem", then the env var "MYCOOLGEM_PASSWORD" is used as `config.password`.
 
-By default, environment variables are automatically type cast\*:
+By default, environment variables are automatically type cast (rules are case-insensitive):
 
-- `"True"`, `"t"` and `"yes"` to `true`;
-- `"False"`, `"f"` and `"no"` to `false`;
+- `"true"`, `"t"`, `"yes"` and `"y"` to `true`;
+- `"false"`, `"f"`, `"no"` and `"n"` to `false`;
 - `"nil"` and `"null"` to `nil` (do you really need it?);
 - `"123"` to 123 and `"3.14"` to 3.14.
 
-\* See below for coercion customization.
+Type coercion can be [customized or disabled](#type-coercion).
 
 *Anyway Config* supports nested (_hashed_) env variables—just separate keys with double-underscore.
 
