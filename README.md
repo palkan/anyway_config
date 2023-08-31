@@ -848,11 +848,17 @@ You can use `Anyway::Loaders::Base` as a base class for your loader and define a
 For example, the [Chamber](https://github.com/thekompanee/chamber) loader could be written as follows:
 
 ```ruby
-class ChamberConfigLoader < Anyway::Loaders::Base
+class ChamberConfigLoader < Base
   def call(name:, **_opts)
-    Chamber.env.to_h[name] || {}
+    Chamber.to_hash[name] || {}
+  rescue Chamber::Errors::DecryptionFailure => e
+    warn "Couldn't decrypt Chamber settings: #{e.message}"
+    {}
   end
 end
+
+# Don't forget to register it
+Anyway.loaders.insert_before :env, :chamber, ChamberConfigLoader
 ```
 
 In order to support [source tracing](#tracing), you need to wrap the resulting Hash via the `#trace!` method with metadata:
@@ -860,7 +866,10 @@ In order to support [source tracing](#tracing), you need to wrap the resulting H
 ```ruby
 def call(name:, **_opts)
   trace!(:chamber) do
-    Chamber.env.to_h[name] || {}
+    Chamber.to_hash[name] || {}
+  rescue Chamber::Errors::DecryptionFailure => e
+    warn "Couldn't decrypt Chamber settings: #{e.message}"
+    {}
   end
 end
 ```
