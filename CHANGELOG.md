@@ -2,6 +2,8 @@
 
 ## master
 
+- Set `use_local_files` depending on `Rails.env`. ([@marshall-lee][])
+
 ## 2.5.2 (2023-08-23)
 
 - Disable Rails post-load detection in TruffleRuby. ([@palkan][])
