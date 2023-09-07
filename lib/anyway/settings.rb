@@ -100,7 +100,7 @@ module Anyway
     self.current_environment = ENV["ANYWAY_ENV"]
 
     # By default, use local files only in development (that's the purpose if the local files)
-    self.use_local_files = (ENV["ANYWAY_ENV"] == "development" || ENV["RACK_ENV"] == "development" || ENV["RAILS_ENV"] == "development")
+    self.use_local_files = (ENV["ANYWAY_ENV"] == "development" || ENV["RACK_ENV"] == "development" || ENV["RAILS_ENV"] == "development" || (defined?(Rails) && Rails.env.development?))
 
     # By default, consider configs are stored in the ./config folder
     self.default_config_path = ->(name) { "./config/#{name}.yml" }
