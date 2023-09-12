@@ -434,7 +434,7 @@ config.anyway_config.default_config_path = ->(name) { Rails.root.join("data", "c
 
 - By overriding a specific config YML file path via the `<NAME>_CONF` env variable, e.g., `MYCOOLGEM_CONF=path/to/cool.yml`
 
-2) **Rails secrets**: `Rails.application.secrets.my_cool_gem` (if `secrets.yml` present).
+2) (Rails <7.1) **Rails secrets**: `Rails.application.secrets.my_cool_gem` (if `secrets.yml` present).
 
 ```yml
 # config/secrets.yml
@@ -442,6 +442,8 @@ development:
   my_cool_gem:
     port: 4444
 ```
+
+**NOTE:** If you want to use secrets with Rails 7.1 (still supported, but deprecated) you must add the corresponding loader manually: `Anyway.loaders.insert_after :yml, :secrets, Anyway::Rails::Loaders::Secrets`.
 
 3) **Rails credentials**: `Rails.application.credentials.my_cool_gem` (if supported):
 

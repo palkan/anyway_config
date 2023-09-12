@@ -2,6 +2,8 @@
 
 ## master
 
+- Do not activate Rails secrets loaders in 7.1+. ([@palkan][])
+
 - Set `use_local_files` depending on `Rails.env`. ([@marshall-lee][])
 
 ## 2.5.2 (2023-08-23)

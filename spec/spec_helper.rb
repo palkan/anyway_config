@@ -39,6 +39,8 @@ end
 
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].sort.each { |f| require f }
 
+NOSECRETS = !NORAILS && Rails::VERSION::MAJOR >= 7 && Rails::VERSION::MINOR >= 1
+
 RSpec.configure do |config|
   config.mock_with :rspec
 
@@ -50,6 +52,12 @@ RSpec.configure do |config|
   config.example_status_persistence_file_path = "tmp/rspec_examples.txt"
   config.filter_run :focus
   config.run_all_when_everything_filtered = true
+
+  if NOSECRETS
+    config.around(:each, type: :config) do |ex|
+      with_env("COOL_META__KOT" => "leta", &ex)
+    end
+  end
 
   config.order = :random
   Kernel.srand config.seed

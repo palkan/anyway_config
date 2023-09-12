@@ -19,7 +19,7 @@ describe Anyway::Config, :rails, type: :config do
       expect(config.host).to eq "overrided.host"
     end
 
-    if !NORAILS && Rails.application.respond_to?(:secrets)
+    if !NORAILS
       if Rails.application.respond_to?(:credentials)
         it "load config from secrets and credentials" do
           expect(conf.user[:name]).to eq "secret man"
@@ -52,7 +52,9 @@ describe Anyway::Config, :rails, type: :config do
 
           it "load config local credentials too" do
             expect(conf.user[:name]).to eq "secret man"
-            expect(conf.meta).to eq("kot" => "murkot")
+            unless NOSECRETS
+              expect(conf.meta).to eq("kot" => "murkot")
+            end
             expect(conf.user[:password]).to eq "password"
           end
         end
@@ -79,7 +81,7 @@ describe Anyway::Config, :rails, type: :config do
                 },
                 "port" => {value: 8080, source: {type: :defaults}},
                 "meta" => {
-                  "kot" => {value: "leta", source: {type: :secrets}}
+                  "kot" => {value: "leta", source: NOSECRETS ? {type: :env, key: "COOL_META__KOT"} : {type: :secrets}}
                 }
               }
             )
