@@ -217,7 +217,8 @@ module Anyway # :nodoc:
         Utils.deep_merge!(coercion_mapping, mapping)
 
         mapping.each do |key, val|
-          next unless val == :boolean || (val.is_a?(::Hash) && val[:type] == :boolean)
+          type = val.is_a?(::Hash) ? val[:type] : val
+          next if type != :boolean
 
           alias_method :"#{key}?", :"#{key}"
         end
