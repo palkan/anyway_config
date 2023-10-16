@@ -2,7 +2,11 @@
 
 ## master
 
-## 2.5.4 (2023-09-12)
+## 2.5.4 (2023-10-15)
+
+- Fix tracing with empty config keys. ([@palkan][])
+
+## 2.5.3 (2023-09-12)
 
 - Do not activate Rails secrets loaders in 7.1+. ([@palkan][])
 
