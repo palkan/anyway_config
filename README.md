@@ -1054,7 +1054,13 @@ describe_options(
 
 Anyway Config comes with Ruby type signatures (RBS).
 
-To use them with Steep, add `library "anyway_config"` to your Steepfile.
+To use them with Steep, add the following your `Steepfile`:
+
+```ruby
+library "pathname"
+library "optparse"
+library "anyway_config"
+```
 
 We also provide an API to generate a type signature for your config class:
 
