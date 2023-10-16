@@ -63,7 +63,7 @@ namespace :rbs do
     File.write("./sig/types/config.rbs", RBS::Config.to_rbs)
 
     Bundler.with_unbundled_env do
-      sh "rbs validate sig/types/config.rbs"
+      sh "bundle exec rbs validate sig/types/config.rbs"
     end
   end
 
