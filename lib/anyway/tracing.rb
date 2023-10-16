@@ -179,7 +179,7 @@ module Anyway
       val = yield
       if val.is_a?(Hash)
         Tracing.current_trace.merge_values(val, type:, **opts)
-      else
+      elsif !path.empty?
         Tracing.current_trace.record_value(val, *path, type:, **opts)
       end
       val
