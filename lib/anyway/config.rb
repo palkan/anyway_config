@@ -154,7 +154,7 @@ module Anyway # :nodoc:
         if block
           load_callbacks << BlockCallback.new(block)
         else
-          load_callbacks.push(*names.map { NamedCallback.new(_1) })
+          load_callbacks.push(*names.map { NamedCallback.new(it) })
         end
       end
 
@@ -380,7 +380,7 @@ module Anyway # :nodoc:
       trace&.keep_if { |key| self.class.config_attributes.include?(key.to_sym) }
 
       # Run on_load callbacks
-      self.class.load_callbacks.each { _1.apply_to(self) }
+      self.class.load_callbacks.each { it.apply_to(self) }
 
       # Set trace after we write all the values to
       # avoid changing the source to accessor
@@ -389,14 +389,14 @@ module Anyway # :nodoc:
       self
     end
 
-    def load_from_sources(base_config, **options)
+    def load_from_sources(base_config, **)
       Anyway.loaders.each do |(_id, loader)|
-        Utils.deep_merge!(base_config, loader.call(**options))
+        Utils.deep_merge!(base_config, loader.call(**))
       end
       base_config
     end
 
-    def dig(*keys) = values.dig(*keys)
+    def dig(*) = values.dig(*)
 
     def to_h() = values.deep_dup.deep_freeze
 

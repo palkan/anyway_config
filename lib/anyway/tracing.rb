@@ -26,12 +26,12 @@ module Anyway
         value.dig(...)
       end
 
-      def record_value(val, *path, **opts)
+      def record_value(val, *path, **)
         key = path.pop
         trace = if val.is_a?(Hash)
-          Trace.new.tap { _1.merge_values(val, **opts) }
+          Trace.new.tap { it.merge_values(val, **) }
         else
-          Trace.new(:value, val, **opts)
+          Trace.new(:value, val, **)
         end
 
         target_trace = path.empty? ? self : value.dig(*path)
@@ -40,14 +40,14 @@ module Anyway
         val
       end
 
-      def merge_values(hash, **opts)
+      def merge_values(hash, **)
         return hash unless hash
 
         hash.each do |key, val|
           if val.is_a?(Hash)
-            value[key.to_s].merge_values(val, **opts)
+            value[key.to_s].merge_values(val, **)
           else
-            value[key.to_s] = Trace.new(:value, val, **opts)
+            value[key.to_s] = Trace.new(:value, val, **)
           end
         end
 
@@ -84,7 +84,7 @@ module Anyway
 
       def to_h
         if trace?
-          value.transform_values(&:to_h).tap { _1.default_proc = nil }
+          value.transform_values(&:to_h).tap { it.default_proc = nil }
         else
           {value:, source:}
         end
@@ -174,13 +174,13 @@ module Anyway
 
     module_function
 
-    def trace!(type, *path, **opts)
+    def trace!(type, *path, **)
       return yield unless Tracing.tracing?
       val = yield
       if val.is_a?(Hash)
-        Tracing.current_trace.merge_values(val, type:, **opts)
+        Tracing.current_trace.merge_values(val, type:, **)
       elsif !path.empty?
-        Tracing.current_trace.record_value(val, *path, type:, **opts)
+        Tracing.current_trace.record_value(val, *path, type:, **)
       end
       val
     end
