@@ -738,7 +738,7 @@ It's useful to have a personal, user-specific configuration in development, whic
 We support this by looking at _local_ files when loading the configuration data:
 
 - `<config_name>.local.yml` files (next to\* the _global_ `<config_name>.yml`)
-- `config/credentials/local.yml.enc` (for Rails >= 6, generate it via `rails credentials:edit --environment local`).
+- `config/credentials/local.yml.enc` (for Rails >= 7.1, generate it via `rails local_credentials:edit`; for Rails >= 6.0, <7.1 you can also use `rails credentials:edit -e local`).
 
 \* If the YAML config path is not a default one (i.e., set via `<CONFIG_NAME>_CONF`), we look up the local
 config at this location, too.
