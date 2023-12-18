@@ -27,3 +27,6 @@ Standard/BlockSingleLineBraces:
 
 Style/FrozenStringLiteralComment:
   Enabled: true
+
+Lint/RedundantRequireStatement:
+  Enabled: false
