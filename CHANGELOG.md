@@ -2,6 +2,8 @@
 
 ## master
 
+## 2.6.1 (2023-12-22)
+
 - Fix Ruby Next version requirements. ([@palkan][])
 
 ## 2.6.0 (2023-12-18)
