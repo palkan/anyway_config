@@ -2,6 +2,8 @@
 
 ## master
 
+- Fix Ruby Next version requirements. ([@palkan][])
+
 ## 2.6.0 (2023-12-18)
 
 - Add `rails local_credentials:edit` command to manipulate local credentials in Rails 7.1+. ([@palkan][])

@@ -36,7 +36,7 @@ Gem::Specification.new do |s|
   if ENV["RELEASING_ANYWAY"].nil? && File.directory?(File.join(__dir__, ".git"))
     s.add_runtime_dependency "ruby-next", "~> 1.0"
   else
-    s.add_runtime_dependency "ruby-next-core", ">= 0.15"
+    s.add_runtime_dependency "ruby-next-core", "~> 1.0"
   end
 
   s.add_development_dependency "ammeter", "~> 1.1.3"
