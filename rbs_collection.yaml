@@ -38,3 +38,9 @@ gems:
     ignore: true
   - name: rubocop-ast
     ignore: true
+  - name: activerecord
+    ignore: true
+  - name: activestorage
+    ignore: true
+  - name: actioncontroller
+    ignore: true
