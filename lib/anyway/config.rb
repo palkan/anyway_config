@@ -389,9 +389,9 @@ module Anyway # :nodoc:
       self
     end
 
-    def load_from_sources(base_config, **)
+    def load_from_sources(base_config, **opts)
       Anyway.loaders.each do |(_id, loader)|
-        Utils.deep_merge!(base_config, loader.call(**))
+        Utils.deep_merge!(base_config, loader.call(**opts))
       end
       base_config
     end

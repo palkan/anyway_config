@@ -26,12 +26,12 @@ module Anyway
         value.dig(...)
       end
 
-      def record_value(val, *path, **)
+      def record_value(val, *path, **opts)
         key = path.pop
         trace = if val.is_a?(Hash)
-          Trace.new.tap { it.merge_values(val, **) }
+          Trace.new.tap { it.merge_values(val, **opts) }
         else
-          Trace.new(:value, val, **)
+          Trace.new(:value, val, **opts)
         end
 
         target_trace = path.empty? ? self : value.dig(*path)
@@ -40,14 +40,14 @@ module Anyway
         val
       end
 
-      def merge_values(hash, **)
+      def merge_values(hash, **opts)
         return hash unless hash
 
         hash.each do |key, val|
           if val.is_a?(Hash)
-            value[key.to_s].merge_values(val, **)
+            value[key.to_s].merge_values(val, **opts)
           else
-            value[key.to_s] = Trace.new(:value, val, **)
+            value[key.to_s] = Trace.new(:value, val, **opts)
           end
         end
 

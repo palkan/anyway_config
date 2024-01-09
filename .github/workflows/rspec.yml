@@ -24,9 +24,12 @@ jobs:
         ]
         rbs: ['false']
         include:
-        - ruby: "3.2"
+        - ruby: "3.3"
           gemfile: "Gemfile"
           rbs: 'true'
+        - ruby: "3.2"
+          gemfile: "Gemfile"
+          rbs: 'false'
         - ruby: "3.2"
           gemfile: "gemfiles/rails7.gemfile"
           rbs: 'false'

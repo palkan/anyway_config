@@ -30,3 +30,10 @@ Style/FrozenStringLiteralComment:
 
 Lint/RedundantRequireStatement:
   Enabled: false
+
+Lint/ItWithoutArgumentsInBlock:
+  Enabled: false
+
+# Doesn't work in Ruby 3.3.0 https://bugs.ruby-lang.org/issues/20090
+Style/ArgumentsForwarding:
+  Enabled: false
