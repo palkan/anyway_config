@@ -2,6 +2,10 @@
 
 ## master
 
+## 2.6.2 (2024-01-08)
+
+- Fix Ruby 3.3.0 compatibility issues (caused by [Ruby bug](https://bugs.ruby-lang.org/issues/20090)) ([@palkan][])
+
 ## 2.6.1 (2023-12-22)
 
 - Fix Ruby Next version requirements. ([@palkan][])
@@ -334,7 +338,7 @@ attr_config :host, :port, :url, :meta
 
 # override writer to handle type coercion
 def meta=(val)
-  super JSON.parse(val)
+  super(JSON.parse(val))
 end
 
 # or override reader to handle missing values

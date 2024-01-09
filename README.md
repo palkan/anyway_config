@@ -158,7 +158,7 @@ class MyConfig < Anyway::Config
 
   # override writer to handle type coercion
   def meta=(val)
-    super JSON.parse(val)
+    super(JSON.parse(val))
   end
 
   # or override reader to handle missing values
