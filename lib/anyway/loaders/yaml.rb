@@ -9,6 +9,12 @@ using Anyway::Ext::Hash
 module Anyway
   module Loaders
     class YAML < Base
+      @@permitted_classes = []
+
+      class << self
+        def permitted_classes = @@permitted_classes
+      end
+
       def call(config_path:, **_options)
         rel_config_path = relative_config_path(config_path).to_s
         base_config = trace!(:yml, path: rel_config_path) do
@@ -53,9 +59,9 @@ module Anyway
         # the interface when no config file is present.
         begin
           if defined?(ERB)
-            ::YAML.load(ERB.new(File.read(path)).result, aliases: true) || {}
+            ::YAML.load(ERB.new(File.read(path)).result, aliases: true, permitted_classes: self.class.permitted_classes) || {}
           else
-            ::YAML.load_file(path, aliases: true) || {}
+            ::YAML.load_file(path, aliases: true, permitted_classes: self.class.permitted_classes) || {}
           end
         rescue ArgumentError
           if defined?(ERB)

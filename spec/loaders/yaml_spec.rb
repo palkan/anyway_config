@@ -39,6 +39,25 @@ describe Anyway::Loaders::YAML do
       )
     end
 
+    context "with permitted classes" do
+      let(:path) { File.join(__dir__, "../config/dated.yml") }
+
+      after { Anyway::Loaders::YAML.permitted_classes.clear }
+
+      modern_yaml = ::YAML.load("true", aliases: true, permitted_classes: []) rescue nil # rubocop:disable Style/RescueModifier
+
+      if modern_yaml
+        it "raises when class is not permitted" do
+          expect { subject }.to raise_error(/Tried to load unspecified class/)
+        end
+      end
+
+      it "loads permitted classes" do
+        Anyway::Loaders::YAML.permitted_classes << Date
+        expect(subject["year"]).to eq(Date.new(2024, 2, 6))
+      end
+    end
+
     context "when local is enabled" do
       let(:options) { {config_path: path, local: true, some_other: "value"} }
 

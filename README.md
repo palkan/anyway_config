@@ -370,6 +370,12 @@ development:
 
 **NOTE:** You can override the environment name for configuration files via the `ANYWAY_ENV` environment variable or by setting it explicitly in the code: `Anyway::Settings.current_environment = "some_other_env"`.
 
+You can also configure additional Ruby classes that you want to deserialized from YAML (`permitted_classes` option). For example:
+
+```ruby
+Anyway::Loaders::YAML.permitted_classes << Date
+```
+
 ### Multi-env configuration
 
 _⚡️ This feature will be turned on by default in the future releases. You can turn it on now via `config.anyway_config.future.use :unwrap_known_environments`._
