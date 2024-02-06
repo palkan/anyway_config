@@ -2,6 +2,8 @@
 
 ## master
 
+## 2.6.3 (2024-02-06)
+
 - Add `permitted_classes` configuration for YAML loaders. ([@palkan][])
 
 ## 2.6.2 (2024-01-08)
