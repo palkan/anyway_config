@@ -2,6 +2,10 @@
 
 ## master
 
+## 2.6.4 (2024-04-30)
+
+- Fix RBS manifest file name (`.yml` -> `.yaml`). ([@carlqt][])
+
 ## 2.6.3 (2024-02-06)
 
 - Add `permitted_classes` configuration for YAML loaders. ([@palkan][])
@@ -574,3 +578,4 @@ No we're dependency-free!
 [@inner-whisper]: https://github.com/inner-whisper
 [@tagirahmad]: https://github.com/tagirahmad
 [@bessey]: https://github.com/bessey
+[@carlqt]: https://github.com/carlqt
