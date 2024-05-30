@@ -52,6 +52,9 @@ module Anyway
         :default_environmental_key,
         :known_environments
 
+      # Suppress required validations for CI/CD pipelines
+      attr_accessor :suppress_required_validations
+
       # A proc returning a path to YML config file given the config name
       attr_reader :default_config_path
 
@@ -107,5 +110,8 @@ module Anyway
 
     # Tracing is enabled by default
     self.tracing_enabled = true
+
+    # By default, use ANYWAY_SUPPRESS_VALIDATIONS
+    self.suppress_required_validations = ENV["ANYWAY_SUPPRESS_VALIDATIONS"]
   end
 end

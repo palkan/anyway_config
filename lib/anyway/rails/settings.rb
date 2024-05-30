@@ -79,5 +79,7 @@ module Anyway
     self.use_local_files ||= ::Rails.env.development?
     # Don't try read defaults when no key defined
     self.default_environmental_key = nil
+
+    self.suppress_required_validations = ENV["SECRET_KEY_BASE_DUMMY"]
   end
 end

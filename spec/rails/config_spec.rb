@@ -113,5 +113,19 @@ describe Anyway::Config, :rails, type: :config do
       expect { MyAppConfig.new }
         .to raise_error(Anyway::Config::ValidationError, /missing or empty: name, mode/)
     end
+
+    context "when suppress validation" do
+      context "manually with setting" do
+        around do |ex|
+          Anyway::Settings.suppress_required_validations = true
+          ex.run
+          Anyway::Settings.suppress_required_validations = false
+        end
+
+        it "skips validation" do
+          expect { MyAppConfig.new }.to_not raise_error
+        end
+      end
+    end
   end
 end
