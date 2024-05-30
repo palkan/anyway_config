@@ -934,6 +934,26 @@ describe Anyway::Config, type: :config do
         .to raise_error(ArgumentError, /unknown config param: test/i)
     end
 
+    context "suppress validation" do
+      let(:config_values) { {} }
+
+      context "with setting" do
+        before { allow(Anyway::Settings).to receive(:suppress_required_validations).and_return(true) }
+
+        it "not to raise ValidationError" do
+          expect { subject }.to_not raise_error
+        end
+      end
+
+      context "with env" do
+        it "not to raise ValidationError" do
+          with_env("ANYWAY_SUPPRESS_VALIDATIONS" => "1") do
+            expect { subject }.to_not raise_error
+          end
+        end
+      end
+    end
+
     specify "inheritance" do
       subconfig = Class.new(config) { required :debug }
 

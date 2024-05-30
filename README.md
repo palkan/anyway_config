@@ -31,29 +31,43 @@ For version 1.x see the [1-4-stable branch](https://github.com/palkan/anyway_con
 
 ## Table of contents
 
-- [Main concepts](#main-concepts)
-- [Installation](#installation)
-- [Usage](#usage)
-  - [Configuration classes](#configuration-classes)
-  - [Dynamic configuration](#dynamic-configuration)
-  - [Validation & Callbacks](#validation-and-callbacks)
-- [Using with Rails applications](#using-with-rails)
-  - [Data population](#data-population)
-  - [Organizing configs](#organizing-configs)
-  - [Generators](#generators)
-- [Using with Ruby applications](#using-with-ruby)
-- [Environment variables](#environment-variables)
-- [Type coercion](#type-coercion)
-- [Local configuration](#local-files)
-- [Data loaders](#data-loaders)
-  - [Doppler integration](#doppler-integration)
-  - [EJSON support](#ejson-support)
-  - [Custom loaders](#custom-loaders)
-- [Source tracing](#tracing)
-- [Pattern matching](#pattern-matching)
-- [Test helpers](#test-helpers)
-- [OptionParser integration](#optionparser-integration)
-- [RBS support](#rbs-support)
+- [Anyway Config](#anyway-config)
+  - [Links](#links)
+  - [Table of contents](#table-of-contents)
+  - [Main concepts](#main-concepts)
+  - [Installation](#installation)
+    - [Supported Ruby versions](#supported-ruby-versions)
+  - [Usage](#usage)
+    - [Configuration classes](#configuration-classes)
+      - [Config name](#config-name)
+      - [Customize env variable names prefix](#customize-env-variable-names-prefix)
+      - [Explicit values](#explicit-values)
+      - [Reload configuration](#reload-configuration)
+    - [Dynamic configuration](#dynamic-configuration)
+    - [Validation and callbacks](#validation-and-callbacks)
+  - [Using with Rails](#using-with-rails)
+    - [Data population](#data-population)
+    - [Multi-env configuration](#multi-env-configuration)
+    - [Organizing configs](#organizing-configs)
+    - [Generators](#generators)
+    - [Loading Anyway Config before Rails](#loading-anyway-config-before-rails)
+  - [Using with Ruby](#using-with-ruby)
+  - [Environment variables](#environment-variables)
+  - [Type coercion](#type-coercion)
+  - [Local files](#local-files)
+  - [Data loaders](#data-loaders)
+    - [Doppler integration](#doppler-integration)
+    - [EJSON support](#ejson-support)
+    - [Custom loaders](#custom-loaders)
+  - [Tracing](#tracing)
+    - [Pretty print](#pretty-print)
+  - [Pattern matching](#pattern-matching)
+  - [Test helpers](#test-helpers)
+  - [OptionParser integration](#optionparser-integration)
+  - [RBS support](#rbs-support)
+    - [Handling `on_load`](#handling-on_load)
+  - [Contributing](#contributing)
+  - [License](#license)
 
 ## Main concepts
 
@@ -303,6 +317,9 @@ MyConfig.new(api_secret: "") #=> raises Anyway::Config::ValidationError
 
 `Required` method supports additional `env` parameter which indicates necessity to run validations under specified
 environments. `Env` parameter could be present in symbol, string, array or hash formats:
+
+**NOTE:** You can suppress the validation of the required parameters (it can be useful for CI) via the `ANYWAY_SUPPRESS_VALIDATIONS` environment variable or by setting it explicitly in the code: `Anyway::Settings.suppress_required_validations = true`.
+If you are using Anyway Config with Rails and have already specified `SECRET_KEY_BASE_DUMMY` for asset precompilation, validation will be skipped by default.
 
 ```ruby
 class EnvConfig < Anyway::Config

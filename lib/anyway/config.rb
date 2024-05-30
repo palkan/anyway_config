@@ -445,6 +445,8 @@ module Anyway # :nodoc:
     attr_reader :values, :__trace__
 
     def validate_required_attributes!
+      return if Settings.suppress_required_validations
+
       self.class.required_attributes.select do |name|
         val = values.dig(*name.to_s.split(".").map(&:to_sym))
         val.nil? || (val.is_a?(String) && val.empty?)

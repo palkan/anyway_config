@@ -2,6 +2,15 @@
 
 ## master
 
+## 2.6.5 (2024-05-30)
+
+- Added `suppress_required_validations` configuration for skipping validation in CI. ([@OlegChuev][])
+  - Support for the Rails built-in environment variable `SECRET_KEY_BASE_DUMMY`. If this variable is set, all validations for required attributes are skipped. This is particularly useful for executing `bundle exec rails assets:precompile` in CI/CD pipelines.
+  
+  - Introduced a global setting `Anyway::Settings.suppress_required_validations = true` to disable validations. This can be toggled via the environment variable `ANYWAY_SUPPRESS_VALIDATIONS`.
+
+  - For Rails applications, `suppress_required_validations` is automatically set to `true` if `SECRET_KEY_BASE_DUMMY` is defined.
+  
 ## 2.6.4 (2024-04-30)
 
 - Fix RBS manifest file name (`.yml` -> `.yaml`). ([@carlqt][])
@@ -579,3 +588,4 @@ No we're dependency-free!
 [@tagirahmad]: https://github.com/tagirahmad
 [@bessey]: https://github.com/bessey
 [@carlqt]: https://github.com/carlqt
+[@OlegChuev]: https://github.com/OlegChuev
