@@ -51,10 +51,9 @@ RSpec.configure do |config|
   config.filter_run :focus
   config.run_all_when_everything_filtered = true
 
-  if NOSECRETS
-    config.around(:each, type: :config) do |ex|
-      with_env("COOL_META__KOT" => "leta", &ex)
-    end
+  config.around(:each, type: :config) do |ex|
+    next ex.run if ex.metadata[:env_kot] == false
+    with_env("COOL_META__KOT" => "leta", &ex)
   end
 
   config.order = :random
