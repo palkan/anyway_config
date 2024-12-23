@@ -7,7 +7,7 @@ module Anyway
     def self.future: -> Future
     def self.current_environment: -> String?
     def self.default_environmental_key: -> String?
-    def self.suppress_required_validations: -> bool?
+    def self.suppress_required_validations: -> bool
     def self.known_environments: -> Array[String]?
 
     class Future

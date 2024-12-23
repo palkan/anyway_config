@@ -80,6 +80,6 @@ module Anyway
     # Don't try read defaults when no key defined
     self.default_environmental_key = nil
 
-    self.suppress_required_validations = ENV["SECRET_KEY_BASE_DUMMY"]
+    self.suppress_required_validations = !!ENV["SECRET_KEY_BASE_DUMMY"] unless ENV.key?("ANYWAY_SUPPRESS_VALIDATIONS")
   end
 end

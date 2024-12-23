@@ -112,6 +112,6 @@ module Anyway
     self.tracing_enabled = true
 
     # By default, use ANYWAY_SUPPRESS_VALIDATIONS
-    self.suppress_required_validations = ENV["ANYWAY_SUPPRESS_VALIDATIONS"]
+    self.suppress_required_validations = %w[1 t true y yes].include?(ENV["ANYWAY_SUPPRESS_VALIDATIONS"])
   end
 end

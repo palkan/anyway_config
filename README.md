@@ -319,7 +319,7 @@ MyConfig.new(api_secret: "") #=> raises Anyway::Config::ValidationError
 environments. `Env` parameter could be present in symbol, string, array or hash formats:
 
 **NOTE:** You can suppress the validation of the required parameters (it can be useful for CI) via the `ANYWAY_SUPPRESS_VALIDATIONS` environment variable or by setting it explicitly in the code: `Anyway::Settings.suppress_required_validations = true`.
-If you are using Anyway Config with Rails and have already specified `SECRET_KEY_BASE_DUMMY` for asset precompilation, validation will be skipped by default.
+If you are using Anyway Config with Rails and have already specified `SECRET_KEY_BASE_DUMMY` for asset pre compilation, validation will be skipped by default.
 
 ```ruby
 class EnvConfig < Anyway::Config
