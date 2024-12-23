@@ -20,15 +20,6 @@ RSpec::Core::RakeTask.new("spec:norails") do |task|
   task.verbose = false
 end
 
-desc "Run Rails secrets tests for uninitialized app"
-RSpec::Core::RakeTask.new("spec:secrets") do |task|
-  ENV["DO_NOT_INITIALIZE_RAILS"] = "1"
-  ENV["USE_APP_CONFIGS"] = "0"
-  ENV["NORAILS"] = "0"
-  task.rspec_opts = "--order defined --tag secrets"
-  task.verbose = false
-end
-
 desc "Run Rails autoload tests for app/configs"
 RSpec::Core::RakeTask.new("spec:autoload") do |task|
   ENV["USE_APP_CONFIGS"] = "1"
@@ -107,4 +98,4 @@ namespace :spec do
 end
 
 desc "Run the all specs"
-task default: %w[rubocop rubocop:md steep spec:norails spec spec:secrets spec:autoload spec:rbs]
+task default: %w[rubocop rubocop:md steep spec:norails spec spec:autoload spec:rbs]

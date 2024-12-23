@@ -33,7 +33,7 @@ jobs:
         - ruby: "3.2"
           gemfile: "gemfiles/rails7.gemfile"
           rbs: 'false'
-        - ruby: "3.2"
+        - ruby: "3.3"
           gemfile: "gemfiles/railsmaster.gemfile"
           rbs: 'false'
         - ruby: "3.1"
@@ -69,9 +69,6 @@ jobs:
     - name: Run RSpec without rails
       run: |
         bundle exec rake spec:norails
-    - name: Run Rails secrets tests for uninitialized app
-      run: |
-        bundle exec rake spec:secrets
     - name: Run Rails autoload tests
       run: |
         bundle exec rake spec:autoload

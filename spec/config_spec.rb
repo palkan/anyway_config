@@ -455,7 +455,7 @@ describe Anyway::Config, type: :config do
       end
     end
 
-    describe "#to_source_trace" do
+    describe "#to_source_trace", env_kot: false do
       let(:conf) { CoolConfig.new }
 
       around do |ex|
@@ -606,7 +606,7 @@ describe Anyway::Config, type: :config do
       end
     end
 
-    describe "#pretty_print" do
+    describe "#pretty_print", env_kot: false do
       let(:overrides) { {} }
       let(:conf) { CoolConfig.new(overrides) }
 

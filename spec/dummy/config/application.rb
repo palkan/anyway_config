@@ -10,6 +10,7 @@ Bundler.require(*Rails.groups)
 
 module Dummy
   class Application < Rails::Application
+    config.load_defaults Rails::VERSION::STRING.split(".").take(2).join(".").to_f
     config.logger = Logger.new("/dev/null")
     config.eager_load = ENV["DO_NOT_INITIALIZE_RAILS"] != "1"
 

@@ -21,13 +21,12 @@ describe Anyway::Config, :rails, type: :config do
 
     if !NORAILS
       if Rails.application.respond_to?(:credentials)
-        it "load config from secrets and credentials" do
+        it "load config from credentials" do
           expect(conf.user[:name]).to eq "secret man"
-          expect(conf.meta).to eq("kot" => "leta")
           expect(conf.user[:password]).to eq "root"
         end
 
-        it "sets overrides after loading secrets" do
+        it "sets overrides after loading" do
           config = CoolConfig.new(user: {"password" => "override"})
           expect(config.user[:name]).to eq "secret man"
           expect(config.user[:password]).to eq "override"
@@ -43,7 +42,7 @@ describe Anyway::Config, :rails, type: :config do
           end
         end
 
-        context "when using local files" do
+        context "when using local files", env_kot: false do
           around do |ex|
             Anyway::Settings.use_local_files = true
             ex.run
@@ -52,9 +51,7 @@ describe Anyway::Config, :rails, type: :config do
 
           it "load config local credentials too" do
             expect(conf.user[:name]).to eq "secret man"
-            unless NOSECRETS
-              expect(conf.meta).to eq("kot" => "murkot")
-            end
+            expect(conf.meta).to eq("kot" => "murkot")
             expect(conf.user[:password]).to eq "password"
           end
         end
@@ -81,7 +78,7 @@ describe Anyway::Config, :rails, type: :config do
                 },
                 "port" => {value: 8080, source: {type: :defaults}},
                 "meta" => {
-                  "kot" => {value: "leta", source: NOSECRETS ? {type: :env, key: "COOL_META__KOT"} : {type: :secrets}}
+                  "kot" => {value: "leta", source: {type: :env, key: "COOL_META__KOT"}}
                 }
               }
             )

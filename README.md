@@ -73,7 +73,7 @@ end
 
 Using Ruby classes to represent configuration allows you to add helper methods and computed parameters easily, makes the configuration **testable**.
 
-The `anyway_config` gem takes care of loading parameters from **different sources** (YAML, credentials/secrets, environment variables, etc.). Internally, we use a _pipeline pattern_ and provide the [Loaders API](#data-loaders) to manage and [extend](#custom-loaders) its functionality.
+The `anyway_config` gem takes care of loading parameters from **different sources** (YAML, credentials, environment variables, etc.). Internally, we use a _pipeline pattern_ and provide the [Loaders API](#data-loaders) to manage and [extend](#custom-loaders) its functionality.
 
 Check out the libraries using Anyway Config for more examples:
 
@@ -270,7 +270,6 @@ This feature is similar to `Rails.application.config_for` but more powerful:
 | Feature | Rails | Anyway Config |
 | ------------- |-------------:| -----:|
 | Load data from `config/app.yml` | ✅ | ✅ |
-| Load data from `secrets` | ❌ | ✅ |
 | Load data from `credentials` | ❌ | ✅ |
 | Load data from environment | ❌ | ✅ |
 | Load data from [other sources](#data-loaders) | ❌ | ✅ |
