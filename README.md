@@ -714,7 +714,7 @@ CoolConfig.new.port == "443" #=> true
 
 **IMPORTANT**: Values provided explicitly (via attribute writers) are not coerced. Coercion is only happening during the load phase.
 
-The following types are supported out-of-the-box: `:string`, `:integer`, `:float`, `:date`, `:datetime`, `:uri`, `:boolean`.
+The following types are supported out-of-the-box: `:string`, `:integer`, `:integer!` (strict integer), `:float`, `:date`, `:datetime`, `:uri`, `:boolean`.
 
 You can use custom deserializers by passing a callable object instead of a type name:
 

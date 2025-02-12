@@ -88,6 +88,10 @@ module Anyway
     obj.accept(:boolean) do
       _1.to_s.match?(/\A(true|t|yes|y|1)\z/i)
     end
+
+    obj.accept(:integer!) do
+      Integer(_1)
+    end
   end
 
   unless "".respond_to?(:safe_constantize)
