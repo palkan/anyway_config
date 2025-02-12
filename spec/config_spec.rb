@@ -896,6 +896,16 @@ describe Anyway::Config, type: :config do
         end
       end
 
+      context "when current env matches one of env options under except array" do
+        before { allow(Anyway::Settings).to receive(:current_environment).and_return("local") }
+
+        let(:missed_keys) { [:sentry_api_key] }
+
+        it "not raises ValidationError" do
+          expect { demo_config.new }.to_not raise_error
+        end
+      end
+
       context "when env value under except key mismatched" do
         before { allow(Anyway::Settings).to receive(:current_environment).and_return("demo") }
 

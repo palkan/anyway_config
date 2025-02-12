@@ -89,7 +89,7 @@ module Anyway
 
         if env.is_a?(::Hash)
           envs = env[:except]
-          excluded_envs = [envs].flat_map(&:to_s)
+          excluded_envs = [*envs].flat_map(&:to_s)
           excluded_envs.none?(current_environment)
         elsif env.is_a?(::Array)
           env.flat_map(&:to_s).include?(current_environment)

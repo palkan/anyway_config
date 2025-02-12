@@ -10,6 +10,7 @@
   - For Rails applications, `suppress_required_validations` is automatically set to `true` if `SECRET_KEY_BASE_DUMMY` is defined.
   
 - Fix handling relative vs. absolute paths in `autoload_static_configs_path=`. ([@palkan][])
+- Fix support for array values in `except` option for required attributes. ([@dominikb][])
 
 ## 2.6.4 (2024-04-30)
 
