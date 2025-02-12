@@ -16,7 +16,7 @@ Bundler.require(*Rails.groups)
 
 module Dummy
   class Application < Rails::Application
-    config.logger = Logger.new("/dev/null")
+    config.logger = Logger.new(IO::NULL)
     config.eager_load = false
   end
 end

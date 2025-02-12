@@ -112,9 +112,17 @@ describe Anyway::Config, :rails, type: :config do
     end
 
     context "when suppress validation" do
+      after do
+        # reload the default settings
+        load File.join(__dir__, "../../lib/anyway/rails/settings.rb")
+      end
+
       context "with env" do
         it "skips validation" do
           with_env("SECRET_KEY_BASE_DUMMY" => "true") do
+            # reload settings to pick up env vars
+            load File.join(__dir__, "../../lib/anyway/rails/settings.rb")
+
             expect { MyAppConfig.new }.to_not raise_error
           end
         end
@@ -126,6 +134,9 @@ describe Anyway::Config, :rails, type: :config do
             "SECRET_KEY_BASE_DUMMY" => "true",
             "ANYWAY_SUPPRESS_VALIDATIONS" => "false"
           ) do
+            # reload settings to pick up env vars
+            load File.join(__dir__, "../../lib/anyway/rails/settings.rb")
+
             expect { MyAppConfig.new }
               .to raise_error(Anyway::Config::ValidationError, /missing or empty: name, mode/)
           end
