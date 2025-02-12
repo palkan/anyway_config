@@ -2,6 +2,8 @@
 
 ## master
 
+## 2.7.0 (2025-02-12)
+
 - Added `suppress_required_validations` configuration for skipping validation in CI. ([@OlegChuev][])
 
 - Support for the Rails built-in environment variable `SECRET_KEY_BASE_DUMMY`. If this variable is set, all validations for required attributes are skipped. This is particularly useful for executing `bundle exec rails assets:precompile` in CI/CD pipelines. ([@OlegChuev][])
