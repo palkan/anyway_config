@@ -110,5 +110,39 @@ describe Anyway::Config, :rails, type: :config do
       expect { MyAppConfig.new }
         .to raise_error(Anyway::Config::ValidationError, /missing or empty: name, mode/)
     end
+
+    context "when suppress validation" do
+      context "with env" do
+        it "skips validation" do
+          with_env("SECRET_KEY_BASE_DUMMY" => "true") do
+            expect { MyAppConfig.new }.to_not raise_error
+          end
+        end
+      end
+
+      context "with env" do
+        it "verifies precedence of envs" do
+          with_env(
+            "SECRET_KEY_BASE_DUMMY" => "true",
+            "ANYWAY_SUPPRESS_VALIDATIONS" => "false"
+          ) do
+            expect { MyAppConfig.new }
+              .to raise_error(Anyway::Config::ValidationError, /missing or empty: name, mode/)
+          end
+        end
+      end
+
+      context "manually with setting" do
+        around do |ex|
+          Anyway::Settings.suppress_required_validations = true
+          ex.run
+          Anyway::Settings.suppress_required_validations = false
+        end
+
+        it "skips validation" do
+          expect { MyAppConfig.new }.to_not raise_error
+        end
+      end
+    end
   end
 end
