@@ -18,31 +18,22 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ruby: ["3.0"]
+        ruby: ["3.3"]
         gemfile: [
-          "gemfiles/rails6.gemfile"
+          "gemfiles/rails8.gemfile"
         ]
         rbs: ['false']
         include:
-        - ruby: "3.3"
+        - ruby: "3.4"
           gemfile: "Gemfile"
           rbs: 'true'
         - ruby: "3.2"
           gemfile: "Gemfile"
           rbs: 'false'
-        - ruby: "3.2"
-          gemfile: "gemfiles/rails7.gemfile"
-          rbs: 'false'
-        - ruby: "3.3"
-          gemfile: "gemfiles/railsmaster.gemfile"
-          rbs: 'false'
         - ruby: "3.1"
-          gemfile: "Gemfile"
-          rbs: 'true'
-        - ruby: "3.1"
-          gemfile: "gemfiles/rails7.gemfile"
+          gemfile: "gemfiles/rails6.gemfile"
           rbs: 'false'
-        - ruby: "3.1"
+        - ruby: "3.4"
           gemfile: "gemfiles/railsmaster.gemfile"
           rbs: 'false'
         - ruby: "2.5"
