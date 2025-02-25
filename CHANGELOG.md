@@ -2,6 +2,8 @@
 
 ## master
 
+## 2.7.1 (2025-02-24)
+
 - Suppress required validations when running Rails credentials commands. ([@palkan][])
 
 ## 2.7.0 (2025-02-12)
