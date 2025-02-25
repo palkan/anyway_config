@@ -81,5 +81,14 @@ module Anyway
     self.default_environmental_key = nil
 
     self.suppress_required_validations = ENV.key?("SECRET_KEY_BASE_DUMMY") unless ENV.key?("ANYWAY_SUPPRESS_VALIDATIONS")
+
+    # Suppress validations when working with credentials
+    if defined?(::Rails::Command::CredentialsCommand) && ::Rails::Command.respond_to?(:const_source_location)
+      credentials_source_path = ::Rails::Command.const_source_location("CredentialsCommand").first
+
+      if caller_locations.any? { |l| l.absolute_path == credentials_source_path }
+        self.suppress_required_validations = true
+      end
+    end
   end
 end

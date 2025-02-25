@@ -2,6 +2,8 @@
 
 ## master
 
+- Suppress required validations when running Rails credentials commands. ([@palkan][])
+
 ## 2.7.0 (2025-02-12)
 
 - Added `suppress_required_validations` configuration for skipping validation in CI. ([@OlegChuev][])

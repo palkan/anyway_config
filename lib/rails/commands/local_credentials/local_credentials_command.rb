@@ -19,6 +19,13 @@ module Rails
 
         change_credentials_in_system_editor
       end
+
+      private
+
+      def load_environment_config!
+        ENV["ANYWAY_SUPPRESS_VALIDATIONS"] = "true"
+        super
+      end
     end
   end
 end
