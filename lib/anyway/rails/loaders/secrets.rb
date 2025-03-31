@@ -28,6 +28,11 @@ module Anyway
             # Reset secrets state if the app hasn't been initialized
             # See https://github.com/palkan/anyway_config/issues/14
             next if ::Rails.application.initialized?
+
+            # Address unable to load application: NameError: instance variable @secrets
+            # not defined
+            next unless ::Rails.application.instance_variable_defined?(:@secrets)
+
             ::Rails.application.remove_instance_variable(:@secrets)
           end
         end

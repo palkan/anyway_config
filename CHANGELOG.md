@@ -2,6 +2,8 @@
 
 ## master
 
+- Address NameError: instance variable @secrets not defined issue ([@fbuys][])
+
 ## 2.7.1 (2025-02-24)
 
 - Suppress required validations when running Rails credentials commands. ([@palkan][])
