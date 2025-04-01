@@ -2,6 +2,8 @@
 
 ## master
 
+## 2.7.2 (2025-04-01)
+
 - Address NameError: instance variable @secrets not defined issue ([@fbuys][])
 
 ## 2.7.1 (2025-02-24)
