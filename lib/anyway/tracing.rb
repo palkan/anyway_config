@@ -29,7 +29,7 @@ module Anyway
       def record_value(val, *path, **opts)
         key = path.pop
         trace = if val.is_a?(Hash)
-          Trace.new.tap { it.merge_values(val, **opts) }
+          Trace.new.tap { |trace| trace.merge_values(val, **opts) }
         else
           Trace.new(:value, val, **opts)
         end
@@ -84,7 +84,7 @@ module Anyway
 
       def to_h
         if trace?
-          value.transform_values(&:to_h).tap { it.default_proc = nil }
+          value.transform_values(&:to_h).tap { |item| item.default_proc = nil }
         else
           {value:, source:}
         end

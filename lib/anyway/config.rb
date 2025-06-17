@@ -154,7 +154,7 @@ module Anyway # :nodoc:
         if block
           load_callbacks << BlockCallback.new(block)
         else
-          load_callbacks.push(*names.map { NamedCallback.new(it) })
+          load_callbacks.push(*names.map { |name| NamedCallback.new(name) })
         end
       end
 
@@ -380,7 +380,7 @@ module Anyway # :nodoc:
       trace&.keep_if { |key| self.class.config_attributes.include?(key.to_sym) }
 
       # Run on_load callbacks
-      self.class.load_callbacks.each { it.apply_to(self) }
+      self.class.load_callbacks.each { |call| call.apply_to(self) }
 
       # Set trace after we write all the values to
       # avoid changing the source to accessor

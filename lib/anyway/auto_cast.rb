@@ -13,9 +13,9 @@ module Anyway
 
         case val
         when Hash
-          val.transform_values { call(it) }
+          val.transform_values { |item| call(item) }
         when ARRAY_RXP
-          val.split(/\s*,\s*/).map { call(it) }
+          val.split(/\s*,\s*/).map { |item| call(item) }
         when /\A(true|t|yes|y)\z/i
           true
         when /\A(false|f|no|n)\z/i
