@@ -894,7 +894,7 @@ class MyConfig < Anyway::Config
 end
 ```
 
-You can access the list of available loader identifeirs as follows:
+You can access the list of available loader identifiers as follows:
 
 ```ruby
 Anyway.loaders.keys #=> [:yml, :credentials, :env]
