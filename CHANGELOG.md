@@ -2,6 +2,8 @@
 
 ## master
 
+## 2.8.0 (2025-06-24)
+
 - Add `configuration_sources` option to config classes to specify which data sources to use. ([@palkan][])
 
 ## 2.7.2 (2025-04-01)
