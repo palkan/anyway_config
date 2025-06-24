@@ -653,8 +653,6 @@ MYCOOLGEM = "Nif-Nif, Naf-Naf and Nouf-Nouf"
 
 ## Type coercion
 
-> 🆕 v2.2.0
-
 You can define custom type coercion rules to convert string data to config values. To do that, use `.coerce_types` method:
 
 ```ruby
@@ -882,6 +880,24 @@ def call(name:, **_opts)
     {}
   end
 end
+```
+
+### Specifying which loaders to use
+
+Sometimes you may want to pick only specific loaders for a particular configuration class. For that, you can use the `.configuration_sources=` writer method:
+
+```ruby
+class MyConfig < Anyway::Config
+  # Only load configuraiton data from ENV and credentials
+  self.configuration_sources = [:env, :credentials]
+  # ...
+end
+```
+
+You can access the list of available loader identifeirs as follows:
+
+```ruby
+Anyway.loaders.keys #=> [:yml, :credentials, :env]
 ```
 
 ## Tracing

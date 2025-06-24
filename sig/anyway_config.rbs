@@ -83,6 +83,8 @@ module Anyway
     def self.coerce_types: (**mappingType) -> void
     def self.coercion_mapping: -> Hash[untyped, untyped]?
     def self.disable_auto_cast!: -> void
+    def self.configuration_sources: -> Array[Symbol]?
+    def self.configuration_sources=: (Array[Symbol]) -> void
 
     attr_reader config_name: String
     attr_reader env_prefix: String
@@ -145,6 +147,7 @@ module Anyway
       def override: (Symbol id, _Loader loader) -> void
                   | (Symbol id) { (**untyped) -> Hash[untyped, untyped] } -> void
       def delete: (Symbol id) -> void
+      def keys: () -> Array[Symbol]
     end
   end
 end

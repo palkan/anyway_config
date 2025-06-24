@@ -108,4 +108,8 @@ describe Anyway::Loaders::Registry do
   specify "#delete with non-existing id" do
     expect { loaders.delete :c }.to raise_error(ArgumentError)
   end
+
+  specify "#keys" do
+    expect(loaders.keys).to eq([:a, :b])
+  end
 end

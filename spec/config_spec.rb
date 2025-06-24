@@ -297,6 +297,40 @@ describe Anyway::Config, type: :config do
       end
     end
 
+    describe ".configuration_sources" do
+      context "when only env" do
+        let(:conf) do
+          klass = Class.new(CoolConfig)
+          klass.configuration_sources = %i[env]
+          klass.new
+        end
+
+        it "loads only from the specified sources", :aggregate_failures do
+          with_env("COOL_USER__PASSWORD" => "my_pass") do
+            expect(conf.port).to eq 8080
+            expect(conf.host).to eq "localhost"
+            expect(conf.user[:password]).to eq "my_pass"
+          end
+        end
+      end
+
+      context "when only yaml" do
+        let(:conf) do
+          klass = Class.new(CoolConfig)
+          klass.configuration_sources = %i[yml]
+          klass.new
+        end
+
+        it "loads only from the specified sources", :aggregate_failures do
+          with_env("COOL_USER__PASSWORD" => "my_pass") do
+            expect(conf.port).to eq 8080
+            expect(conf.host).to eq "test.host"
+            expect(conf.user[:password]).to eq "root"
+          end
+        end
+      end
+    end
+
     describe "#clear" do
       let(:conf_cleared) { conf.clear }
 

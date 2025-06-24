@@ -55,6 +55,8 @@ module Anyway
         registry.each(&block)
       end
 
+      def keys() = registry.map(&:first)
+
       def freeze() = registry.freeze
 
       private

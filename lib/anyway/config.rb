@@ -261,6 +261,15 @@ module Anyway # :nodoc:
         @fallback_type_caster = ::Anyway::NoCast
       end
 
+      def configuration_sources
+        return @configuration_sources if instance_variable_defined?(:@configuration_sources)
+        return @configuration_sources = superclass.configuration_sources.dup if superclass.respond_to?(:configuration_sources)
+
+        @configuration_sources = nil
+      end
+
+      attr_writer :configuration_sources
+
       private
 
       def define_config_accessor(*names)
@@ -390,7 +399,10 @@ module Anyway # :nodoc:
     end
 
     def load_from_sources(base_config, **opts)
-      Anyway.loaders.each do |(_id, loader)|
+      source_filter = self.class.configuration_sources
+
+      Anyway.loaders.each do |(id, loader)|
+        next if source_filter && !source_filter.include?(id)
         Utils.deep_merge!(base_config, loader.call(**opts))
       end
       base_config
