@@ -2,6 +2,8 @@
 
 ## master
 
+- Do not require optional loader deps to speed up loading. ([@ardecvz][])
+
 ## 2.8.0 (2025-06-24)
 
 - Add `configuration_sources` option to config classes to specify which data sources to use. ([@palkan][])
@@ -608,3 +610,4 @@ No we're dependency-free!
 [@OlegChuev]: https://github.com/OlegChuev
 [@dominikb]: https://github.com/dominikb
 [@klondaiker]: https://github.com/klondaiker
+[@ardecvz]: https://github.com/ardecvz

@@ -1,9 +1,16 @@
 # frozen_string_literal: true
 
+require "anyway/loaders/base"
+
 module Anyway
   using RubyNext
 
   module Loaders
+    autoload :YAML, "anyway/loaders/yaml"
+    autoload :Env, "anyway/loaders/env"
+    autoload :EJSON, "anyway/loaders/ejson"
+    autoload :Doppler, "anyway/loaders/doppler"
+
     class Registry
       attr_reader :registry
 
@@ -73,9 +80,3 @@ module Anyway
     end
   end
 end
-
-require "anyway/loaders/base"
-require "anyway/loaders/yaml"
-require "anyway/loaders/env"
-require "anyway/loaders/doppler"
-require "anyway/loaders/ejson"

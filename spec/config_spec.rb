@@ -1093,4 +1093,54 @@ describe Anyway::Config, type: :config do
       expect(conf.to_source_trace["port"][:value]).to eq 8080
     end
   end
+
+  describe ".register_loaders" do
+    around do |example|
+      current_loaders = Anyway.loaders
+      Anyway.instance_variable_set(:@loaders, nil)
+      example.run
+    ensure
+      Anyway.instance_variable_set(:@loaders, current_loaders)
+    end
+
+    it "registers EJSON loader when ejson is available" do
+      allow(Anyway::Utils).to receive(:which).with("ejson").and_return("/usr/bin/ejson")
+
+      Anyway.register_loaders
+
+      expect(Anyway.loaders.keys).to include(:ejson)
+    end
+
+    it "does not register EJSON when ejson is missing" do
+      allow(Anyway::Utils).to receive(:which).with("ejson").and_return(nil)
+
+      Anyway.register_loaders
+
+      expect(Anyway.loaders.keys).not_to include(:ejson)
+    end
+
+    it "registers Doppler loader when token present" do
+      with_env("DOPPLER_TOKEN" => "test") do
+        Anyway.register_loaders
+
+        expect(Anyway.loaders.keys).to include(:doppler)
+      end
+    end
+
+    it "does not register Doppler loader when explicitly disabled" do
+      with_env("DOPPLER_TOKEN" => "test", "ANYWAY_CONFIG_DISABLE_DOPPLER" => "true") do
+        Anyway.register_loaders
+
+        expect(Anyway.loaders.keys).not_to include(:doppler)
+      end
+    end
+
+    it "does not register Doppler loader when token is missing" do
+      with_env("DOPPLER_TOKEN" => nil) do
+        Anyway.register_loaders
+
+        expect(Anyway.loaders.keys).not_to include(:doppler)
+      end
+    end
+  end
 end
