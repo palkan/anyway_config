@@ -2,7 +2,7 @@
 
 ## master
 
-- Do not require optional loader deps to speed up loading. ([@ardecvz][])
+- Do not require optional loader dependencies to speed up loading. ([@ardecvz][])
 
 ## 2.8.0 (2025-06-24)
 
