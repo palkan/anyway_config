@@ -19,7 +19,7 @@ module Anyway # :nodoc:
       private
 
       def option_parser_on_args(key, flag: false, desc: nil, type: ::String)
-        on_args = ["--#{key.to_s.tr("_", "-")}#{flag ? "" : " VALUE"}"]
+        on_args = ["--#{key.to_s.tr("_", "-")}#{" VALUE" unless flag}"]
         on_args << type unless flag
         on_args << desc unless desc.nil?
         on_args
