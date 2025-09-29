@@ -35,21 +35,17 @@ module Anyway # :nodoc:
     end
   end
 
-  def self.register_loaders
-    # Configure default loaders
-    loaders.append :yml, Loaders::YAML
-    loaders.append :env, Loaders::Env
+  # Configure default loaders
+  loaders.append :yml, Loaders::YAML
+  loaders.append :env, Loaders::Env
 
-    # Configure optional loaders
-    if Utils.which("ejson")
-      loaders.append :ejson, Loaders::EJSON
-    end
-    if ENV.key?("DOPPLER_TOKEN") && ENV["ANYWAY_CONFIG_DISABLE_DOPPLER"] != "true"
-      loaders.append :doppler, Loaders::Doppler
-    end
+  # Configure optional loaders
+  if Utils.which("ejson")
+    loaders.append :ejson, Loaders::EJSON
   end
-
-  register_loaders
+  if ENV.key?("DOPPLER_TOKEN") && ENV["ANYWAY_CONFIG_DISABLE_DOPPLER"] != "true"
+    loaders.append :doppler, Loaders::Doppler
+  end
 end
 
 if defined?(::Rails::VERSION)
