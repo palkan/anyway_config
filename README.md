@@ -825,6 +825,8 @@ class MyConfig < Anyway::Config
 end
 ```
 
+**NOTE:** You can opt-out from EJSON loader by specifying the `ANYWAY_CONFIG_DISABLE_EJSON=true` env var (in case you have the `ejson` executable in your PATH, but don't want to use it with Anyway Config).
+
 ### Custom loaders
 
 You can provide your own data loaders or change the existing ones using the Loaders API (which is very similar to Rack middleware builder):
