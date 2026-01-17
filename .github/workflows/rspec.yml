@@ -24,6 +24,11 @@ jobs:
         ]
         rbs: ['false']
         include:
+        - ruby: "4.0"
+          gemfile: "Gemfile"
+          rbs: 'true'
+        - ruby: "4.0"
+          gemfile: "gemfiles/railsmaster.gemfile"
         - ruby: "3.4"
           gemfile: "Gemfile"
           rbs: 'true'
