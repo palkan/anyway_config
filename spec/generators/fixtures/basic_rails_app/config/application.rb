@@ -8,6 +8,7 @@ require "rails"
 # a separate process
 require "ruby-next/language/runtime"
 RubyNext::Language.include_patterns << File.expand_path("../../../../lib/**/*.rb", __FILE__)
+RubyNext::Language.exclude_patterns << File.expand_path("../../../../lib/.rbnext/*", __FILE__)
 
 require "action_controller/railtie"
 require "anyway_config"
