@@ -44,7 +44,6 @@ jobs:
     - uses: ruby/setup-ruby@v1
       with:
         ruby-version: ${{ matrix.ruby }}
-        bundler: 2.2.15
         bundler-cache: true
     - name: Run Ruby Next
       run: bundle exec rake nextify
