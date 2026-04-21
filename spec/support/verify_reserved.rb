@@ -15,7 +15,7 @@ TracePoint.new(:call) do |ev|
   # filter out methods called not on Config instances
   next unless Anyway::Config === ev.self
   # select only methods defined by the library, not user
-  next unless ev.defined_class == Anyway::Config || Anyway::Config.included_modules.include?(ev.defined_class)
+  next unless ev.defined_class == Anyway::Config || Anyway::Config.included_modules.include?(ev.defined_class) # rubocop:disable Style/ModuleMemberExistenceCheck
   # make sure the method is called from the library code, not tests
   next unless ev.binding.eval("caller").any? { |path| path.start_with?(lib_path) }
 
