@@ -65,10 +65,12 @@ module Anyway
         @autoload_via_zeitwerk = defined?(::Zeitwerk)
       end
 
+      alias_method :current_environment, :current_environment
       def current_environment
         @current_environment || ::Rails.env.to_s
       end
 
+      alias_method :app_root, :app_root
       def app_root
         ::Rails.root
       end
