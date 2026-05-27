@@ -6,9 +6,10 @@ require "rails"
 
 # We need Ruby Next since this code is loaded in generator tests in
 # a separate process
-require "ruby-next/language/runtime"
+require "ruby-next/language"
 RubyNext::Language.include_patterns << File.expand_path("../../../../lib/**/*.rb", __FILE__)
 RubyNext::Language.exclude_patterns << File.expand_path("../../../../lib/.rbnext/*", __FILE__)
+require "ruby-next/language/runtime"
 
 require "action_controller/railtie"
 require "anyway_config"
