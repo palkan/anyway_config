@@ -2,6 +2,7 @@
 
 ## master
 
+- Guard against a missing `PATH` environment variable in `Anyway::Utils.which`. ([@SAY-5][])
 - Do not require optional loader dependencies to speed up loading. ([@ardecvz][])
 
 ## 2.8.0 (2025-06-24)
@@ -611,3 +612,4 @@ No we're dependency-free!
 [@dominikb]: https://github.com/dominikb
 [@klondaiker]: https://github.com/klondaiker
 [@ardecvz]: https://github.com/ardecvz
+[@SAY-5]: https://github.com/SAY-5

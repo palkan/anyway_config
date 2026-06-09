@@ -15,5 +15,15 @@ describe Anyway::Utils do
         expect(subject).to eq(nil)
       end
     end
+
+    context "when PATH is not set" do
+      before do
+        stub_const("ENV", ENV.to_hash.tap { |env| env.delete("PATH") })
+      end
+
+      it "returns nil" do
+        expect(subject).to eq(nil)
+      end
+    end
   end
 end
