@@ -6,7 +6,7 @@ module Anyway
     # taken from https://stackoverflow.com/a/5471032
     def self.which(cmd)
       exts = ENV["PATHEXT"] ? ENV["PATHEXT"].split(";") : [""]
-      paths =  ENV["PATH"]&.split(File::PATH_SEPARATOR) || []
+      paths = ENV["PATH"]&.split(File::PATH_SEPARATOR) || []
       paths.each do |path|
         exts.each do |ext|
           exe = File.join(path, "#{cmd}#{ext}")
