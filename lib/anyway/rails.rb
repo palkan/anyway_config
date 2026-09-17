@@ -12,7 +12,7 @@ require "anyway/rails/loaders"
 # Configure Rails loaders
 Anyway.loaders.override :yml, Anyway::Rails::Loaders::YAML
 
-if Rails::VERSION::MAJOR >= 7 && Rails::VERSION::MINOR >= 1
+if Gem::Version.new(Rails.version) >= Gem::Version.new("7.1")
   Anyway.loaders.insert_after :yml, :credentials, Anyway::Rails::Loaders::Credentials
 else
   Anyway.loaders.insert_after :yml, :secrets, Anyway::Rails::Loaders::Secrets
