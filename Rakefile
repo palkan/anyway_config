@@ -66,21 +66,15 @@ namespace :rbs do
   end
 end
 
-task :steep do
-  # Steep doesn't provide Rake integration yet,
-  # but can do that ourselves
-  require "steep"
-  require "steep/cli"
+begin
+  require "steep/rake_task"
 
-  Steep::CLI.new(argv: ["check", "--severity-level=error"], stdout: $stdout, stderr: $stderr, stdin: $stdin).run.tap do |exit_code|
-    exit(exit_code) unless exit_code.zero?
+  Steep::RakeTask.new do |t|
+    t.check.severity_level = :error
+    t.stats << "--log-level=fatal" << "--format=table"
   end
-end
-
-namespace :steep do
-  task :stats do
-    exec "bundle exec steep stats --log-level=fatal --format=table"
-  end
+rescue LoadError
+  task(:steep) {}
 end
 
 namespace :spec do

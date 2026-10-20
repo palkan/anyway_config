@@ -26,10 +26,13 @@ module Anyway
           config_hash = if ejson_namespace
             secrets_hash[ejson_namespace]
           else
-            secrets_hash.except("_public_key")
+            secrets_hash
           end
 
           next unless config_hash.is_a?(Hash)
+
+          # Underscore-prefixed keys are not encrypted (e.g., _public_key)
+          config_hash = config_hash.reject { |key, _| key.start_with?("_") }
 
           configs <<
             trace!(:ejson, path: rel_path) do
@@ -43,6 +46,8 @@ module Anyway
           Utils.deep_merge!(result_config, next_config)
         end
       end
+
+      def schemaful?() = true
 
       private
 

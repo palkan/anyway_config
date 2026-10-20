@@ -38,6 +38,7 @@ For version 1.x see the [1-4-stable branch](https://github.com/palkan/anyway_con
   - [Configuration classes](#configuration-classes)
   - [Dynamic configuration](#dynamic-configuration)
   - [Validation & Callbacks](#validation-and-callbacks)
+  - [Enforcing config schema](#enforcing-config-schema)
 - [Using with Rails applications](#using-with-rails)
   - [Data population](#data-population)
   - [Organizing configs](#organizing-configs)
@@ -344,6 +345,45 @@ class MyConfig < Anyway::Config
     end
   end
 end
+```
+
+### Enforcing config schema
+
+By default, Anyway Config ignores keys that don't match any of the config attributes. Thus, a typo in a YAML file (e.g., `hots` instead of `host`) goes unnoticed. You can make Anyway Config check for unknown attributes via the `enforce_config_schema` setting:
+
+```ruby
+# Raise Anyway::Config::UnknownAttributesError
+Anyway::Settings.enforce_config_schema = true
+
+# Print a warning instead
+Anyway::Settings.enforce_config_schema = :warn
+
+# Or in Rails
+config.anyway_config.enforce_config_schema = true
+```
+
+The schema is only enforced for key-based (_schemaful_) sources: YAML files, Rails credentials and secrets, and EJSON. Environment-based sources (ENV, Doppler) are never checked, since env prefixes can easily collide with unrelated variables (e.g., `AWS_PROFILE` for the `aws` config).
+
+Only top-level keys are checked; nested hashes are not validated.
+
+#### Allowing unknown attributes for some configs
+
+You can use the `rescue_unknown_attributes_with` configuration parameter to ignore specific attributes. It's called for every unknown attribute with the config object and the attribute name; return a truthy value to skip (allow) it:
+
+```ruby
+Anyway::Settings.rescue_unknown_attributes_with = ->(config, key) do
+  config.config_name == "app"
+end
+```
+
+This is particularly useful when you have multiple config classes associated with the same configurable entity (say, a service provider).
+
+#### Unknown explicit values
+
+Unknown attributes passed explicitly (`MyConfig.new(hots: "localhost")`) will raise disregards the `enforce_config_schema` setting in the future. Currently, they follow the `enforce_config_schema` configuration but we recommend to opt-in for the stricter future behaviour:
+
+```ruby
+Anyway::Settings.future.use :reject_unknown_overrides
 ```
 
 ## Using with Rails
@@ -826,6 +866,8 @@ class MyConfig < Anyway::Config
 end
 ```
 
+Underscore-prefixed keys (which are not encrypted by EJSON, e.g., `_public_key`) are ignored.
+
 **NOTE:** You can opt-out from EJSON loader by specifying the `ANYWAY_CONFIG_DISABLE_EJSON=true` env var (in case you have the `ejson` executable in your PATH, but don't want to use it with Anyway Config).
 
 ### Custom loaders
@@ -866,6 +908,9 @@ class ChamberConfigLoader < Base
     warn "Couldn't decrypt Chamber settings: #{e.message}"
     {}
   end
+
+  # Report unknown keys if enforce_config_schema is enabled
+  def schemaful? = true
 end
 
 # Don't forget to register it

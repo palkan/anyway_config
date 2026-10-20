@@ -11,11 +11,15 @@ module Anyway
         end
       end
 
-      def initialize(local:)
+      def initialize(local: Anyway::Settings.use_local_files, **)
         @local = local
       end
 
       def use_local?() = @local == true
+
+      # Whether this loader supports strict schema (so we can warn or raise on
+      # unknown attributes)
+      def schemaful?() = false
     end
   end
 end

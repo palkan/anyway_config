@@ -14,5 +14,5 @@ local_gemfile = "#{File.dirname(__FILE__)}/Gemfile.local"
 if File.exist?(local_gemfile)
   eval_gemfile local_gemfile
 else
-  gem 'rails', '~> 7.0'
+  gem 'rails', '~> 8.0'
 end

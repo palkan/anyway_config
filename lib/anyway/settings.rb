@@ -38,6 +38,7 @@ module Anyway
       end
 
       setting :unwrap_known_environments, true
+      setting :reject_unknown_overrides, true
 
       private
 
@@ -54,6 +55,14 @@ module Anyway
 
       # Suppress required validations for CI/CD pipelines
       attr_accessor :suppress_required_validations
+
+      # Whether to check for unknown attributes in schemaful (key-based) sources:
+      # false — ignore unknown attributes, true — raise, :warn — print a warning
+      attr_accessor :enforce_config_schema
+
+      # A callable (config, key) -> bool to ignore specific unknown attributes
+      # (e.g., when the same source is shared by multiple configs)
+      attr_accessor :rescue_unknown_attributes_with
 
       # A proc returning a path to YML config file given the config name
       attr_reader :default_config_path
@@ -113,5 +122,8 @@ module Anyway
 
     # By default, use ANYWAY_SUPPRESS_VALIDATIONS
     self.suppress_required_validations = %w[1 t true y yes].include?(ENV["ANYWAY_SUPPRESS_VALIDATIONS"])
+
+    # Unknown attributes are ignored by default
+    self.enforce_config_schema = false
   end
 end

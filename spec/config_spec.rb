@@ -1093,4 +1093,61 @@ describe Anyway::Config, type: :config do
       expect(conf.to_source_trace["port"][:value]).to eq 8080
     end
   end
+
+  describe "schema enforcement", :rails do
+    # cool.yml provides unknown "host", credentials provide unknown "other_stuff"
+    let(:config_class) do
+      Class.new(described_class) do
+        config_name :cool
+        attr_config :user, :port
+      end
+    end
+
+    after { Anyway::Settings.enforce_config_schema = false }
+
+    context "when enforced with :warn" do
+      before { Anyway::Settings.enforce_config_schema = :warn }
+
+      it "warns about unknown attributes from all schemaful sources" do
+        expect { config_class.new }.to output(a_string_including("host", "other_stuff")).to_stderr
+      end
+
+      context "with unknown overrides" do
+        before { Anyway::Settings.future.use :reject_unknown_overrides }
+        after { Anyway::Settings.future.use [] }
+
+        it "raises" do
+          config_class.configuration_sources = %i[env]
+
+          expect { config_class.new(port: 3000, hots: "localhost") }
+            .to raise_error(ArgumentError, /hots/)
+        end
+      end
+    end
+
+    context "when enforced" do
+      before { Anyway::Settings.enforce_config_schema = true }
+
+      it "raises on unknown attributes from all schemaful sources" do
+        expect { config_class.new }.to raise_error(Anyway::Config::UnknownAttributesError, /host/)
+
+        config_class.configuration_sources = Anyway.loaders.keys - %i[yml]
+
+        expect { config_class.new }.to raise_error(Anyway::Config::UnknownAttributesError, /other_stuff/)
+      end
+
+      context "with rescue_unknown_attributes_with" do
+        before { Anyway::Settings.rescue_unknown_attributes_with = ->(config, _key) { config.config_name == "cool" } }
+        after { Anyway::Settings.rescue_unknown_attributes_with = nil }
+
+        it "ignores rescued attributes" do
+          expect { config_class.new }.not_to raise_error
+        end
+      end
+    end
+
+    it "neither raises nor warns when not enforced" do
+      expect { config_class.new(port: 3000, hots: "localhost") }.not_to output.to_stderr
+    end
+  end
 end

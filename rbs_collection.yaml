@@ -42,5 +42,9 @@ gems:
     ignore: true
   - name: activestorage
     ignore: true
+  - name: actionmailbox
+    ignore: true
+  - name: actiontext
+    ignore: true
   - name: actioncontroller
     ignore: true

@@ -2,6 +2,19 @@
 
 ## master
 
+- Add a new `enforce_config_schema` to warn or raise on unknown attributes. ([@palkan][])
+
+  When the schema is enforced, the config attributes defined in the key-based sources (YAML, credentials, etc.) must correspond to `attr_config` names in the corresponding class. Providing an unknown attribute (e.g., a typo) would raise or print a warning depending on the parameter value:
+
+```ruby
+Anyway::Settings.enforce_config_schema = true # or :warn
+
+# in Rails
+config.anyway_config.enforce_config_schema = true
+```
+
+- EJSON loader now ignores underscore-prefixed (unencrypted) keys. ([@palkan][])
+
 ## 2.8.1 (2026-07-22)
 
 - Fix default loaders order to keep ENV the last one (=higher precedence). ([@palkan][])

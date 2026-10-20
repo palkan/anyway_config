@@ -34,6 +34,8 @@ module Anyway
           config
         end
 
+        def schemaful?() = true
+
         private
 
         def local_credentials(name)

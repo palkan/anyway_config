@@ -33,6 +33,7 @@ module Anyway # :nodoc:
       deconstruct_keys
       dig
       dup
+      format_unknown_attribute
       initialize
       load
       load_from_sources
@@ -51,6 +52,8 @@ module Anyway # :nodoc:
     class Error < StandardError; end
 
     class ValidationError < Error; end
+
+    class UnknownAttributesError < ValidationError; end
 
     include OptparseConfig
     include DynamicConfig
@@ -374,6 +377,8 @@ module Anyway # :nodoc:
         )
 
         if overrides
+          reject_unknown_config_attributes!(overrides, source: :overrides, strict: Settings.future.reject_unknown_overrides == true)
+
           Tracing.trace!(:load) { overrides }
 
           Utils.deep_merge!(base_config, overrides)
@@ -400,10 +405,16 @@ module Anyway # :nodoc:
     def load_from_sources(base_config, **opts)
       source_filter = self.class.configuration_sources
 
-      Anyway.loaders.each do |(id, loader)|
+      Anyway.loaders.each do |(id, loader_or_proc)|
         next if source_filter && !source_filter.include?(id)
-        Utils.deep_merge!(base_config, loader.call(**opts))
+
+        loader = (loader_or_proc.is_a?(Class) && loader_or_proc <= Loaders::Base) ? loader_or_proc.new(**opts) : loader_or_proc
+        loader_data = loader.call(**opts)
+        reject_unknown_config_attributes!(loader_data, source: id) if loader.is_a?(Loaders::Base) && loader.schemaful?
+
+        Utils.deep_merge!(base_config, loader_data)
       end
+
       base_config
     end
 
@@ -465,6 +476,43 @@ module Anyway # :nodoc:
         next if missing.empty?
         raise_validation_error "The following config parameters for `#{self.class.name}(config_name: #{self.class.config_name})` are missing or empty: #{missing.join(", ")}"
       end
+    end
+
+    def reject_unknown_config_attributes!(data, source:, strict: false)
+      return if data.nil? || data.empty?
+
+      mode = strict || Settings.enforce_config_schema
+      return unless mode
+
+      known = self.class.config_attributes.map(&:to_s)
+      unknown = data.keys.map(&:to_s) - known
+
+      unless strict
+        rescuer = Settings.rescue_unknown_attributes_with
+        unknown.reject! { rescuer.call(self, it) } if rescuer
+      end
+
+      return if unknown.empty?
+
+      msg = "Unknown config attributes for `#{self.class.name || "<anonymous>"}(config_name: #{config_name})` " \
+        "provided by #{source}: #{unknown.map { format_unknown_attribute(it, known) }.join(", ")}"
+
+      if strict
+        raise ArgumentError, msg
+      elsif mode == :warn
+        Kernel.warn msg
+      else
+        raise UnknownAttributesError, msg
+      end
+    end
+
+    def format_unknown_attribute(key, known)
+      return key unless defined?(::DidYouMean::SpellChecker)
+
+      suggestions = ::DidYouMean::SpellChecker.new(dictionary: known).correct(key)
+      return key if suggestions.empty?
+
+      "#{key} (did you mean: #{suggestions.join(", ")}?)"
     end
 
     def write_config_attr(key, val)

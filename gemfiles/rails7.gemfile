@@ -1,5 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'rails', '~> 7.0'
+# Rails < 8.1 passes the `quirks_mode` option removed in json 3.0
+gem 'json', '< 3.0'
 
 gemspec path: '..'

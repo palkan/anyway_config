@@ -19,6 +19,8 @@ module Anyway
           config
         end
 
+        def schemaful?() = true
+
         private
 
         def secrets

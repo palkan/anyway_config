@@ -28,6 +28,8 @@ module Anyway
         Utils.deep_merge!(base_config, local_config)
       end
 
+      def schemaful?() = true
+
       private
 
       def environmental?(parsed_yml)

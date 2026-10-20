@@ -99,6 +99,33 @@ describe Anyway::Loaders::EJSON do
       end
     end
 
+    context "with underscore-prefixed keys" do
+      let(:ejson_parsed_result) do
+        {
+          "_public_key" => "any_public_key",
+          "clever" => default_parsed_data.merge("_comment" => "plain text")
+        }
+      end
+
+      it "ignores them" do
+        expect(subject).to eq(default_parsed_data)
+      end
+
+      context "when ejson_namespace is set to false" do
+        let(:ejson_parsed_result) do
+          {
+            "_public_key" => "any_public_key",
+            "_comment" => "plain text"
+          }.merge(default_parsed_data)
+        end
+        let(:options) { {name: name, ejson_parser: ejson_parser, ejson_namespace: false} }
+
+        it "ignores them" do
+          expect(subject).to eq(default_parsed_data)
+        end
+      end
+    end
+
     context "when local is enabled" do
       let(:local) { true }
 
