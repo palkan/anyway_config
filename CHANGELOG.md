@@ -2,6 +2,8 @@
 
 ## master
 
+## 2.9.0 (2026-10-21)
+
 - Add an agent skill (`skills/anyway-config`) with guidance on organizing configuration in Rails apps. ([@palkan][])
 
   The skill follows the [skills.sh](https://www.skills.sh) layout and installs automatically with [Rails Hyperdrive](https://github.com/rails-hyperdrive/rails-hyperdrive).
