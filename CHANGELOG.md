@@ -3,6 +3,7 @@
 ## master
 
 - Do not require optional loader dependencies to speed up loading. ([@ardecvz][])
+- Use `to_s` on values that support it during validation for required attributes.  This provides more consistent behaviour for the `:uri` coercer, which will otherwise produce a `#<URI::Generic >` rather than a validation failure. ([@phil-janeapp][])
 
 ## 2.8.0 (2025-06-24)
 
