@@ -2,6 +2,10 @@
 
 ## master
 
+- Add an agent skill (`skills/anyway-config`) with guidance on organizing configuration in Rails apps. ([@palkan][])
+
+  The skill follows the [skills.sh](https://www.skills.sh) layout and installs automatically with [Rails Hyperdrive](https://github.com/rails-hyperdrive/rails-hyperdrive).
+
 ## 2.9.0 (2026-10-20)
 
 - Add a new `enforce_config_schema` to warn or raise on unknown attributes. ([@palkan][])

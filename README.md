@@ -34,6 +34,7 @@ For version 1.x see the [1-4-stable branch](https://github.com/palkan/anyway_con
 
 - [Main concepts](#main-concepts)
 - [Installation](#installation)
+  - [Adding agent skills](#adding-agent-skills)
 - [Usage](#usage)
   - [Configuration classes](#configuration-classes)
   - [Dynamic configuration](#dynamic-configuration)
@@ -103,6 +104,18 @@ Or adding to your project:
 ```ruby
 # Gemfile
 gem "anyway_config", "~> 2.0"
+```
+
+### Adding agent skills
+
+The gem ships a skill for coding agents in `skills/anyway-config`. It guides an agent when it adds or changes configuration in a Rails app: where to put a config class, which source to use for a value, how to replace direct `ENV` reads, and how to test configs. It follows the [skills.sh](https://www.skills.sh) layout, so it works with any agent that reads `SKILL.md`.
+
+With [Rails Hyperdrive](https://github.com/rails-hyperdrive/rails-hyperdrive), the skill installs automatically: run `bin/rails hyperdrive:init` the first time, then `bin/rails hyperdrive:sync`.
+
+Without it, install the skill from the repository with the [skills.sh](https://www.skills.sh) CLI, or copy `skills/anyway-config` into your agent's skills directory:
+
+```sh
+npx skills add palkan/anyway_config
 ```
 
 ### Supported Ruby versions

@@ -20,13 +20,15 @@ Gem::Specification.new do |s|
     "documentation_uri" => "http://github.com/palkan/anyway_config",
     "homepage_uri" => "http://github.com/palkan/anyway_config",
     "source_code_uri" => "http://github.com/palkan/anyway_config",
-    "funding_uri" => "https://github.com/sponsors/palkan"
+    "funding_uri" => "https://github.com/sponsors/palkan",
+    "hyperdrive_targets" => "railties",
+    "hyperdrive_artifacts" => "skill"
   }
 
   s.license = "MIT"
 
   s.files = Dir.glob("lib/**/*") + Dir.glob("lib/.rbnext/**/*") +
-    Dir.glob("bin/**/*") + %w[sig/anyway_config.rbs sig/manifest.yaml] +
+    Dir.glob("bin/**/*") + Dir.glob("skills/**/*") + %w[sig/anyway_config.rbs sig/manifest.yaml] +
     %w[README.md LICENSE.txt CHANGELOG.md]
   s.require_paths = ["lib"]
   s.required_ruby_version = ">= 2.7"
