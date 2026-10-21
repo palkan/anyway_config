@@ -460,7 +460,7 @@ module Anyway # :nodoc:
 
       self.class.required_attributes.select do |name|
         val = values.dig(*name.to_s.split(".").map(&:to_sym))
-        val.nil? || (val.is_a?(String) && val.empty?)
+        val.nil? || (val.respond_to?(:to_s) && val.to_s.empty?)
       end.then do |missing|
         next if missing.empty?
         raise_validation_error "The following config parameters for `#{self.class.name}(config_name: #{self.class.config_name})` are missing or empty: #{missing.join(", ")}"
