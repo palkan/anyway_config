@@ -784,6 +784,32 @@ describe Anyway::Config, type: :config do
       end
     end
 
+    context "with coercion" do
+      let(:config) do
+        Class.new(described_class) do
+          config_name "coercio"
+
+          attr_config a_date: "2006-01-01"
+          attr_config a_datetime: "2006-01-01 12:00:00"
+          attr_config a_string: "string"
+          attr_config a_uri: "https://google.com"
+
+          coerce_types a_date: :date,
+            a_datetime: :datetime,
+            a_string: :string,
+            a_uri: :uri
+
+          required(*config_attributes)
+        end
+      end
+
+      it "raises ValidationError", aggregate_errors: true do
+        config.config_attributes.each do |attr|
+          expect { config.new(attr => "") }.to raise_error(Anyway::Config::ValidationError, %r{missing or empty: #{attr}})
+        end
+      end
+    end
+
     context "with nested required attributes" do
       let(:config) do
         Class.new(described_class) do
