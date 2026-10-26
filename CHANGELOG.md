@@ -2,7 +2,7 @@
 
 ## master
 
-## 2.9.0 (2026-10-21)
+## 2.9.1 (2026-10-21)
 
 - Add an agent skill (`skills/anyway-config`) with guidance on organizing configuration in Rails apps. ([@palkan][])
 
